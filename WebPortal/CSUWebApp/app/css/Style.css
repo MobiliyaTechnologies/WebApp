@@ -1,0 +1,21 @@
+﻿
+.login-page {
+    background-image: url("../../Assets/CSU_2.jpg");
+    height: 100vh;
+    width: 100vw;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  
+    
+}
+
+.tint {
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
