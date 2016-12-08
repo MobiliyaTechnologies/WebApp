@@ -8,70 +8,90 @@ var restServer = "http://powergridrestservice.azurewebsites.net/"
  * Controller of the angulartestApp
  */
 angular.module('WebPortal')
-    .controller('loginCtrl', function ($scope, $http, $location, $state, Auth) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-    $scope.showToast = function () {
-        $mdToast.show(
-            $mdToast.simple()
-                .textContent('User registration completed!')
-                .hideDelay(3000)
-        );
-    };
-    if (localStorage.getItem("USERREGISTER") == 1) {
-        localStorage.setItem("USERREGISTER", 0);
-        $scope.showToast();
-    }
-
-    $scope.sendLogin = function () {
-        console.log("sendLogin");
-        if (!validateForm()) {
-
-            return;
+    .controller('loginCtrl', function ($scope, $http, $location, $state, Auth, Token) {
+        this.awesomeThings = [
+          'HTML5 Boilerplate',
+          'AngularJS',
+          'Karma'
+        ];
+        console.log("Login Controller");
+        //Token.update();
+        $scope.showToast = function () {
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('User registration completed!')
+                    .hideDelay(3000)
+            );
+        };
+        if (localStorage.getItem("USERREGISTER") == 1) {
+            localStorage.setItem("USERREGISTER", 0);
+            $scope.showToast();
         }
-        //alert("valid input !"); 
-        var JSONobj = new Object();
-        JSONobj.Email = $("#username").val();
-        JSONobj.Password = $("#password").val();
 
-        //alert("JSON : " + JSON.stringify(JSONobj));
+        $scope.sendLogin = function () {
+            console.log("sendLogin");
+            if (!validateForm()) {
 
-        $http({
-            url: restServer + "api/signin",
-            dataType: 'json',
-            method: 'POST',
-            data: JSONobj,
-            headers: {
-                "Content-Type": "application/json"
-
+                return;
             }
-        }).success(function (response) {
+            //alert("valid input !"); 
+            var JSONobj = new Object();
+            JSONobj.Email = $("#username").val();
+            JSONobj.Password = $("#password").val();
 
-            //alert("Response : " + JSON.stringify(response)); 
-            console.log(response);
-            if (response.Status_Code == 200) {
-                //alert("Successfully logged in !");
-                localStorage.setItem("userId", response.User_Id);
-                localStorage.setItem("UserName", response.First_Name);
-                localStorage.setItem("LastName", response.Last_Name);
-                localStorage.setItem("Email", response.Email);
-                Auth.setUser(true);
-                //$location.path("/map");
-                $state.go('overview');
-                 // window.location.replace("BingMap.html");
-            } else {
-                alert(response.Message);
-            }
-        })
-            .error(function (error) {
-                alert("Error : " + JSON.stringify(error));
-            });
-      };
+            //alert("JSON : " + JSON.stringify(JSONobj));
 
-});
+            $http({
+                url: restServer + "api/signin",
+                dataType: 'json',
+                method: 'POST',
+                data: JSONobj,
+                headers: {
+                    "Content-Type": "application/json"
+
+                }
+            }).success(function (response) {
+
+                //alert("Response : " + JSON.stringify(response)); 
+                console.log(response);
+                if (response.Status_Code == 200) {
+                    //alert("Successfully logged in !");
+                    localStorage.setItem("userId", response.User_Id);
+                    localStorage.setItem("UserName", response.First_Name);
+                    localStorage.setItem("LastName", response.Last_Name);
+                    localStorage.setItem("Email", response.Email);
+                    Auth.setUser(true);
+                    //$location.path("/map");
+                    $state.go('overview');
+                    // window.location.replace("BingMap.html");
+                } else {
+                    alert(response.Message);
+                }
+            })
+                .error(function (error) {
+                    alert("Error : " + JSON.stringify(error));
+                });
+        };
+
+        $scope.getAccessToken = function () {
+            $http({
+                url: "http://localhost:65159/PowerBIService.asmx/GetAccessToken",
+                method: 'GET'
+            }).success(function (response) {
+               // console.log(response.tokens.AccessToken);
+               // console.log(response.tokens.RefreshToken);
+                // access_Token = response.tokens.AccessToken;
+                Token.data.accesstoken = response.tokens.AccessToken;
+                //console.log("TOken", Token.data.accesstoken);
+            })
+                   .error(function (error) {
+                       alert("Error : " + JSON.stringify(error));
+                   });
+        }
+
+        $scope.getAccessToken();
+
+    });
 function validateForm() {
     var username = $("#username").val();
     var password = $("#password").val();

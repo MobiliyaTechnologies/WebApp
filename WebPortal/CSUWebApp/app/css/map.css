@@ -4,3 +4,13 @@
     height:50%;
     position:absolute;
 }
+
+.meterProfile{
+    padding : 2%;
+}
+
+.meterName{
+height : 5%;
+width : auto;
+align-content : center;
+}

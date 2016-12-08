@@ -7,7 +7,7 @@
 <meta http-equiv="refresh" content="0;url=./index.html">
 <title>Web Admin</title>
 <script language="javascript">
-    window.location.href = "./index.html"
+    //window.location.href = "./index.html"
 </script>
 </head>
 <body>
