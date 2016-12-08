@@ -113,4 +113,11 @@ angular
            
         //});
 
+    })
+.factory('Token', function ($http) {
+    return {
+        data: {
+            accesstoken: ''
+        }
+       };
     });
