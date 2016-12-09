@@ -11,20 +11,19 @@ var count = 0;
 var meterList;
 var infobox;
 var iframe;
-var restServer = "http://powergridrestservice.azurewebsites.net/";
-//var restServer = "http://localhost:42299/"
+
 
 
 var reportEmbedURL = "https://app.powerbi.com/reportEmbed?reportId=a30a9243-68de-4d0e-a208-9dff2b3f0d61";
-var tileEmbedURL = "https://app.powerbi.com/embed?dashboardId=8f6b24a3-51e0-45c4-b162-e9a318dfb866&tileId=562ea38f-fbb5-49d2-a683-742c5141b074";
-var weatherTileURL = "https://app.powerbi.com/embed?dashboardId=cea6812f-9d03-4394-ae7b-cbdb779d9b6f&tileId=2c0f4146-6b11-4a7f-8af0-96b6ccb1d391";
+var tileEmbedURL = "https://app.powerbi.com/embed?dashboardId=8f6b24a3-51e0-45c4-b162-e9a318dfb866&tileId=d06cc5cb-738c-440f-ad56-c1a941a071f1";
+var weatherTileURL = "https://app.powerbi.com/embed?dashboardId=cea6812f-9d03-4394-ae7b-cbdb779d9b6f&tileId=da251716-8cef-47e3-a2b7-1aa1e7e8bb9d";
 
 angular.module('WebPortal')
-    .controller('overviewCtrl', function ($scope, $http, $location,Token) {
+    .controller('overviewCtrl', function ($scope, $http, $location, Token,config) {
+         
         $scope.loadMapScenario = function () {
-            console.log("Hiii");
             $http({
-                url: restServer + "api/getmeters/",
+                url: config.restServer + "api/getmeters/",
                 dataType: 'json',
                 method: 'Get',
             }).success(function (response) {
@@ -53,7 +52,8 @@ angular.module('WebPortal')
         function createPushpin(meter) {
             var location = new Microsoft.Maps.Location(meter.Latitude, meter.Longitude)
             var radius = 0;
-            var fillColor = 'rgba(255, 94, 45, 0.4)';
+            
+            var fillColor = 'rgba(179, 66, 244, 0.4)';
 
             if (meter.MonthlyConsumption == 0) {
                 radius = 0;
@@ -140,8 +140,7 @@ angular.module('WebPortal')
             //document.getElementById("monthlyConsumption").innerHTML = "Monthly consumption: " + args.target.MeterMontlyConsumption;
             //document.getElementById("meterDetails").style.display = "block";
 
-            embedTile();
-            embedWeatherTile();
+            
         }
 
         function onPushpinMouseOver(args) {
@@ -196,8 +195,8 @@ angular.module('WebPortal')
             iframe.contentWindow.postMessage(message, "*");;
         }
 
-        var width = 500;
-        var height = 500;
+        var width = 300;
+        var height = 200;
 
         function embedTile() {
             // check if the embed url was selected
@@ -266,8 +265,8 @@ angular.module('WebPortal')
                 return;
             }
 
-            var h = 300;
-            var w = 500;
+            var h = 200;
+            var w = 300;
 
             // construct the push message structure
             var m = { action: "loadTile", accessToken: accessToken, height: h, width: w };
@@ -277,5 +276,14 @@ angular.module('WebPortal')
             iframe = document.getElementById('weatherIFrame');
             iframe.contentWindow.postMessage(message, "*");;
         }
-
+        if (Token.data.accesstoken != '') {
+            displayGraph();
+        }
+        else {
+            Token.update(displayGraph);
+        }
+        function displayGraph() {
+            embedTile();
+            embedWeatherTile();
+        }
     });

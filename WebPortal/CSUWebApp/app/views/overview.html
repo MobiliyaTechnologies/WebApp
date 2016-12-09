@@ -17,17 +17,23 @@
  </div>-->
 <div>
 	<a ui-sref="reports" class="pull-right btn btn-primary btn-outline btn-rounded">Reports</a>
-	<h2>Overview <small>Why is Ani Theme so awesome?</small></h2>
+	<h2>Overview <!--<small>Why is Ani Theme so awesome?</small>--></h2>
 	<div class="jumbotron">
 		<div class="container">
-        
-              <div style="height:70vh;width:100%;">
-                  <div id='myMap1'></div>
-              </div>
-            <!--<iframe ID="iFrameEmbedReport" src="" height="300" width="300" frameborder="1" seamless></iframe>-->
-            <iframe ID="iFrameEmbedTile" src="" height="500px" width="500px" frameborder="0" seamless></iframe>
-            <iframe id="weatherIFrame" src="" height="300px" width="500px" frameborder="0" seamless></iframe>
-		</div>
+            <div class="row">
+                <div class="col-sm-8" style="height:70vh;" >
+                     <div id='myMap1'></div>
+                </div>
+                <div class="col-sm-4">
+                    <iframe ID="iFrameEmbedTile" src="" style="height:40vh;width:300px"  frameborder="0" seamless></iframe>
+                    <iframe id="weatherIFrame" src=""  style="height:40vh;width:300px;" frameborder="0" seamless></iframe>
+                </div>
+            </div>
+                
+                
+                <!--<iframe ID="iFrameEmbedReport" src="" height="300" width="300" frameborder="1" seamless></iframe>-->
+                
+            </div>
 	</div>
 </div>
 
