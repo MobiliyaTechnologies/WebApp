@@ -20,28 +20,10 @@ angular
 
 
     ])
-    //.config(function ($routeProvider) {
-    //  $routeProvider
-    //    .when('/', {
-    //      templateUrl: '../app/views/login.html',
-    //      controller: 'loginCtrl',
-    //      controllerAs: 'login'
-    //     })
-    //     .when('/map', {
-    //         templateUrl: '../app/views/map.html',
-    //         controller: 'mapCtrl',
-    //         controllerAs: 'map'
-
-    //    })
-    //    .otherwise({
-    //      redirectTo: '/'
-    //    });
-    //});
-
+   
 
     .config(function ($stateProvider, $urlRouterProvider) {
-
-        //$urlRouterProvider.when('/dashboard', '/dashboard/overview');
+        $urlRouterProvider.when('/dashboard', '/dashboard/overview');
         $urlRouterProvider.otherwise('/login');
 
         $stateProvider
@@ -73,12 +55,12 @@ angular
                 url: '/profile',
                 parent: 'dashboard',
                 templateUrl: 'app/views/profile.html',
-                controller:'profileCtrl'
+                controller: 'profileCtrl'
             });
 
     })
     .constant('config', {
-        serverURL: "http://10.9.42.218:2000/"
+        restServer : "http://powergridrestservice.azurewebsites.net/",
         //serverURL:"http://52.91.107.160:2000/"
     })
     .factory('Auth', function ($rootScope, $window) {
@@ -100,24 +82,38 @@ angular
         //    console.log(toState);
         //    console.log(toParams);
         //    console.log(Auth.isLoggedIn());
-           
+
         //        if (toState.name != 'login' && !Auth.isLoggedIn()) {
         //            $state.transitionTo('login');
         //         }
         //        else {
-                   
-        //        }
-               
-               
 
-           
+        //        }
+
+
+
+
         //});
 
     })
-.factory('Token', function ($http) {
-    return {
-        data: {
+    .factory('Token', function ($http) {
+        var data = {
             accesstoken: ''
-        }
-       };
+        };
+        return {
+            data,
+            update: function (callback) {
+                $http({
+                    url: "http://localhost:65159/PowerBIService.asmx/GetAccessToken",
+                    method: 'GET'
+                }).success(function (response) {
+                    data.accesstoken = response.tokens.AccessToken;
+                    callback();
+                    
+                })
+                 .error(function (error) {
+                    alert("Error : " + JSON.stringify(error));
+                 });
+            }
+        };
     });
