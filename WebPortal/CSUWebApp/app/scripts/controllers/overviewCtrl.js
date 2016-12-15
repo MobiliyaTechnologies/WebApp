@@ -14,14 +14,22 @@ var iframe;
 
 
 
-var reportEmbedURL = "https://app.powerbi.com/reportEmbed?reportId=a30a9243-68de-4d0e-a208-9dff2b3f0d61";
-var tileEmbedURL = "https://app.powerbi.com/embed?dashboardId=8f6b24a3-51e0-45c4-b162-e9a318dfb866&tileId=d06cc5cb-738c-440f-ad56-c1a941a071f1";
-var weatherTileURL = "https://app.powerbi.com/embed?dashboardId=cea6812f-9d03-4394-ae7b-cbdb779d9b6f&tileId=da251716-8cef-47e3-a2b7-1aa1e7e8bb9d";
+
+var tileEmbedURL = "https://app.powerbi.com/embed?dashboardId=cea6812f-9d03-4394-ae7b-cbdb779d9b6f&tileId=586f0945-d4ea-48fc-8ed5-2ba3f4aed68b";
+var weatherTileURL = "https://app.powerbi.com/embed?dashboardId=cea6812f-9d03-4394-ae7b-cbdb779d9b6f&tileId=d6206311-42ff-4325-9192-1a181cf07536";
 
 angular.module('WebPortal')
-    .controller('overviewCtrl', function ($scope, $http, $location, Token,config) {
-         
+    .controller('overviewCtrl', function ($scope, $http, $location, Token, config) {
+
         $scope.loadMapScenario = function () {
+            var mapLocation = new Microsoft.Maps.Location(40.571276, -105.085522);
+            map = new Microsoft.Maps.Map(document.getElementById('myMap1'),
+                {
+                    credentials: 'Ahmc1XzhRQwnhx-_HvtFWJH5y1TOqNaUEOZgzPPHQyyffV8z-UyK3tfrkaEMZpiv',
+                    center: mapLocation,
+                    mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+                    zoom: 18
+                });
             $http({
                 url: config.restServer + "api/getmeters/",
                 dataType: 'json',
@@ -29,32 +37,44 @@ angular.module('WebPortal')
             }).success(function (response) {
                 console.log(response);
                 meterList = response;
-                var mapLocation = new Microsoft.Maps.Location(meterList[0].Latitude, meterList[0].Longitude);
-                map = new Microsoft.Maps.Map(document.getElementById('myMap1'),
-                   {
-                       credentials: 'Ahmc1XzhRQwnhx-_HvtFWJH5y1TOqNaUEOZgzPPHQyyffV8z-UyK3tfrkaEMZpiv',
-                       center: mapLocation,
-                       mapTypeId: Microsoft.Maps.MapTypeId.aerial,
-                       zoom: 18
-                   });
+
                 for (var i in meterList) {
                     console.log(meterList[i].Name);
                     createPushpin(meterList[i]);
                 }
 
             })
-            .error(function (error) {
-                alert("Error : " + JSON.stringify(error));
-            });
+                .error(function (error) {
+                    alert("Error : " + JSON.stringify(error));
+                });
 
         }
 
         function createPushpin(meter) {
             var location = new Microsoft.Maps.Location(meter.Latitude, meter.Longitude)
             var radius = 0;
-            
-            var fillColor = 'rgba(179, 66, 244, 0.4)';
 
+            var fillColor = 'rgba(60,162,224, 0.7)';
+            if (meter.Name == 'P371602077') {
+                fillColor = 'rgba(138, 212, 235, 0.7)';
+            }
+            else if (meter.Name == 'P371602079') {
+                fillColor = 'rgba(254, 150, 102, 0.7)';
+            }
+            else if (meter.Name == 'P371602073') {
+                fillColor = 'rgba(242, 200, 15, 0.7)';
+            }
+            else if (meter.Name == 'P371602072') {
+                fillColor = 'rgba(253, 98, 94, 0.7)';
+            }
+            else if (meter.Name == 'P371602070') {
+
+
+            }
+            else if (meter.Name == 'P371602075') {
+
+                fillColor = 'rgba(95, 107, 109, 0.7)';
+            }
             if (meter.MonthlyConsumption == 0) {
                 radius = 0;
             }
@@ -94,10 +114,10 @@ angular.module('WebPortal')
                     radius = meter.MonthlyConsumption / 1000;
                 }
             }
-
+            var offset = new Microsoft.Maps.Point(0, 5); 
             var pushpin = new Microsoft.Maps.Pushpin(location, {
                 icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="5" fill="black" /></svg>',
-                anchor: new Microsoft.Maps.Point(5, 5)
+                anchor: new Microsoft.Maps.Point(5, 5), text: meter.Name
             });
 
             var dailyConsumption = meter.DailyConsumption;
@@ -135,12 +155,16 @@ angular.module('WebPortal')
         }
 
         function onPushpinClicked(args) {
+            console.log(args.target);
+            $scope.selectedMeterName = args.target.MeterName;
+            document.getElementById("iFrameEmbedTile").style.display = 'none';
+            document.getElementById("meterName").style.display = 'block';
             //document.getElementById("meterName").innerHTML = args.target.MeterName;
             //document.getElementById("dailyConsumption").innerHTML = "Daily consumption: " + args.target.MeterDailyConsumption;
             //document.getElementById("monthlyConsumption").innerHTML = "Monthly consumption: " + args.target.MeterMontlyConsumption;
             //document.getElementById("meterDetails").style.display = "block";
 
-            
+
         }
 
         function onPushpinMouseOver(args) {
@@ -157,46 +181,46 @@ angular.module('WebPortal')
             infobox.setOptions({ visible: false });
         }
 
-        function embedReport() {
-            var embedUrl = reportEmbedURL;
-            if ("" === embedUrl) {
-                console.log("No embed URL found");
-                return;
-            }
+        //function embedReport() {
+        //    var embedUrl = reportEmbedURL;
+        //    if ("" === embedUrl) {
+        //        console.log("No embed URL found");
+        //        return;
+        //    }
 
 
-            // to load a report do the following:
-            // 1: set the url
-            // 2: add a onload handler to submit the auth token
-            iframe = document.getElementById('iFrameEmbedReport');
-            iframe.src = embedUrl;
-            iframe.onload = postActionLoadReport;
-        };
+        //    // to load a report do the following:
+        //    // 1: set the url
+        //    // 2: add a onload handler to submit the auth token
+        //    iframe = document.getElementById('iFrameEmbedReport');
+        //    iframe.src = embedUrl;
+        //    iframe.onload = postActionLoadReport;
+        //};
 
-        function postActionLoadReport() {
+        //function postActionLoadReport() {
 
-            // get the access token.
-            accessToken = Token.data.accesstoken
+        //    // get the access token.
+        //    accessToken = Token.data.accesstoken
+        //    console.log(accesstoken)
+        //    // return if no a
+        //    if ("" === accessToken) {
+        //        console.log("Access token not found");
+        //        return;
+        //    }
 
-            // return if no a
-            if ("" === accessToken) {
-                console.log("Access token not found");
-                return;
-            }
+        //    // construct the push message structure
+        //    // this structure also supports setting the reportId, groupId, height, and width.
+        //    // when using a report in a group, you must provide the groupId on the iFrame SRC
+        //    var m = { action: "loadReport", accessToken: accessToken };
+        //    message = JSON.stringify(m);
 
-            // construct the push message structure
-            // this structure also supports setting the reportId, groupId, height, and width.
-            // when using a report in a group, you must provide the groupId on the iFrame SRC
-            var m = { action: "loadReport", accessToken: accessToken };
-            message = JSON.stringify(m);
-
-            // push the message.
-            iframe = document.getElementById('iFrameEmbedReport');
-            iframe.contentWindow.postMessage(message, "*");;
-        }
+        //    // push the message.
+        //    iframe = document.getElementById('iFrameEmbedReport');
+        //    iframe.contentWindow.postMessage(message, "*");;
+        //}
 
         var width = 300;
-        var height = 200;
+        var height = 180;
 
         function embedTile() {
             // check if the embed url was selected
@@ -219,6 +243,7 @@ angular.module('WebPortal')
         function postActionLoadTile() {
             // get the access token.
             var accessToken = Token.data.accesstoken;
+            console.log(accessToken)
             //accessToken = access_Token;
 
             // return if no a
@@ -226,17 +251,17 @@ angular.module('WebPortal')
                 console.log("Access token not found");
                 return;
             }
+            $scope.setIFrameSize();
+            //var h = height;
+            //var w = width;
 
-            var h = height;
-            var w = width;
+            //// construct the push message structure
+            //var m = { action: "loadTile", accessToken: accessToken, height: h, width: w };
+            //var message = JSON.stringify(m);
 
-            // construct the push message structure
-            var m = { action: "loadTile", accessToken: accessToken, height: h, width: w };
-            var message = JSON.stringify(m);
-
-            // push the message.
-            iframe = document.getElementById('iFrameEmbedTile');
-            iframe.contentWindow.postMessage(message, "*");;
+            //// push the message.
+            //iframe = document.getElementById('iFrameEmbedTile');
+            //iframe.contentWindow.postMessage(message, "*");;
         }
 
         function embedWeatherTile() {
@@ -250,7 +275,7 @@ angular.module('WebPortal')
             // 1: set the url, include size.
             // 2: add a onload handler to submit the auth token
             iframe = document.getElementById('weatherIFrame');
-            iframe.src = embedTileUrl + "&width=" + 500 + "&height=" + 300;
+            iframe.src = embedTileUrl ;
             iframe.onload = postActionWeatherLoadTile;
         }
 
@@ -264,8 +289,8 @@ angular.module('WebPortal')
                 console.log("Access token not found");
                 return;
             }
-
-            var h = 200;
+            $scope.setIFrameSize();
+            var h = 180;
             var w = 300;
 
             // construct the push message structure
@@ -285,5 +310,31 @@ angular.module('WebPortal')
         function displayGraph() {
             embedTile();
             embedWeatherTile();
+        }
+
+
+        $scope.setIFrameSize = function () {
+            var ogWidth = 700;
+            var ogHeight = 600;
+            var ogRatio = ogWidth / ogHeight;
+            console.log("setIframesize");
+            var windowWidth = $(window).width();
+            //if (windowWidth < 480) {
+            var parentDivWidth = $(".iframe-class").parent().width();
+            var newHeight = (parentDivWidth / ogRatio);
+            $(".iframe-class").addClass("iframe-class-resize");
+            $(".iframe-class-resize").css("width", parentDivWidth);
+            $(".iframe-class-resize").css("height", newHeight);
+            console.log(newHeight);
+            console.log(parentDivWidth);
+            var accessToken = Token.data.accesstoken;
+            var m = { action: "loadTile", accessToken: accessToken, height: newHeight, width: parentDivWidth+100};
+            var message = JSON.stringify(m);
+
+            // push the message.
+            iframe = document.getElementById('iFrameEmbedTile');
+            iframe.contentWindow.postMessage(message, "*");;
+
+           
         }
     });

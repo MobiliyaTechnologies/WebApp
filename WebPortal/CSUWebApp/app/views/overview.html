@@ -1,7 +1,16 @@
-<link rel="stylesheet" type="text/css" href="../app/css/map.css" />
+<link rel="stylesheet" type="text/css" href="./app/css/map.css" />
 <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?branch=release&callback=loadMapScenario' async defer></script>
 <script>
+    $(function () {
+        //setIFrameSize();
+        $(window).resize(function () {
 
+            clearTimeout(resizeTimeout);
+            var resizeTimeout = setTimeout(function () {
+                angular.element(document.getElementById('iFrameEmbedTile')).scope().setIFrameSize();
+            }, 500);
+        });
+    });
     function loadMapScenario() {
         console.log("loaded");
 
@@ -17,16 +26,23 @@
  </div>-->
 <div>
 	<a ui-sref="reports" class="pull-right btn btn-primary btn-outline btn-rounded">Reports</a>
-	<h2>Overview <!--<small>Why is Ani Theme so awesome?</small>--></h2>
+	<h2>Dashboard <!--<small>Why is Ani Theme so awesome?</small>--></h2>
 	<div class="jumbotron">
 		<div class="container">
             <div class="row">
-                <div class="col-sm-8" style="height:70vh;" >
+                <div class="dash-unit col-sm-8" style="height:70vh;padding:0;" >
                      <div id='myMap1'></div>
                 </div>
                 <div class="col-sm-4">
-                    <iframe ID="iFrameEmbedTile" src="" style="height:40vh;width:300px"  frameborder="0" seamless></iframe>
-                    <iframe id="weatherIFrame" src=""  style="height:40vh;width:300px;" frameborder="0" seamless></iframe>
+                    <div class="dash-unit col-sm-12 col-sm-12" style="height:250px;">
+                        <iframe id="iFrameEmbedTile" src="" class="iframe-class-overview-page" src=""  scrolling="no" frameborder="0" seamless></iframe>
+                        <h3 id="meterName" style="display:none;">Metername</h3>
+                    </div>
+                    <div class="dash-unit col-sm-12 col-sm-12" style="height:250px;">
+                        <iframe id="weatherIFrame" src="" style="height:200px;width:300px;overflow:hidden;" frameborder="0" seamless></iframe>
+                    </div>
+                    
+                    
                 </div>
             </div>
                 

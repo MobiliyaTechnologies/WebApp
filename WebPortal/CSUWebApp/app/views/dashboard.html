@@ -1,53 +1,39 @@
-﻿<!--<link rel="stylesheet" type="text/css" href="../app/css/map.css" />
-<script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?branch=release&callback=loadMapScenario' async defer></script>
-<script>
+﻿<script>
+    $(function () {
+        //setIFrameSize();
+        $(window).resize(function () {
+           
+            clearTimeout(resizeTimeout);
+            var resizeTimeout = setTimeout(function () {
+                angular.element(document.getElementById('weatherIFrame1')).scope().setIFrameSize();
+            }, 500);
+        });
+    });
 
-    function loadMapScenario() {
-        console.log("loaded");
-        angular.element(document.getElementById('myMap')).scope().loadMapScenario();
-      
-    }
-   // loadMapScenario();
+   
 </script>
-    
-    <div id="mainDiv" class="parentDiv">
-        <div id='meterDetails' class="meterDetail">
-            <div id="meterProfile" class="meterProfile">
-                <h1 id="meterName" class="meterName"></h1>
-                <hr style="color : black;">
-                <h3>Location :</h3>
-                <h4 id="latVal"></h4>
-                <h4 id="lonVal"></h4>
-
-                <hr>
-                <h3>Consumption details :</h3>
-                <h4 id="dailyConsumption"></h4>
-                <h4 id="monthlyConsumption"></h4>
-                <hr style="color : black;">
-            </div>
-            <iframe ID="iFrameEmbedReport" src="" height="300" width="300" frameborder="1" seamless></iframe>
-        </div>
-        <div id='myMap' class="map"></div>
-    </div>-->
 <link href="../app/css/Main.css" rel="stylesheet">
+<link href="./bower_components/font-awesome/css/font-awesome.css" rel="stylesheet">
 <div class="dashboard-page">
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-3 col-md-2 sidebar">
+                
                 <div class="text-center">
                     <h2 class="brand">{{username}}{{lastname}}<!--<small>Free Edition</small>--></h2>
-                    <img src="../app/images/flat-avatar.png" class="user-avatar" /><br />
+                    <img src="../app/images/flat-avatar.png" class="user-avatar" /><div class="notification"></div><br />
 
                     <button  class="btn btn-white btn-outline btn-rounded btn-sm" ng-click="logout()">Logout</button>
                 </div>
+               
                 <ul class="nav nav-sidebar">
-                    <li ng-class="{active: $state.includes('overview')}"><a ui-sref="overview">Overview <span class="sr-only">(current)</span></a></li>
+                    <li ng-class="{active: $state.includes('overview')}"><a ui-sref="overview">Dashboard <span class="sr-only">(current)</span></a></li>
                     <li ng-class="{active: $state.includes('reports')}"><a ui-sref="reports">Reports</a></li>
                   
                     <li ng-class="{active: $state.includes('profile')}"><a ui-sref="profile">Profile</a></li>
                     
                 </ul>
-                <iframe id="weatherIFrame1" src="" style="height:20vh;width:100%" frameborder="0" seamless></iframe>
+                <iframe id="weatherIFrame1" class="iframe-class" src=""  scrolling="no" frameborder="0" seamless></iframe>
             </div>
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" ui-view >
                
