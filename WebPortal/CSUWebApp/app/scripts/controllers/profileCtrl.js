@@ -1,5 +1,5 @@
 ﻿angular.module('WebPortal')
-    .controller('profileCtrl', function ($scope, $http, $location, $state, Auth) {
+    .controller('profileCtrl', function ($scope, $http, $location, $state, Auth,config) {
         console.log("logout");
         var JSONobj = new Object();
         
@@ -11,24 +11,24 @@
                 JSONobj.New_Password = $scope.newpwd;
                 console.log($scope.newpwd);
                 console.log($scope.confpwd);
-                //$http({
-                //    url: restServer + "api/signout",
-                //    dataType: 'json',
-                //    method: 'POST',
-                //    data: JSONobj,
-                //    headers: {
-                //        "Content-Type": "application/json"
+                $http({
+                    url: config.restServer + "api/changepassword",
+                    dataType: 'json',
+                    method: 'POST',
+                    data: JSONobj,
+                    headers: {
+                      "Content-Type": "application/json"
 
-                //    }
-                //}).success(function (response) {
-                //    console.log(response);
-                //    //alert("Response : " + JSON.stringify(response)); 
-                //    $state.go('login');
+                    }
+                }).success(function (response) {
+                    console.log(response);
+                    //alert("Response : " + JSON.stringify(response)); 
+                   // $state.go('login');
 
-                //})
-                //    .error(function (error) {
-                //        alert("Error : " + JSON.stringify(error));
-                //    });
+                })
+                    .error(function (error) {
+                        alert("Error : " + JSON.stringify(error));
+                    });
             }
             else {
                 alert("Password Doesnt Match");

@@ -1,5 +1,5 @@
 ﻿var restServer = "http://powergridrestservice.azurewebsites.net/";
-var weatherTileURL1 = "https://app.powerbi.com/embed?dashboardId=cea6812f-9d03-4394-ae7b-cbdb779d9b6f&tileId=2c0f4146-6b11-4a7f-8af0-96b6ccb1d391";
+var weatherTileURL1 = "https://app.powerbi.com/embed?dashboardId=cea6812f-9d03-4394-ae7b-cbdb779d9b6f&tileId=06818120-ae10-4b35-9852-12aa953768bc";
 angular.module('WebPortal')
     .controller('dashboardCtrl', function ($scope, $http, $location, $state,Token) {
         $scope.username = localStorage.getItem("UserName");
@@ -22,13 +22,12 @@ angular.module('WebPortal')
                 }
             }).success(function (response) {
                 console.log(response);
-                //alert("Response : " + JSON.stringify(response)); 
                 $state.go('login');
                
             })
-                .error(function (error) {
-                    alert("Error : " + JSON.stringify(error));
-                });
+            .error(function (error) {
+                alert("Error : " + JSON.stringify(error));
+            });
         };
 
 
@@ -39,13 +38,11 @@ angular.module('WebPortal')
                 return;
             }
             iframe = document.getElementById('weatherIFrame1');
-            iframe.src = embedTileUrl + "&width=" + 500 + "&height=" + 300;
+            iframe.src = embedTileUrl;
             iframe.onload = postActionWeatherLoadTile;
         }
 
         function postActionWeatherLoadTile() {
-            // get the access token.
-            //accessToken = access_Token;
             console.log("Weather Loading");
             var accessToken = Token.data.accesstoken;
 
@@ -54,18 +51,60 @@ angular.module('WebPortal')
                 console.log("Access token not found");
                 return;
             }
+            $scope.setIFrameSize();
+            //var h = 200;
+            //var w = 200;
 
-            var h = 130;
-            var w = 200;
+            //// construct the push message structure
+            //var m = { action: "loadTile", accessToken: accessToken, height: h, width: w };
+            //var message = JSON.stringify(m);
 
-            // construct the push message structure
-            var m = { action: "loadTile", accessToken: accessToken, height: h, width: w };
-            var message = JSON.stringify(m);
+            //// push the message.
+            //iframe = document.getElementById('weatherIFrame1');
+            //iframe.contentWindow.postMessage(message, "*");;
 
-            // push the message.
-            iframe = document.getElementById('weatherIFrame1');
-            iframe.contentWindow.postMessage(message, "*");;
+
+
         }
 
         embedWeatherTile();
+        var el = document.querySelector('.notification');
+
+       
+            var count = Number(el.getAttribute('data-count')) || 0;
+            el.setAttribute('data-count', count + 1);
+            el.classList.remove('notify');
+            el.offsetWidth = el.offsetWidth;
+            el.classList.add('notify');
+            if (count === 0) {
+                el.classList.add('show-count');
+            }
+       
+            $scope.setIFrameSize=function() {
+                var ogWidth = 700;
+                var ogHeight = 600;
+                var ogRatio = ogWidth / ogHeight;
+                console.log("setIframesize");
+                var windowWidth = $(window).width();
+                //if (windowWidth < 480) {
+                var parentDivWidth = $(".iframe-class").parent().width();
+                var newHeight = (parentDivWidth / ogRatio);
+                $(".iframe-class").addClass("iframe-class-resize");
+                $(".iframe-class-resize").css("width", parentDivWidth);
+                $(".iframe-class-resize").css("height", newHeight);
+                console.log(newHeight);
+                console.log(parentDivWidth);
+                var accessToken = Token.data.accesstoken;
+                var m = { action: "loadTile", accessToken: accessToken, height: newHeight, width: parentDivWidth };
+                var message = JSON.stringify(m);
+
+                // push the message.
+                var iframe = document.getElementById('weatherIFrame1');
+                iframe.contentWindow.postMessage(message, "*");;
+
+                //} else {
+                //    $(".iframe-class").removeClass("iframe-class-resize").css({ width: '', height: '' });
+                //}
+            }
+
   });

@@ -1,5 +1,4 @@
 'use strict';
-
 /**
  * @ngdoc overview
  * @name angulartestApp
@@ -31,30 +30,31 @@ angular
             .state('login', {
                 url: '/login',
                 // parent: 'base',
-                templateUrl: '../app/views/login.html',
+                templateUrl: './app/views/login.html',
                 controller: 'loginCtrl'
             })
             .state('dashboard', {
                 url: '/dashboard',
-                templateUrl: '../app/views/dashboard.html',
+                templateUrl: './app/views/dashboard.html',
                 controller: 'dashboardCtrl'
 
             })
             .state('overview', {
                 url: '/overview',
                 parent: 'dashboard',
-                templateUrl: 'app/views/overview.html',
+                templateUrl: './app/views/overview.html',
                 controller: 'overviewCtrl'
             })
             .state('reports', {
                 url: '/reports',
                 parent: 'dashboard',
-                templateUrl: 'app/views/reports.html'
+                templateUrl: './app/views/reports.html',
+                controller: 'reportCtrl'
             })
             .state('profile', {
                 url: '/profile',
                 parent: 'dashboard',
-                templateUrl: 'app/views/profile.html',
+                templateUrl: './app/views/profile.html',
                 controller: 'profileCtrl'
             });
 
@@ -104,8 +104,9 @@ angular
             data,
             update: function (callback) {
                 $http({
-                    url: "http://localhost:65159/PowerBIService.asmx/GetAccessToken",
+                    url: "http://csuwebapp.azurewebsites.net//PowerBIService.asmx/GetAccessToken",
                     method: 'GET'
+                    
                 }).success(function (response) {
                     data.accesstoken = response.tokens.AccessToken;
                     callback();

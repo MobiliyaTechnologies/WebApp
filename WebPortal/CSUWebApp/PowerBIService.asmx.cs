@@ -24,6 +24,7 @@ namespace CSUWebApp
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public void GetAccessToken()
         {
+            HttpContext.Current.Response.AddHeader("Access-Control-Allow-Origin", "*");
             Security.AuthenticateUser();
             PowerBIToken token = new PowerBIToken()
             {
@@ -43,6 +44,7 @@ namespace CSUWebApp
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public void GetTileURL()
         {
+            HttpContext.Current.Response.AddHeader("Access-Control-Allow-Origin", "*");
             PowerBIURL embedURL = new PowerBIURL();
 
             JavaScriptSerializer serializer = new JavaScriptSerializer();
