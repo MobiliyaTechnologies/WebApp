@@ -15,12 +15,13 @@ var iframe;
 
 
 
-var tileEmbedURL = "https://app.powerbi.com/embed?dashboardId=cea6812f-9d03-4394-ae7b-cbdb779d9b6f&tileId=586f0945-d4ea-48fc-8ed5-2ba3f4aed68b";
-var weatherTileURL = "https://app.powerbi.com/embed?dashboardId=cea6812f-9d03-4394-ae7b-cbdb779d9b6f&tileId=d6206311-42ff-4325-9192-1a181cf07536";
+var tileEmbedURL = "https://app.powerbi.com/embed?dashboardId=37f666c4-8a0b-4b5e-bf61-6151f38dae34&tileId=1ae30b7e-6577-4c5f-8611-905f9a579899";
+var donutTileURL = "https://app.powerbi.com/embed?dashboardId=37f666c4-8a0b-4b5e-bf61-6151f38dae34&tileId=817c8e3b-e17b-4a6a-8530-6272835b4374";
 
 angular.module('WebPortal')
     .controller('overviewCtrl', function ($scope, $http, $location, Token, config) {
-
+        $scope.userId = localStorage.getItem("userId");
+        $scope.meterList = [];
         $scope.loadMapScenario = function () {
             var mapLocation = new Microsoft.Maps.Location(40.571276, -105.085522);
             map = new Microsoft.Maps.Map(document.getElementById('myMap1'),
@@ -30,147 +31,193 @@ angular.module('WebPortal')
                     mapTypeId: Microsoft.Maps.MapTypeId.aerial,
                     zoom: 18
                 });
+                getMeterList();
+
+        }
+       
+        function getMeterList() {
             $http({
-                url: config.restServer + "api/getmeters/",
+                url: config.restServer + "api/getmeterlist/" + $scope.userId,
                 dataType: 'json',
                 method: 'Get',
             }).success(function (response) {
-                console.log(response);
-                meterList = response;
-
-                for (var i in meterList) {
-                    console.log(meterList[i].Name);
-                    createPushpin(meterList[i]);
+                console.log("Get Meter List [Info] ::",response);
+                $scope.meterList = response;
+                getMonthlyConsumption();
+                getUrls(0);
+                for (var i in $scope.meterList) {
+                    createBasePushPin($scope.meterList[i]);
                 }
 
             })
-                .error(function (error) {
+            .error(function (error) {
                     alert("Error : " + JSON.stringify(error));
-                });
-
+            });
         }
+        $scope.urls = [];
+        function getUrls(index) {
+            if (index < $scope.meterList.length) {
+                $http({
+                    url: config.restServer + "api/getpowerbiurl/" + $scope.userId + '/' + $scope.meterList[index].Serial,
+                    dataType: 'json',
+                    method: 'Get',
+                }).success(function (response) {
+                    console.log("Get Meter Urls of " + $scope.meterList[index].Serial + "::", response);
+                    getUrls(index + 1);
+                })
+                .error(function (error) {
+                       // alert("Error : " + JSON.stringify(error));
+                });
+            }
+        }
+        function getMonthlyConsumption() {
+            $http({
+                url: config.restServer + "api/getmonthlyconsumption/" + $scope.userId,
+                dataType: 'json',
+                method: 'Get',
+            }).success(function (response) {
+                console.log("Get Monthly Consumption [Info] ::", response);
+                $scope.MonthlyConsumption = response;
+                $scope.options = {
+                    dataTextField: 'Powerscout',
+                    dataSource: $scope.MonthlyConsumption
 
-        function createPushpin(meter) {
-            var location = new Microsoft.Maps.Location(meter.Latitude, meter.Longitude)
+                }
+               // $scope.$apply();
+                for (var j in $scope.meterList) {
+                    var index = $scope.MonthlyConsumption.findIndex(function (item, i) {
+                        return item.Powerscout == $scope.meterList[j].Serial;
+                    });
+                    
+                    if (index > 0) {
+                        $scope.MonthlyConsumption[index].Latitude = $scope.meterList[j].Latitude;
+                        $scope.MonthlyConsumption[index].Longitude = $scope.meterList[j].Longitude;
+                        $scope.MonthlyConsumption[index].Name = $scope.meterList[j].Name;
+
+                        createColorPushPin($scope.MonthlyConsumption[index]);
+                    }
+                    }
+            })
+            .error(function (error) {
+                 alert("Error : " + JSON.stringify(error));
+            });
+        }
+        function createBasePushPin(meter) {
+            var location = new Microsoft.Maps.Location(meter.Latitude, meter.Longitude);
+            var pushpin = new Microsoft.Maps.Pushpin(location, {
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="5" fill="black" /></svg>',
+                anchor: new Microsoft.Maps.Point(5, 5)
+            });
+                  
+            map.entities.push(pushpin);
+            pushpin.MeterName = meter.Name;
+            Microsoft.Maps.Events.addHandler(pushpin, 'click', onPushpinClicked);
+            Microsoft.Maps.Events.addHandler(pushpin, 'mouseover', onPushpinMouseOver);
+            Microsoft.Maps.Events.addHandler(pushpin, 'mouseout', onPushpinMouseOut);
+        }
+        function createColorPushPin(meter) {
+            var location = new Microsoft.Maps.Location(meter.Latitude, meter.Longitude);
             var radius = 0;
-
+            
             var fillColor = 'rgba(60,162,224, 0.7)';
-            if (meter.Name == 'P371602077') {
+            if (meter.Powerscout == 'P371602077') {
                 fillColor = 'rgba(138, 212, 235, 0.7)';
             }
-            else if (meter.Name == 'P371602079') {
+            else if (meter.Powerscout == 'P371602079') {
                 fillColor = 'rgba(254, 150, 102, 0.7)';
             }
-            else if (meter.Name == 'P371602073') {
+            else if (meter.Powerscout == 'P371602073') {
                 fillColor = 'rgba(242, 200, 15, 0.7)';
             }
-            else if (meter.Name == 'P371602072') {
+            else if (meter.Powerscout == 'P371602072') {
                 fillColor = 'rgba(253, 98, 94, 0.7)';
             }
-            else if (meter.Name == 'P371602070') {
+            else if (meter.Powerscout == 'P371602070') {
 
 
             }
-            else if (meter.Name == 'P371602075') {
+            else if (meter.Powerscout == 'P371602075') {
 
                 fillColor = 'rgba(95, 107, 109, 0.7)';
             }
-            if (meter.MonthlyConsumption == 0) {
+            if (meter.Monthly_KWH_Consumption == 0) {
                 radius = 0;
             }
-            else if (meter.MonthlyConsumption > 0 && meter.MonthlyConsumption <= 1000) {
-                if (meter.MonthlyConsumption < 500) {
+            else if (meter.Monthly_KWH_Consumption > 0 && meter.Monthly_KWH_Consumption <= 1000) {
+                if (meter.Monthly_KWH_Consumption < 500) {
                     //Minimum radius for the circle
                     radius = 10;
                 }
                 else {
-                    radius = meter.MonthlyConsumption / 50;
+                    radius = meter.Monthly_KWH_Consumption / 50;
                 }
             }
-            else if (meter.MonthlyConsumption > 1000 && meter.MonthlyConsumption <= 10000) {
-                if (meter.MonthlyConsumption < 5250) {
+            else if (meter.Monthly_KWH_Consumption > 1000 && meter.Monthly_KWH_Consumption <= 10000) {
+                if (meter.Monthly_KWH_Consumption < 5250) {
                     //Minimum radius for the circle
                     radius = 21;
                 }
                 else {
-                    radius = meter.MonthlyConsumption / 250;
+                    radius = meter.Monthly_KWH_Consumption / 250;
                 }
             }
-            else if (meter.MonthlyConsumption > 10000 && meter.MonthlyConsumption <= 50000) {
-                if (meter.MonthlyConsumption < 25625) {
+            else if (meter.Monthly_KWH_Consumption > 10000 && meter.Monthly_KWH_Consumption <= 50000) {
+                if (meter.Monthly_KWH_Consumption < 25625) {
                     //Minimum radius for the circle
                     radius = 41;
                 }
                 else {
-                    radius = meter.MonthlyConsumption / 625;
+                    radius = meter.Monthly_KWH_Consumption / 625;
                 }
             }
             else {
-                if (meter.MonthlyConsumption < 61000) {
+                if (meter.Monthly_KWH_Consumption < 61000) {
                     //Minimum radius for the circle
                     radius = 61;
                 }
                 else {
-                    radius = meter.MonthlyConsumption / 1000;
+                    radius = meter.Monthly_KWH_Consumption / 1000;
                 }
             }
             var offset = new Microsoft.Maps.Point(0, 5); 
-            var pushpin = new Microsoft.Maps.Pushpin(location, {
-                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="5" fill="black" /></svg>',
-                anchor: new Microsoft.Maps.Point(5, 5), text: meter.Name
-            });
-
-            var dailyConsumption = meter.DailyConsumption;
-            dailyConsumption = Math.round(dailyConsumption * 100) / 100;
-
-            var monthlyConsumption = meter.MonthlyConsumption;
-            monthlyConsumption = Math.round(monthlyConsumption * 100) / 100;
-
-            map.entities.push(pushpin);
-            pushpin.MeterName = meter.Name;
-            pushpin.MeterDailyConsumption = dailyConsumption;
-            pushpin.MeterMontlyConsumption = monthlyConsumption;
-
-
             var svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="', ((radius + 5) * 2),
                 '" height="', ((radius + 5) * 2), '"><circle cx="', (radius + 5), '" cy="', (radius + 5), '" r="', radius, '" fill="', fillColor, '"/></svg>'];
 
             var pushpin2 = new Microsoft.Maps.Pushpin(location, {
                 icon: svg.join(''),
-                anchor: new Microsoft.Maps.Point(radius, radius),
+                anchor: new Microsoft.Maps.Point(radius, radius), text: meter.Name, textOffset: new Microsoft.Maps.Point(0, 10)
+
             });
-            map.entities.push(pushpin2);
+           
+
             pushpin2.MeterName = meter.Name;
-            pushpin2.MeterDailyConsumption = dailyConsumption;
-            pushpin2.MeterMontlyConsumption = monthlyConsumption;
-
-            Microsoft.Maps.Events.addHandler(pushpin, 'click', onPushpinClicked);
-            Microsoft.Maps.Events.addHandler(pushpin2, 'click', onPushpinClicked);
-
-            Microsoft.Maps.Events.addHandler(pushpin, 'mouseover', onPushpinMouseOver);
-            Microsoft.Maps.Events.addHandler(pushpin, 'mouseout', onPushpinMouseOut);
-
+            pushpin2.Monthly_Electric_Cost = meter.Monthly_Electric_Cost;
+            pushpin2.Monthly_KWH_Consumption = meter.Monthly_KWH_Consumption;
+            map.entities.push(pushpin2);
+            Microsoft.Maps.Events.addHandler(pushpin2, 'click', onPushpinClicked);         
             Microsoft.Maps.Events.addHandler(pushpin2, 'mouseover', onPushpinMouseOver);
             Microsoft.Maps.Events.addHandler(pushpin2, 'mouseout', onPushpinMouseOut);
         }
-
+       
         function onPushpinClicked(args) {
-            console.log(args.target);
-            $scope.selectedMeterName = args.target.MeterName;
-            document.getElementById("iFrameEmbedTile").style.display = 'none';
-            document.getElementById("meterName").style.display = 'block';
-            //document.getElementById("meterName").innerHTML = args.target.MeterName;
-            //document.getElementById("dailyConsumption").innerHTML = "Daily consumption: " + args.target.MeterDailyConsumption;
-            //document.getElementById("monthlyConsumption").innerHTML = "Monthly consumption: " + args.target.MeterMontlyConsumption;
-            //document.getElementById("meterDetails").style.display = "block";
-
-
+           
+            //$scope.selectedMeterName = args.target.MeterName;
+            //$scope.selectedMontlyConsumption = args.target.Monthly_Electric_Cost;
+            //$scope.selectCost = args.target.Monthly_Electric_Cost;
+            //document.getElementById("iFrameEmbedTile").style.display = 'none';
+            console.log(document.getElementById("reportdd"));
+            console.log("click");
+            
+            $("#scrolldiv").animate({
+                scrollTop: $("#reportdd").offset().top
+            });
+            
         }
 
         function onPushpinMouseOver(args) {
             infobox = new Microsoft.Maps.Infobox(args.target.getLocation(), {
                 title: args.target.MeterName,
-                description: 'Consumption: ' + args.target.MeterMontlyConsumption,
+               // description: 'Consumption: ' + args.target.MeterMontlyConsumption,
                 visible: true,
                 offset: new Microsoft.Maps.Point(5, 0)
             });
@@ -180,126 +227,57 @@ angular.module('WebPortal')
         function onPushpinMouseOut(args) {
             infobox.setOptions({ visible: false });
         }
+            
 
-        //function embedReport() {
-        //    var embedUrl = reportEmbedURL;
-        //    if ("" === embedUrl) {
-        //        console.log("No embed URL found");
-        //        return;
-        //    }
-
-
-        //    // to load a report do the following:
-        //    // 1: set the url
-        //    // 2: add a onload handler to submit the auth token
-        //    iframe = document.getElementById('iFrameEmbedReport');
-        //    iframe.src = embedUrl;
-        //    iframe.onload = postActionLoadReport;
-        //};
-
-        //function postActionLoadReport() {
-
-        //    // get the access token.
-        //    accessToken = Token.data.accesstoken
-        //    console.log(accesstoken)
-        //    // return if no a
-        //    if ("" === accessToken) {
-        //        console.log("Access token not found");
-        //        return;
-        //    }
-
-        //    // construct the push message structure
-        //    // this structure also supports setting the reportId, groupId, height, and width.
-        //    // when using a report in a group, you must provide the groupId on the iFrame SRC
-        //    var m = { action: "loadReport", accessToken: accessToken };
-        //    message = JSON.stringify(m);
-
-        //    // push the message.
-        //    iframe = document.getElementById('iFrameEmbedReport');
-        //    iframe.contentWindow.postMessage(message, "*");;
-        //}
-
-        var width = 300;
-        var height = 180;
+        var width = 400;
+        var height = 380;
 
         function embedTile() {
             // check if the embed url was selected
             var embedTileUrl = tileEmbedURL;
             if ("" === embedTileUrl) {
-                console.log("No embed URL found");
+                console.log("No embed URL found [Error] ::");
                 return;
             }
-
-            // to load a tile do the following:
-            // 1: set the url, include size.
-            // 2: add a onload handler to submit the auth token
             iframe = document.getElementById('iFrameEmbedTile');
-            iframe.src = embedTileUrl + "&width=" + width + "&height=" + height;
+            iframe.src = embedTileUrl;
             iframe.onload = postActionLoadTile;
         }
 
 
-        // post the auth token to the iFrame. 
         function postActionLoadTile() {
             // get the access token.
+            console.log("Tile Loading");
             var accessToken = Token.data.accesstoken;
-            console.log(accessToken)
-            //accessToken = access_Token;
-
-            // return if no a
+        
+            
             if ("" === accessToken) {
-                console.log("Access token not found");
+                console.log("Access token not found [Error] ::");
                 return;
             }
             $scope.setIFrameSize();
-            //var h = height;
-            //var w = width;
-
-            //// construct the push message structure
-            //var m = { action: "loadTile", accessToken: accessToken, height: h, width: w };
-            //var message = JSON.stringify(m);
-
-            //// push the message.
-            //iframe = document.getElementById('iFrameEmbedTile');
-            //iframe.contentWindow.postMessage(message, "*");;
+           
         }
 
         function embedWeatherTile() {
-            var embedTileUrl = weatherTileURL;
+            var embedTileUrl = donutTileURL;
             if ("" === embedTileUrl) {
-                console.log("No embed URL found");
+                console.log("No embed URL found [Error] ::");
                 return;
             }
-
-            // to load a tile do the following:
-            // 1: set the url, include size.
-            // 2: add a onload handler to submit the auth token
             iframe = document.getElementById('weatherIFrame');
             iframe.src = embedTileUrl ;
             iframe.onload = postActionWeatherLoadTile;
         }
 
         function postActionWeatherLoadTile() {
-            // get the access token.
-            //accessToken = access_Token;
             var accessToken = Token.data.accesstoken;
-
-            // return if no a
             if ("" === accessToken) {
-                console.log("Access token not found");
+                console.log("Access token not found [Error] ::");
                 return;
             }
             $scope.setIFrameSize();
-            var h = 180;
-            var w = 300;
-
-            // construct the push message structure
-            var m = { action: "loadTile", accessToken: accessToken, height: h, width: w };
-            var message = JSON.stringify(m);
-
-            // push the message.
-            iframe = document.getElementById('weatherIFrame');
-            iframe.contentWindow.postMessage(message, "*");;
+            
         }
         if (Token.data.accesstoken != '') {
             displayGraph();
@@ -315,9 +293,8 @@ angular.module('WebPortal')
 
         $scope.setIFrameSize = function () {
             var ogWidth = 700;
-            var ogHeight = 600;
+            var ogHeight = 900;
             var ogRatio = ogWidth / ogHeight;
-            console.log("setIframesize");
             var windowWidth = $(window).width();
             //if (windowWidth < 480) {
             var parentDivWidth = $(".iframe-class").parent().width();
@@ -325,16 +302,34 @@ angular.module('WebPortal')
             $(".iframe-class").addClass("iframe-class-resize");
             $(".iframe-class-resize").css("width", parentDivWidth);
             $(".iframe-class-resize").css("height", newHeight);
-            console.log(newHeight);
-            console.log(parentDivWidth);
             var accessToken = Token.data.accesstoken;
-            var m = { action: "loadTile", accessToken: accessToken, height: newHeight, width: parentDivWidth+100};
+            console.log("Height :", newHeight);
+            var m = { action: "loadTile", accessToken: accessToken, height: newHeight, width: parentDivWidth+200};
             var message = JSON.stringify(m);
 
             // push the message.
             iframe = document.getElementById('iFrameEmbedTile');
             iframe.contentWindow.postMessage(message, "*");;
 
+
+            
+            var m = { action: "loadTile", accessToken: accessToken, height: newHeight, width: parentDivWidth + 200};
+            var message = JSON.stringify(m);
+
+            // push the message.
+            iframe = document.getElementById('weatherIFrame');
+            iframe.contentWindow.postMessage(message, "*");;
+
            
         }
+        
+        $scope.country = '';
+
+        $scope.meterSelection = function (e) {
+            console.log(e);
+            console.log(map);
+            
+
+        }
+
     });
