@@ -1,3 +1,15 @@
+<script>
+    $(function () {
+        //setIFrameSize();
+        $(window).resize(function () {
+
+            clearTimeout(resizeTimeout);
+            var resizeTimeout = setTimeout(function () {
+                angular.element(document.getElementById('iFrameEmbedReport')).scope().setIFrameSize();
+            }, 500);
+        });
+    });
+</script>
 <div>
 	<a ui-sref="overview" class="pull-right btn btn-primary btn-outline btn-rounded">Back to Dashboard</a>
 	<h2>Reports </h2>
@@ -5,7 +17,7 @@
 	<div class="jumbotron">
 		<div class="container">
 			
-            <iframe ID="iFrameEmbedReport" src="" height="768" width="1024" frameborder="1" seamless></iframe>
+            <iframe ID="iFrameEmbedReport" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
 		</div>
 	</div>
 </div>

@@ -1,13 +1,15 @@
 ﻿var restServer = "http://powergridrestservice.azurewebsites.net/";
 var weatherTileURL1 = "https://app.powerbi.com/embed?dashboardId=cea6812f-9d03-4394-ae7b-cbdb779d9b6f&tileId=06818120-ae10-4b35-9852-12aa953768bc";
 angular.module('WebPortal')
-    .controller('dashboardCtrl', function ($scope, $http, $location, $state,Token) {
+    .controller('dashboardCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory) {
+        $scope.weather = weatherServiceFactory;
+        $scope.weather.search();
         $scope.username = localStorage.getItem("UserName");
         $scope.lastname = localStorage.getItem("LastName");
         
         
         $scope.logout = function () {
-            console.log("logout");
+            console.log("logout [info] ::");
             var JSONobj = new Object();
             JSONobj.Email = localStorage.getItem("Email");
            
@@ -21,7 +23,7 @@ angular.module('WebPortal')
 
                 }
             }).success(function (response) {
-                console.log(response);
+                
                 $state.go('login');
                
             })
@@ -31,43 +33,31 @@ angular.module('WebPortal')
         };
 
 
-        function embedWeatherTile() {
-            var embedTileUrl = weatherTileURL1;
-            if ("" === embedTileUrl) {
-                console.log("No embed URL found");
-                return;
-            }
-            iframe = document.getElementById('weatherIFrame1');
-            iframe.src = embedTileUrl;
-            iframe.onload = postActionWeatherLoadTile;
-        }
+        //function embedWeatherTile() {
+        //    var embedTileUrl = weatherTileURL1;
+        //    if ("" === embedTileUrl) {
+        //        console.log("No embed URL found");
+        //        return;
+        //    }
+        //    iframe = document.getElementById('weatherIFrame1');
+        //    iframe.src = embedTileUrl;
+        //    iframe.onload = postActionWeatherLoadTile;
+        //}
 
-        function postActionWeatherLoadTile() {
-            console.log("Weather Loading");
-            var accessToken = Token.data.accesstoken;
+        //function postActionWeatherLoadTile() {
+            
+        //    var accessToken = Token.data.accesstoken;
 
-            // return if no a
-            if ("" === accessToken) {
-                console.log("Access token not found");
-                return;
-            }
-            $scope.setIFrameSize();
-            //var h = 200;
-            //var w = 200;
+        //    // return if no a
+        //    if ("" === accessToken) {
+        //        console.log("Access token not found");
+        //        return;
+        //    }
+        //    $scope.setIFrameSize();
+            
+        //}
 
-            //// construct the push message structure
-            //var m = { action: "loadTile", accessToken: accessToken, height: h, width: w };
-            //var message = JSON.stringify(m);
-
-            //// push the message.
-            //iframe = document.getElementById('weatherIFrame1');
-            //iframe.contentWindow.postMessage(message, "*");;
-
-
-
-        }
-
-        embedWeatherTile();
+        //embedWeatherTile();
         var el = document.querySelector('.notification');
 
        
@@ -84,7 +74,7 @@ angular.module('WebPortal')
                 var ogWidth = 700;
                 var ogHeight = 600;
                 var ogRatio = ogWidth / ogHeight;
-                console.log("setIframesize");
+                
                 var windowWidth = $(window).width();
                 //if (windowWidth < 480) {
                 var parentDivWidth = $(".iframe-class").parent().width();
@@ -92,8 +82,7 @@ angular.module('WebPortal')
                 $(".iframe-class").addClass("iframe-class-resize");
                 $(".iframe-class-resize").css("width", parentDivWidth);
                 $(".iframe-class-resize").css("height", newHeight);
-                console.log(newHeight);
-                console.log(parentDivWidth);
+                
                 var accessToken = Token.data.accesstoken;
                 var m = { action: "loadTile", accessToken: accessToken, height: newHeight, width: parentDivWidth };
                 var message = JSON.stringify(m);

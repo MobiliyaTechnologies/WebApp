@@ -1,4 +1,4 @@
-﻿<script>
+﻿<!--<script>
     $(function () {
         //setIFrameSize();
         $(window).resize(function () {
@@ -11,13 +11,13 @@
     });
 
    
-</script>
+</script>-->
 <link href="../app/css/Main.css" rel="stylesheet">
 <link href="./bower_components/font-awesome/css/font-awesome.css" rel="stylesheet">
 <div class="dashboard-page">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-3 col-md-2 sidebar">
+            <div class="col-sm-3 col-md-2 sidebar" style="color:white;">
                 
                 <div class="text-center">
                     <h2 class="brand">{{username}}{{lastname}}<!--<small>Free Edition</small>--></h2>
@@ -33,9 +33,56 @@
                     <li ng-class="{active: $state.includes('profile')}"><a ui-sref="profile">Profile</a></li>
                     
                 </ul>
-                <iframe id="weatherIFrame1" class="iframe-class" src=""  scrolling="no" frameborder="0" seamless></iframe>
-            </div>
-            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" ui-view >
+             <iframe id="weatherIFrame1" class="iframe-class" src=""  scrolling="no" frameborder="0" seamless style="display:none;"></iframe>
+           
+            
+            
+            
+            
+            
+            
+               
+                <!--<div ng-show="weather.showLoader" class="loader" >
+                    <div class="sk-fading-circle">
+                        <div class="sk-circle1 sk-circle"></div>
+                        <div class="sk-circle2 sk-circle"></div>
+                        <div class="sk-circle3 sk-circle"></div>
+                        <div class="sk-circle4 sk-circle"></div>
+                        <div class="sk-circle5 sk-circle"></div>
+                        <div class="sk-circle6 sk-circle"></div>
+                        <div class="sk-circle7 sk-circle"></div>
+                        <div class="sk-circle8 sk-circle"></div>
+                        <div class="sk-circle9 sk-circle"></div>
+                        <div class="sk-circle10 sk-circle"></div>
+                        <div class="sk-circle11 sk-circle"></div>
+                        <div class="sk-circle12 sk-circle"></div>
+                    </div>
+                </div>-->
+                <div class="results" ng-show="weather.hasState == 'has-success'">
+                    <!--<h2>Weather in {{ weather.location.city }}, {{ weather.location.country }}</h2>-->
+                    <ul style="padding:0;">
+                        <li ng-repeat="forecast in weather.forecast" class="forecast">
+                            <weather-icon code="{{ forecast.code }}"></weather-icon>
+                            <h3>{{weather.temp}}&deg;{{weather.unit}}</h3>
+                            <h3>{{ forecast.date }} </h3>
+                            <h3>{{ forecast.text }}</h3> min: {{ forecast.low | temp:forecast.unit }}, max: {{ forecast.high | temp:forecast.unit }}
+                        </li>
+                    </ul>
+                </div>
+                <div class="error" ng-show="weather.hasState == 'has-warning'">
+                    <span ng-show="weather.message" class="alert"><span class="glyphicon glyphicon-arrow-left">&nbsp;</span>{{weather.message}}</span>
+                </div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+             </div>
+            <div id="scrolldiv" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" ui-view >
                
             </div>
         </div>
