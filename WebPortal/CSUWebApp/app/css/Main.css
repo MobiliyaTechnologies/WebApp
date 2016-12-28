@@ -1382,8 +1382,8 @@ img {
 }
 
 hr {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    padding-right: 20px;
+    padding-left: 20px;
     border: 0;
     border-top: 1px solid #eee;
 }
@@ -4078,7 +4078,7 @@ textarea.input-group-sm > .form-control, textarea.input-group-sm > .input-group-
     }
 
         .nav > li > a {
-            padding: 10px 15px;
+            padding: 5px 15px;
         }
 
             .nav > li > a:hover, .nav > li > a:focus {
@@ -6906,7 +6906,7 @@ button.close {
     left: 0;
     right: 0;
     bottom: 0;
-    background: #ecf0f1;
+    background: #3ca2e0;
     color: #666;
 }
 
@@ -8560,8 +8560,8 @@ img {
 }
 
 hr {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    padding-right:20px;
+    padding-left:20px;
     border: 0;
     border-top: 1px solid #eee;
 }
@@ -11256,7 +11256,7 @@ textarea.input-group-sm > .form-control, textarea.input-group-sm > .input-group-
     }
 
         .nav > li > a {
-            padding: 10px 15px;
+            padding: 5px 15px;
         }
 
             .nav > li > a:hover, .nav > li > a:focus {
@@ -14084,7 +14084,7 @@ button.close {
     left: 0;
     right: 0;
     bottom: 0;
-    background: #ecf0f1;
+    background: #3ca2e0;
     color: #666;
 }
 

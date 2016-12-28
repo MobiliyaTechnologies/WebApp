@@ -21,14 +21,11 @@
 
                     }
                 }).success(function (response) {
-                    console.log(response);
-                    //alert("Response : " + JSON.stringify(response)); 
-                   // $state.go('login');
-
+                    console.log("Change Password Response [Info] ::",response);
                 })
-                    .error(function (error) {
-                        alert("Error : " + JSON.stringify(error));
-                    });
+                .error(function (error) {
+                   alert("Error : " + JSON.stringify(error));
+                });
             }
             else {
                 alert("Password Doesnt Match");
