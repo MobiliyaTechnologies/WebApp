@@ -6,8 +6,8 @@ angular.module('WebPortal')
         $scope.weather.search();
         $scope.username = localStorage.getItem("UserName");
         $scope.lastname = localStorage.getItem("LastName");
-        
-        
+        $scope.li_css = ['background-color: #1e5271;color:#ffd600;', 'side-menu-li-inactive', 'side-menu-li-inactive'];
+        $scope.li_color = ['white', 'white', 'red'];       
         $scope.logout = function () {
             console.log("logout [info] ::");
             var JSONobj = new Object();
@@ -58,42 +58,54 @@ angular.module('WebPortal')
         //}
 
         //embedWeatherTile();
-        var el = document.querySelector('.notification');
+        //var el = document.querySelector('.notification');
 
        
-            var count = Number(el.getAttribute('data-count')) || 0;
-            el.setAttribute('data-count', count + 1);
-            el.classList.remove('notify');
-            el.offsetWidth = el.offsetWidth;
-            el.classList.add('notify');
-            if (count === 0) {
-                el.classList.add('show-count');
-            }
+        //    var count = Number(el.getAttribute('data-count')) || 0;
+        //    el.setAttribute('data-count', count + 1);
+        //    el.classList.remove('notify');
+        //    el.offsetWidth = el.offsetWidth;
+        //    el.classList.add('notify');
+        //    if (count === 0) {
+        //        el.classList.add('show-count');
+        //    }
        
             $scope.setIFrameSize=function() {
                 var ogWidth = 700;
                 var ogHeight = 600;
                 var ogRatio = ogWidth / ogHeight;
-                
                 var windowWidth = $(window).width();
-                //if (windowWidth < 480) {
                 var parentDivWidth = $(".iframe-class").parent().width();
                 var newHeight = (parentDivWidth / ogRatio);
                 $(".iframe-class").addClass("iframe-class-resize");
                 $(".iframe-class-resize").css("width", parentDivWidth);
                 $(".iframe-class-resize").css("height", newHeight);
-                
                 var accessToken = Token.data.accesstoken;
                 var m = { action: "loadTile", accessToken: accessToken, height: newHeight, width: parentDivWidth };
                 var message = JSON.stringify(m);
-
-                // push the message.
                 var iframe = document.getElementById('weatherIFrame1');
                 iframe.contentWindow.postMessage(message, "*");;
-
-                //} else {
-                //    $(".iframe-class").removeClass("iframe-class-resize").css({ width: '', height: '' });
-                //}
+        }
+        $scope.makeActive = function(index){
+            console.log(index);
+            //$scope.li_css[index] = 'background-color: #1e5271';
+            if (index == 0) {
+                $scope.li_css[0] = 'background-color: #1e5271;color:#ffd600;';
+                $scope.li_css[1] = 'background-color: #3ca2e0;color:white;';
+                $scope.li_css[2] = 'background-color: #3ca2e0;color:white;';
             }
+            else if (index == 1) {
+                $scope.li_css[0] = 'background-color: #3ca2e0;color:white;';
+                $scope.li_css[1] = 'background-color: #1e5271;color:#ffd600;';
+                $scope.li_css[2] = 'background-color: #3ca2e0;color:white;';
+            }
+            else if (index == 2) {
+                $scope.li_css[0] = 'background-color: #3ca2e0;color:white;';
+                $scope.li_css[1] = 'background-color: #3ca2e0;color:white;';
+                $scope.li_css[2] = 'background-color: #1e5271;color:#ffd600;';
+            }
+           
+
+        }
 
   });

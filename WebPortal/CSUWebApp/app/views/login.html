@@ -38,37 +38,8 @@
 <body>
     <div id="loadingid" class="loading style-2" style={{loading}}>
         <div class="loading-wheel">
-
         </div>
-        </div>
-        <!--<div class="login-page ">
-            <div class="tint">
-                <div class="row ">
-                    <div class="col-lg-3 col-md-offset-8">
-                        <div class="login-panel panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Sign In</h3>
-                            </div>
-                            <div class="panel-body">
-                                <form role="form">
-                                    <fieldset>
-                                        <div class="form-group">
-                                            <input class="form-control" placeholder="Email" id="username" name="username" type="text" autofocus>
-                                        </div>
-                                        <div class="form-group">
-                                            <input class="form-control" placeholder="Password" id="password" name="password" type="password" value="" onkeydown="if (event.keyCode == 13)
-                        document.getElementById('btn_login').click()">
-                                        </div>
-                                        <a id="btn_login" class="btn btn-lg btn-success btn-block" ng-click="sendLogin()">Login</a>
-
-                                    </fieldset>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>-->
+    </div>
     <div class="login-page ">
         <div class="tint">
             <div class="row ">
@@ -99,11 +70,10 @@
                         <div id="forgotPassword" class="form">
                             <h2>Forgot Password</h2>
                             <form>
-                                <input type="text" placeholder="Username" />
-                                <input type="password" placeholder="Password" />
-                                <input type="email" placeholder="Email Address" />
-                                <input type="tel" placeholder="Phone Number" />
-                                <button>Change</button>
+                               
+                                <input type="email" ng-model="fpemail" placeholder="Email Address" />
+                                
+                                <button ng-click="forgotPasswordApiCall()">Change</button>
                             </form>
                         </div>
                         <div id="forgotpasswordText" class="cta"><a href="" ng-click="forgotPassword()">{{forgotpasswordlabel}}</a></div>
@@ -112,3 +82,4 @@
                 </div>
             </div>
         </div>
+     </div>

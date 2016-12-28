@@ -11,10 +11,6 @@ var count = 0;
 var meterList;
 var infobox;
 var iframe;
-
-
-
-
 var tileEmbedURL = "https://app.powerbi.com/embed?dashboardId=37f666c4-8a0b-4b5e-bf61-6151f38dae34&tileId=1ae30b7e-6577-4c5f-8611-905f9a579899";
 var donutTileURL = "https://app.powerbi.com/embed?dashboardId=37f666c4-8a0b-4b5e-bf61-6151f38dae34&tileId=817c8e3b-e17b-4a6a-8530-6272835b4374";
 
@@ -22,19 +18,24 @@ angular.module('WebPortal')
     .controller('overviewCtrl', function ($scope, $http, $location, Token, config) {
         $scope.userId = localStorage.getItem("userId");
         $scope.meterList = [];
+        $scope.urls = [];
+
+        /**
+         * 
+         */
         $scope.loadMapScenario = function () {
             var mapLocation = new Microsoft.Maps.Location(40.571276, -105.085522);
             map = new Microsoft.Maps.Map(document.getElementById('myMap1'),
-                {
-                    credentials: 'Ahmc1XzhRQwnhx-_HvtFWJH5y1TOqNaUEOZgzPPHQyyffV8z-UyK3tfrkaEMZpiv',
+                {   credentials: 'Ahmc1XzhRQwnhx-_HvtFWJH5y1TOqNaUEOZgzPPHQyyffV8z-UyK3tfrkaEMZpiv',
                     center: mapLocation,
                     mapTypeId: Microsoft.Maps.MapTypeId.aerial,
                     zoom: 18
                 });
                 getMeterList();
-
         }
-       
+        /**
+         * 
+         */
         function getMeterList() {
             $http({
                 url: config.restServer + "api/getmeterlist/" + $scope.userId,
@@ -54,7 +55,10 @@ angular.module('WebPortal')
                     alert("Error : " + JSON.stringify(error));
             });
         }
-        $scope.urls = [];
+        /**
+         * 
+         * @param index
+         */
         function getUrls(index) {
             if (index < $scope.meterList.length) {
                 $http({
@@ -63,13 +67,21 @@ angular.module('WebPortal')
                     method: 'Get',
                 }).success(function (response) {
                     console.log("Get Meter Urls of " + $scope.meterList[index].Serial + "::", response);
+                    response.Serial = $scope.meterList[index].Serial;
+                    $scope.urls.push(response);
                     getUrls(index + 1);
                 })
                 .error(function (error) {
                        // alert("Error : " + JSON.stringify(error));
                 });
             }
+            else {
+                console.log($scope.urls);
+            }
         }
+        /**
+         * 
+         */
         function getMonthlyConsumption() {
             $http({
                 url: config.restServer + "api/getmonthlyconsumption/" + $scope.userId,
@@ -81,44 +93,46 @@ angular.module('WebPortal')
                 $scope.options = {
                     dataTextField: 'Powerscout',
                     dataSource: $scope.MonthlyConsumption
-
                 }
-               // $scope.$apply();
                 for (var j in $scope.meterList) {
                     var index = $scope.MonthlyConsumption.findIndex(function (item, i) {
-                        return item.Powerscout == $scope.meterList[j].Serial;
+                       return item.Powerscout == $scope.meterList[j].Serial;
                     });
-                    
                     if (index > 0) {
-                        $scope.MonthlyConsumption[index].Latitude = $scope.meterList[j].Latitude;
-                        $scope.MonthlyConsumption[index].Longitude = $scope.meterList[j].Longitude;
-                        $scope.MonthlyConsumption[index].Name = $scope.meterList[j].Name;
-
-                        createColorPushPin($scope.MonthlyConsumption[index]);
+                       $scope.MonthlyConsumption[index].Latitude = $scope.meterList[j].Latitude;
+                       $scope.MonthlyConsumption[index].Longitude = $scope.meterList[j].Longitude;
+                       $scope.MonthlyConsumption[index].Name = $scope.meterList[j].Name;
+                       createColorPushPin($scope.MonthlyConsumption[index]);
                     }
-                    }
+                }
             })
             .error(function (error) {
                  alert("Error : " + JSON.stringify(error));
             });
         }
+        /**
+         * 
+         * @param meter
+         */
         function createBasePushPin(meter) {
             var location = new Microsoft.Maps.Location(meter.Latitude, meter.Longitude);
             var pushpin = new Microsoft.Maps.Pushpin(location, {
                 icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="5" fill="black" /></svg>',
                 anchor: new Microsoft.Maps.Point(5, 5)
             });
-                  
             map.entities.push(pushpin);
             pushpin.MeterName = meter.Name;
             Microsoft.Maps.Events.addHandler(pushpin, 'click', onPushpinClicked);
             Microsoft.Maps.Events.addHandler(pushpin, 'mouseover', onPushpinMouseOver);
             Microsoft.Maps.Events.addHandler(pushpin, 'mouseout', onPushpinMouseOut);
         }
+        /**
+         * 
+         * @param meter
+         */
         function createColorPushPin(meter) {
             var location = new Microsoft.Maps.Location(meter.Latitude, meter.Longitude);
             var radius = 0;
-            
             var fillColor = 'rgba(60,162,224, 0.7)';
             if (meter.Powerscout == 'P371602077') {
                 fillColor = 'rgba(138, 212, 235, 0.7)';
@@ -133,11 +147,9 @@ angular.module('WebPortal')
                 fillColor = 'rgba(253, 98, 94, 0.7)';
             }
             else if (meter.Powerscout == 'P371602070') {
-
-
+                
             }
             else if (meter.Powerscout == 'P371602075') {
-
                 fillColor = 'rgba(95, 107, 109, 0.7)';
             }
             if (meter.Monthly_KWH_Consumption == 0) {
@@ -145,7 +157,6 @@ angular.module('WebPortal')
             }
             else if (meter.Monthly_KWH_Consumption > 0 && meter.Monthly_KWH_Consumption <= 1000) {
                 if (meter.Monthly_KWH_Consumption < 500) {
-                    //Minimum radius for the circle
                     radius = 10;
                 }
                 else {
@@ -188,8 +199,8 @@ angular.module('WebPortal')
                 anchor: new Microsoft.Maps.Point(radius, radius), text: meter.Name, textOffset: new Microsoft.Maps.Point(0, 10)
 
             });
-           
 
+            pushpin2.MeterSerial = meter.Powerscout;
             pushpin2.MeterName = meter.Name;
             pushpin2.Monthly_Electric_Cost = meter.Monthly_Electric_Cost;
             pushpin2.Monthly_KWH_Consumption = meter.Monthly_KWH_Consumption;
@@ -198,42 +209,46 @@ angular.module('WebPortal')
             Microsoft.Maps.Events.addHandler(pushpin2, 'mouseover', onPushpinMouseOver);
             Microsoft.Maps.Events.addHandler(pushpin2, 'mouseout', onPushpinMouseOut);
         }
-       
+        /**
+         * 
+         * @param args
+         */
         function onPushpinClicked(args) {
-           
-            //$scope.selectedMeterName = args.target.MeterName;
-            //$scope.selectedMontlyConsumption = args.target.Monthly_Electric_Cost;
-            //$scope.selectCost = args.target.Monthly_Electric_Cost;
-            //document.getElementById("iFrameEmbedTile").style.display = 'none';
-            console.log(document.getElementById("reportdd"));
-            console.log("click");
-            
+            var index = $scope.urls.findIndex(function (item, i) {
+                return item.Serial == args.target.MeterSerial;
+            });
+            $scope.MeterName = args.target.MeterName;
+            embedReport($scope.urls[index].Report);
+            $scope.$apply();
             $("#scrolldiv").animate({
-                scrollTop: $("#reportdd").offset().top
+                scrollTop: $("#report").offset().top
             });
             
         }
-
+        /**
+         * 
+         * @param args
+         */
         function onPushpinMouseOver(args) {
             infobox = new Microsoft.Maps.Infobox(args.target.getLocation(), {
                 title: args.target.MeterName,
-               // description: 'Consumption: ' + args.target.MeterMontlyConsumption,
                 visible: true,
                 offset: new Microsoft.Maps.Point(5, 0)
             });
             infobox.setMap(map);
         }
-
+        /**
+         * 
+         * @param args
+         */
         function onPushpinMouseOut(args) {
             infobox.setOptions({ visible: false });
         }
-            
 
-        var width = 400;
-        var height = 380;
-
+        /**
+         * 
+         */      
         function embedTile() {
-            // check if the embed url was selected
             var embedTileUrl = tileEmbedURL;
             if ("" === embedTileUrl) {
                 console.log("No embed URL found [Error] ::");
@@ -243,22 +258,14 @@ angular.module('WebPortal')
             iframe.src = embedTileUrl;
             iframe.onload = postActionLoadTile;
         }
-
-
         function postActionLoadTile() {
-            // get the access token.
-            console.log("Tile Loading");
             var accessToken = Token.data.accesstoken;
-        
-            
             if ("" === accessToken) {
                 console.log("Access token not found [Error] ::");
                 return;
             }
             $scope.setIFrameSize();
-           
-        }
-
+        }   
         function embedWeatherTile() {
             var embedTileUrl = donutTileURL;
             if ("" === embedTileUrl) {
@@ -303,7 +310,6 @@ angular.module('WebPortal')
             $(".iframe-class-resize").css("width", parentDivWidth);
             $(".iframe-class-resize").css("height", newHeight);
             var accessToken = Token.data.accesstoken;
-            console.log("Height :", newHeight);
             var m = { action: "loadTile", accessToken: accessToken, height: newHeight, width: parentDivWidth+200};
             var message = JSON.stringify(m);
 
@@ -329,7 +335,33 @@ angular.module('WebPortal')
             console.log(e);
             console.log(map);
             
-
         }
 
+        function embedReport(reportURL) {
+            var embedUrl = reportURL;
+            if ("" === embedUrl) {
+                console.log("No embed URL found");
+                return;
+            }
+            iframe = document.getElementById('reportIframe');
+            iframe.src = embedUrl;
+            iframe.onload = postActionLoadReport;
+        };
+
+        function postActionLoadReport() {
+            var accessToken = Token.data.accesstoken
+            if ("" === accessToken) {
+                console.log("Access token not found");
+                return;
+            }
+            var m = { action: "loadReport", accessToken: accessToken };
+            var message = JSON.stringify(m);
+            iframe = document.getElementById('reportIframe');
+            iframe.contentWindow.postMessage(message, "*");;
+        } 
+
+
     });
+
+
+ 

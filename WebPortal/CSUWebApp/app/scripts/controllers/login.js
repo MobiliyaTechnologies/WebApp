@@ -86,25 +86,54 @@ angular.module('WebPortal')
         $scope.forgotpasswordlabel = 'Forgot your password?';
         $scope.forgotPassword = function () {
             if ($scope.forgotpasswordlabel == 'Forgot your password?') {
-                $scope.forgotpasswordlabel = 'Login';
                 document.getElementById("registericon").style.display = "none";
+                $scope.forgotpasswordlabel = 'Login';
+               
             }
             else {
-                $scope.forgotpasswordlabel = 'Forgot your password?';
                 document.getElementById("registericon").style.display = "block";
+                $scope.forgotpasswordlabel = 'Forgot your password?';
+                
             }
             // Switches the forms  
             $('.form').animate({
                 height: "toggle",
                 'padding-top': 'toggle',
                 'padding-bottom': 'toggle',
-                opacity: "toggle1"
+                opacity: "toggle"
             }, "slow");
            
             $(".form:nth-child(3)").css("display", "none");
            
         }
+        $scope.forgotPasswordApiCall = function () {
+            var JSONobj = new Object();
+            
+            if ($scope.fpemail) {
+                JSONobj.Email = $scope.fpemail;
 
+                $http({
+                    url: config.restServer + "/api/forgotpassword",
+                    dataType: 'json',
+                    method: 'POST',
+                    data: JSONobj,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).success(function (response) {
+
+                    console.log(response);
+                 
+                })
+                .error(function (error) {
+                     $scope.loading = "display:none;"
+                    alert("Error : " + JSON.stringify(error));
+                });
+            }
+            else {
+                alert("Please Enter Email")
+            }
+        }
     });
 
 

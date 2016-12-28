@@ -1,9 +1,7 @@
 
     <link rel="stylesheet" type="text/css" href="./app/css/map.css" />
     <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?branch=release&callback=loadMapScenario' async defer></script>
-    <link rel="stylesheet" href="//kendo.cdn.telerik.com/2016.3.1118/styles/kendo.common-material.min.css" />
-
-
+    <link href="./bower_components/kendo-ui/styles/kendo.common-material.min.css" rel="stylesheet" />
     <link href="./bower_components/kendo-ui/styles/kendo.material.min.css" rel="stylesheet" />
     <link href="./bower_components/kendo-ui/styles/kendo.material.mobile.min.css" rel="stylesheet" />
     <script>
@@ -25,65 +23,71 @@
         }
    // loadMapScenario();
     </script>
-    <!--<div class="jumbotron" style="height:60%;">
-        <div class="container">
-            <div id='myMap' class="map"></div>
-        </div>
-     </div>-->
-    <div>
-        <a ui-sref="reports" class="pull-right btn btn-primary btn-outline btn-rounded">Reports</a>
-        <h2>Dashboard <!--<small>Why is Ani Theme so awesome?</small>--></h2>
+     <div style="color:white;">
+        <a ui-sref="reports" class="pull-right btn btn-primary btn-outline" style="color:white;">Reports</a>
+        <h4 class="header-text">DASHBOARD<!--<small>Why is Ani Theme so awesome?</small>--></h4>
         <div class="jumbotron">
             <div class="container">
                 <div class="ui-widget">
-                    <div id="example" ng-app="KendoDemos">
+                    
                         <div class="row">
-                            <div class="demo-section k-content">
-
-
-                                <input class="col-sm-3" kendo-auto-complete k-on-select="meterSelection(kendoEvent)" ng-model="country" k-options="options" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="dash-unit col-sm-12" style="height:82vh;padding:0;">
-                        <div id='myMap1'>
-
-                        </div>
-                    </div>
-                    <div class="col-sm-12">
-
-                        <div class="col-sm-6 col-sm-6">
-                            <div class="dash-unit col-sm-11 col-sm-11" style="height:350px;">
-                                <iframe id="iFrameEmbedTile" src="" class="iframe-class-overview-page" src="" scrolling="no" frameborder="0" seamless></iframe>
-                                <div id="meterName" style="display:none;">
-                                    <h3 style="overflow-wrap: normal;line-height: 16px;">Metername :  <small>{{selectedMeterName}}</small></h3>
-                                    <h3 style="overflow-wrap: normal;line-height: 16px;">
-                                        Monthly Consumption :  <small>{{selectedMontlyConsumption}}</small></h3style="overflow-wrap:>
-                                        <h3 style="overflow-wrap: normal;line-height: 16px;">Cost :  <small>{{selectCost}}</small></h3>
+                            <div class="demo-section k-content" style="position: absolute;z-index:2;">
+                                <input  class="col-sm-3" kendo-auto-complete k-on-select="meterSelection(kendoEvent)" ng-model="country" k-options="options" k-placeholder= "'Select Meter..'" class="form-control" />
+                            </div>  
+                                <div class="dash-unit col-sm-12" style="height:82vh;padding:0;">
+                                    <div id='myMap1'>
+                                    </div>
                                 </div>
-                            </div>
+                            
                         </div>
-                        <div class="col-sm-6 col-sm-6">
-                            <div class="dash-unit  col-sm-11 col-sm-11" style="height:350px;">
-                                <iframe id="weatherIFrame" src="" class="iframe-class-overview-page" frameborder="0" seamless></iframe>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div id="reportdd" class="dash-unit col-sm-12" style="height:82vh;padding:0;">
-                        <div>
-
-                        </div>
-                    </div>
-
-                    <div id="myDiv"></div>
+                    
                 </div>
-
-                <!--<iframe ID="iFrameEmbedReport" src="" height="300" width="300" frameborder="1" seamless></iframe>-->
-
-            </div>
+               </div>
         </div>
+         <h4  class="header-text">ALL REPORTS</h4>
+         <div class="jumbotron" >
+             <div class="container">
+                 <div class="ui-widget">
+                     <div id="example" ng-app="KendoDemos">
+                         <div class="row">
+                             <div class="col-sm-12">
+
+                                 <div class="col-sm-6 col-sm-6">
+                                     <div class="dash-unit col-sm-11 col-sm-11" style="height:350px;">
+                                         <iframe id="iFrameEmbedTile" src="" class="iframe-class-overview-page" src="" scrolling="no" frameborder="0" seamless></iframe>
+                                         <div id="meterName" style="display:none;">
+                                             <h3 style="overflow-wrap: normal;line-height: 16px;">Metername :  <small>{{selectedMeterName}}</small></h3>
+                                             <h3 style="overflow-wrap: normal;line-height: 16px;">
+                                                 Monthly Consumption :  <small>{{selectedMontlyConsumption}}</small></h3style="overflow-wrap:>
+                                                 <h3 style="overflow-wrap: normal;line-height: 16px;">Cost :  <small>{{selectCost}}</small></h3>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div class="col-sm-6 col-sm-6">
+                                     <div class="dash-unit  col-sm-11 col-sm-11" style="height:350px;">
+                                         <iframe id="weatherIFrame" src="" class="iframe-class-overview-page" frameborder="0" seamless></iframe>
+                                     </div>
+                                 </div>
+
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <h4  class="header-text" >METER REPORT&nbsp;{{MeterName}}</h4>
+         <div class="jumbotron" >
+             <div class="container">
+                 <div class="ui-widget">
+                     <div id="example" ng-app="KendoDemos">
+                         <div class="row">
+                             <div id="report" class="dash-unit col-sm-12" style="height:100%;padding:0;">
+                                 <iframe ID="reportIframe" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
     </div>
 

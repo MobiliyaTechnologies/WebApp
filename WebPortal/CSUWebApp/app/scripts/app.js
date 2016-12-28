@@ -123,7 +123,7 @@ angular
         var $weather = {};
 
         $weather.showWeather = function (response) {
-            console.log(response);
+            console.log("Weather Info ::",response);
             if ('data' in response) {
                 if (response.data.query.count > 0) {
                     var data = response.data.query.results.channel;
