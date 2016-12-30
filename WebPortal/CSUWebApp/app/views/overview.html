@@ -24,16 +24,23 @@
    // loadMapScenario();
     </script>
      <div style="color:white;">
-        <a ui-sref="reports" class="pull-right btn btn-primary btn-outline" style="color:white;">Reports</a>
+       
+         <a ui-sref="reports" class="pull-right btn btn-primary btn-outline" style="color:white;">Reports</a>
+         <a href="https://mseastus.blob.core.windows.net/general/PowerMap_Dec_27_2016.xlsx" style="color:white;float:right;margin-top:5px;margin-right:10px;">Download power map report</a>
         <h4 class="header-text">DASHBOARD<!--<small>Why is Ani Theme so awesome?</small>--></h4>
+
+
+
         <div class="jumbotron">
             <div class="container">
                 <div class="ui-widget">
                     
                         <div class="row">
-                            <div class="demo-section k-content" style="position: absolute;z-index:2;">
-                                <input  class="col-sm-3" kendo-auto-complete k-on-select="meterSelection(kendoEvent)" ng-model="country" k-options="options" k-placeholder= "'Select Meter..'" class="form-control" />
-                            </div>  
+                            <div class="demo-section k-content" style="position: absolute;z-index:2;margin-left:10px;margin-top:10px;">
+                                <input  class="col-sm-3" kendo-auto-complete k-on-select="meterSelection(kendoEvent)" ng-model="country" k-options="options" k-placeholder= "'Select Meter..'" class="k-textbox k-space-right" />
+                                <span class="k-icon k-i-search"></span>
+                            </div> 
+                             
                                 <div class="dash-unit col-sm-12" style="height:82vh;padding:0;">
                                     <div id='myMap1'>
                                     </div>

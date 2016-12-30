@@ -1,10 +1,12 @@
 ﻿angular.module('WebPortal')
-    .controller('profileCtrl', function ($scope, $http, $location, $state, Auth,config) {
+    .controller('profileCtrl', function ($scope, $http, $location, $state, Auth, config, $modal,$log) {
         console.log("logout");
         var JSONobj = new Object();
         
         $scope.changepwd = function () {
             console.log("Change pwd");
+           
+
             if ($scope.newpwd == $scope.confpwd) {
                 JSONobj.Email = localStorage.getItem("Email");
                 JSONobj.Password = $scope.oldpwd;
@@ -33,4 +35,13 @@
         };
         
 
+
+
+
+        
+
+       
+
+
     });
+

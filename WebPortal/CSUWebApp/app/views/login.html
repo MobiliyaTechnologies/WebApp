@@ -36,19 +36,16 @@
   
 </script>
 <body>
-    <div id="loadingid" class="loading style-2" style={{loading}}>
-        <div class="loading-wheel">
-        </div>
-    </div>
-    <div class="login-page ">
+    <div class="video-container" ><video autoplay="true" loop="true" style="background:black;width:100%;" class="video-background" muted="true"><source src="http://www.colostate.edu/wp-content/uploads/sites/2/2016/02/beauty_montage.mp4" type="video/mp4"></video>
+    
         <div class="tint">
             <div class="row ">
                 <div class="col-lg-3 col-md-offset-8" style="margin-top: 10vh;">
                     <div class="module form-module">
-                            <div id="registericon" class="toggle" ng-click="toggle()">
-                                <i  class={{toggleClass}}></i>
-                                <div class="tooltip">Click Me</div>
-                            </div>
+                        <div id="registericon" class="toggle" ng-click="toggle()">
+                            <i class={{toggleClass}}></i>
+                            <div class="tooltip">Click Me</div>
+                        </div>
                         <div id="login" class="form">
                             <h2>Login to your account</h2>
                             <form>
@@ -70,16 +67,24 @@
                         <div id="forgotPassword" class="form">
                             <h2>Forgot Password</h2>
                             <form>
-                               
+
                                 <input type="email" ng-model="fpemail" placeholder="Email Address" />
-                                
+
                                 <button ng-click="forgotPasswordApiCall()">Change</button>
                             </form>
                         </div>
                         <div id="forgotpasswordText" class="cta"><a href="" ng-click="forgotPassword()">{{forgotpasswordlabel}}</a></div>
-                        
-                   </div>
+
+                    </div>
                 </div>
             </div>
         </div>
-     </div>
+
+
+    
+    </div>
+    <div id="loadingid" class="loading style-2" style={{loading}}>
+        <div class="loading-wheel">
+        </div>
+    </div>
+    

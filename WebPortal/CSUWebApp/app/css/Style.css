@@ -1,12 +1,10 @@
 ﻿
 .login-page {
-    background-image: url("../../Assets/CSU_2.jpg");
+    background-image: url("http://www.colostate.edu/wp-content/uploads/sites/2/2016/02/beauty_montage.mp4");
     height: 100vh;
     width: 100vw;
     background-size: 100% 100%;
     background-repeat: no-repeat;
-  
-    
 }
 
 .tint {
@@ -16,7 +14,7 @@
     position: absolute;
     top: 0px;
     left: 0px;
-    background: rgba(0, 0, 0, 0.5);
+   // background: rgba(0, 0, 0, 0.5);
     overflow: hidden;
 }
 .loading {
@@ -252,11 +250,11 @@ iframe {
     }
 
         .pen-title span .fa {
-            color: #33b5e5;
+            color: #31573e;
         }
 
         .pen-title span a {
-            color: #33b5e5;
+            color: #31573e;
             font-weight: 600;
             text-decoration: none;
         }
@@ -267,7 +265,7 @@ iframe {
     background: #ffffff;
     max-width: 320px;
     width: 100%;
-    border-top: 5px solid #33b5e5;
+    border-top: 5px solid #31573e;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
     margin: 0 auto;
 }
@@ -277,7 +275,7 @@ iframe {
         position: absolute;
         top: -0;
         right: -0;
-        background: #33b5e5;
+        background: #31573e;
         width: 30px;
         height: 30px;
         margin: -5px 0 0;
@@ -321,7 +319,7 @@ iframe {
      }
     .form-module h2 {
         margin: 0 0 20px;
-        color: #33b5e5;
+        color: #31573e;
         font-size: 18px;
         font-weight: 400;
         line-height: 1;
@@ -341,13 +339,13 @@ iframe {
     }
 
         .form-module input:focus {
-            border: 1px solid #33b5e5;
+            border: 1px solid #31573e;
             color: #333333;
         }
 
     .form-module button {
         cursor: pointer;
-        background: #33b5e5;
+        background: #31573e;
         width: 100%;
         border: 0;
         padding: 10px 15px;
@@ -357,7 +355,7 @@ iframe {
     }
 
         .form-module button:hover {
-            background: #178ab4;
+            background: #192c1f;
         }
 
     .form-module .cta {
@@ -517,7 +515,6 @@ iframe {
 .iframe-class-overview-page {
     width: 100%;
     height: 350px;
-    
     overflow: hidden;
 }
 .iframe-class-report-page {
@@ -773,9 +770,64 @@ iframe {
         color: #ffd600;
   }
 .side-menu-li-inactive {
-    background-color: #3ca2e0;
+    background-color: #31573e;
     color: white;
 }
 .side-menu-li-inactive > a {
         color: white;
- } 
+ }
+.video-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+
+
+.gallery {
+    
+    margin: 0 auto;
+    padding: 5px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,.3);
+}
+
+    .gallery > div {
+        position: relative;
+        float: left;
+        padding: 5px;
+    }
+
+        .gallery > div > img {
+            display: block;
+            width: 200px;
+            transition: .1s transform;
+            transform: translateZ(0); /* hack */
+        }
+
+        .gallery > div:hover {
+            z-index: 1;
+        }
+
+            .gallery > div:hover > img {
+                transform: scale(1.1,1.1);
+                transition: .3s transform;
+            }
+
+.cf:before, .cf:after {
+    display: table;
+    content: "";
+    line-height: 0;
+}
+
+.cf:after {
+    clear: both;
+}
+
+
+.forecast i.wi {
+    font-size: 50px;
+    margin-bottom: 15px;
+    margin-top:25px;
+}

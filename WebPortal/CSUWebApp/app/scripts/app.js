@@ -12,12 +12,11 @@ angular
         'ngAnimate',
         'ngCookies',
         'ngResource',
-
         'ngSanitize',
         'ngTouch',
         'ui.router',
-        'kendo.directives'
-
+        'kendo.directives',
+        'ui.bootstrap'
 
     ])
    
