@@ -45,6 +45,7 @@
     "angular-sanitize": "^1.4.0",
     "angular-touch": "^1.4.0",
     "ui-router": "~0.2.13",
-    "components-font-awesome": "~4.7.0"
+    "components-font-awesome": "~4.7.0",
+    "angular-bootstrap": "~2.3.2"
   }
 }

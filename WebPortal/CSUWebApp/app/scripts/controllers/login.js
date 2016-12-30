@@ -8,15 +8,17 @@
  * Controller of the angulartestApp
  */
 angular.module('WebPortal')
-    .controller('loginCtrl', function ($scope, $http, $location, $state, Auth, Token,config) {
+    .controller('loginCtrl', function ($scope, $http, $location, $state, Auth, Token, config, $interval) {
         $scope.toggleClass = "fa fa-times fa-pencil";
         $scope.loading ="display:none;"
         console.log("Login Controller");
 
         //update token if not available 
         if (Token.data.accesstoken == '')
-            Token.update(function () { }
-        );
+            Token.update(function () { });
+        $interval(function () {
+            Token.update(function () { });
+        }, 2000);
 
         $scope.sendLogin = function () {       
             console.log("Login Api Call");
@@ -44,6 +46,7 @@ angular.module('WebPortal')
                     localStorage.setItem("UserName", response.First_Name);
                     localStorage.setItem("LastName", response.Last_Name);
                     localStorage.setItem("Email", response.Email);
+                    localStorage.setItem("Avatar", response.Avatar);
                     Auth.setUser(true);
                     $scope.loading = "display:none;"
                     $state.go('overview');
