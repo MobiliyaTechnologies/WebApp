@@ -39,7 +39,7 @@ angular.module('WebPortal')
                 }
             }).success(function (response) {
            
-                console.log(response);
+                console.log("Login Api response [Info]::",response);
                 if (response.Status_Code == 200) {
 
                     localStorage.setItem("userId", response.User_Id);

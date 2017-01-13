@@ -16,10 +16,11 @@ angular
         'ngTouch',
         'ui.router',
         'kendo.directives',
-        'ui.bootstrap'
+        'ui.bootstrap',
+        'highcharts-ng'
 
     ])
-   
+
 
     .config(function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.when('/dashboard', '/dashboard/overview');
@@ -60,7 +61,7 @@ angular
 
     })
     .constant('config', {
-        restServer : "http://powergridrestservice.azurewebsites.net/",
+        restServer: "http://powergridrestservice.azurewebsites.net/",
         //serverURL:"http://52.91.107.160:2000/"
     })
     .factory('Auth', function ($rootScope, $window) {
@@ -106,15 +107,15 @@ angular
                 $http({
                     url: "http://csuwebapp.azurewebsites.net//PowerBIService.asmx/GetAccessToken",
                     method: 'GET'
-                    
+
                 }).success(function (response) {
                     data.accesstoken = response.tokens.AccessToken;
                     callback();
-                    
+
                 })
-                 .error(function (error) {
-                    alert("Error : " + JSON.stringify(error));
-                 });
+                .error(function (error) {
+                    console.log("Token Error :: " + JSON.stringify(error));
+                });
             }
         };
     })
@@ -122,7 +123,7 @@ angular
         var $weather = {};
 
         $weather.showWeather = function (response) {
-            console.log("Weather Info ::",response);
+            console.log("Weather Info ::", response);
             if ('data' in response) {
                 if (response.data.query.count > 0) {
                     var data = response.data.query.results.channel;
@@ -172,15 +173,15 @@ angular
         return $weather;
     })
 
-.filter('temp', function ($filter) {
-    return function (input, unit) {
-        if (!unit) {
-            unit = 'C';
-        }
-        var numberFilter = $filter('number');
-        return numberFilter(input, 1) + '\u00B0' + unit;
-    };
-})
+    .filter('temp', function ($filter) {
+        return function (input, unit) {
+            if (!unit) {
+                unit = 'C';
+            }
+            var numberFilter = $filter('number');
+            return numberFilter(input, 1) + '\u00B0' + unit;
+        };
+    })
     .directive('weatherIcon', function () {
         return {
             restrict: 'E',
@@ -297,5 +298,52 @@ angular
                 };
             },
             template: '<div><i class="wi {{ icon() }}"></i><div>'
+        };
+    })
+    // Directive for pie charts, pass in title and data only    
+    .directive('hcPieChart', function () {
+        return {
+            restrict: 'E',
+            template: '<div></div>',
+            scope: {
+                title: '@',
+                data: '='
+            },
+            link: function (scope, element) {
+                Highcharts.chart(element[0], {
+                    chart: {
+                        type: 'pie'
+                    },
+                    title: {
+                        text: scope.title
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                            }
+                        }
+                    },
+                    series: [{
+                        data: scope.data
+                    }],
+                    colors: ['#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
+                });
+            }
+        };
+    })
+    .directive('hcChart', function () {
+        return {
+            restrict: 'E',
+            template: '<div></div>',
+            scope: {
+                options: '='
+            },
+            link: function (scope, element) {
+                Highcharts.chart(element[0], scope.options);
+            }
         };
     });

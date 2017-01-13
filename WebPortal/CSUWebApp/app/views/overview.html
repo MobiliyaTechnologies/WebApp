@@ -37,8 +37,8 @@
                     
                         <div class="row">
                             <div class="demo-section k-content" style="position: absolute;z-index:2;margin-left:10px;margin-top:10px;">
-                                <input  class="col-sm-3" kendo-auto-complete k-on-select="meterSelection(kendoEvent)" ng-model="country" k-options="options" k-placeholder= "'Select Meter..'" class="k-textbox k-space-right" />
-                                <span class="k-icon k-i-search"></span>
+                                <input  class="col-sm-3" kendo-auto-complete k-on-select="meterSelection(kendoEvent)" ng-model="country" k-options="options" k-placeholder= "'Search Meter..'" class="k-textbox k-space-right" />
+                                <!--<span class="k-icon k-i-search"></span>-->
                             </div> 
                              
                                 <div class="dash-unit col-sm-12" style="height:82vh;padding:0;">
@@ -51,11 +51,45 @@
                 </div>
                </div>
         </div>
+         <h4 class="header-text">MONTHLY CONSUMPTION REPORT</h4>
+         <div class="jumbotron">
+             <div class="container">
+                 <div class="ui-widget">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <!--<hc-chart id="bargraph" options="barChartOptions" class="col-sm-12" style="height:80vh;">Placeholder for generic chart</hc-chart>-->
+                             <div class="k-content">
+                                 <div ng-if="YearlyConsumption.loading" class="loader"></div>
+                             </div>
+                             <select class="k-content" ng-change="changeYear()" ng-model="selectedYear" ng-options="x for x in years" style="float:right;width: 10%;">
+                                 
+                             </select>
+                            
+                            <highchart ng-if="YearlyConsumption" config="YearlyConsumption" class="col-sm-12" style="height:80vh;"></highchart>
+                        </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <!--<h4 class="header-text">ALL REPORTS</h4>
+         <div class="jumbotron">
+             <div class="container">
+                 <div class="ui-widget">
+                     <div class="row">
+                         <div class="col-sm-6" >
+                             <hc-chart id="linechart" options="currentMonth">Placeholder for generic chart</hc-chart>
+                         </div>
+                         <div class="col-sm-6">
+                             <hc-chart id="linechart" options="nextMonth">Placeholder for generic chart</hc-chart>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>-->
          <h4  class="header-text">ALL REPORTS</h4>
          <div class="jumbotron" >
              <div class="container">
                  <div class="ui-widget">
-                     <div id="example" ng-app="KendoDemos">
                          <div class="row">
                              <div class="col-sm-12">
 
@@ -77,8 +111,7 @@
                                  </div>
 
                              </div>
-                         </div>
-                     </div>
+                         </div>      
                  </div>
              </div>
          </div>
@@ -89,7 +122,10 @@
                      <div id="example" ng-app="KendoDemos">
                          <div class="row">
                              <div id="report" class="dash-unit col-sm-12" style="height:100%;padding:0;">
-                                 <iframe ID="reportIframe" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
+                                 <iframe id="reportIframe" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
+                             </div>
+                             <div id="reportscroll">
+
                              </div>
                          </div>
                      </div>
@@ -97,4 +133,12 @@
              </div>
          </div>
     </div>
+    <!--<highchart id="chart1" config="chartConfig1"></highchart>-->
+    <!--<div id="container" style="height: 400px"></div>
+    <div id="donut" style="height: 400px"></div>-->
+    <!--<hc-chart id="linechart" options="chartOptions">Placeholder for generic chart</hc-chart>-->
+    
+    <!--<hc-pie-chart title="Browser usage" data="pieData">Placeholder for pie chart</hc-pie-chart>-->
+<!--<highchart id="chart1" config="YearlyConsumption"></highchart>-->
 
+    

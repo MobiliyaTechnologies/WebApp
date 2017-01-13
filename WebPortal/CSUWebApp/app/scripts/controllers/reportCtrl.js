@@ -1,4 +1,4 @@
-﻿var reportURL = "https://app.powerbi.com/reportEmbed?reportId=b0681dc8-a035-4c51-a3b6-fa0e04f914cf";
+﻿var reportURL = "https://app.powerbi.com/reportEmbed?reportId=ff04edce-c5c4-471c-8a44-5fb954685e32";
 angular.module('WebPortal')
     .controller('reportCtrl', function ($scope, $http, $location, $state, Auth, config, Token) {
         if (Token.data.accesstoken != '') {
@@ -35,7 +35,6 @@ angular.module('WebPortal')
 
             // get the access token.
             accessToken = Token.data.accesstoken
-            console.log(accessToken);
             // return if no a
             if ("" === accessToken) {
                 console.log("Access token not found");
