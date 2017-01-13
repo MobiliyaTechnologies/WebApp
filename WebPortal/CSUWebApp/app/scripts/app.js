@@ -149,7 +149,7 @@ angular
             $weather.showLoader = false;
         };
         $weather.getYahooUrl = function () {
-            return "https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='%s') and u='c'&format=json".replace("%s", this.city);
+            return "https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='%s') and u='f'&format=json".replace("%s", this.city);
         };
         $weather.search = function () {
             if ($weather.city == '' || $weather.city == undefined) {

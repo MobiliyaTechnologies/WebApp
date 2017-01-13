@@ -77,8 +77,8 @@
                                 </div>
                                 <div class="col-sm-offset-1 col-sm-7">
                                     <h5>{{weather.temp}}&deg;{{weather.unit}}&nbsp;&nbsp;{{ forecast.text }}</h5>                                    
-                                    <h5> min: {{ forecast.low | temp:forecast.unit }}</h5>
-                                    <h5>max: {{ forecast.high | temp:forecast.unit }}</h5>
+                                    <h5> min: {{ forecast.low | temp:weather.unit }}</h5>
+                                    <h5>max: {{ forecast.high | temp:weather.unit }}</h5>
                                     <h5>{{ forecast.date }} </h5>
                                 </div>   
                                 
