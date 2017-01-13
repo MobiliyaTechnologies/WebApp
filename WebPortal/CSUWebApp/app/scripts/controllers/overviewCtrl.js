@@ -11,11 +11,11 @@ var count = 0;
 var meterList;
 var infobox;
 var iframe;
-var tileEmbedURL = "https://app.powerbi.com/embed?dashboardId=37f666c4-8a0b-4b5e-bf61-6151f38dae34&tileId=1ae30b7e-6577-4c5f-8611-905f9a579899";
-var donutTileURL = "https://app.powerbi.com/embed?dashboardId=37f666c4-8a0b-4b5e-bf61-6151f38dae34&tileId=817c8e3b-e17b-4a6a-8530-6272835b4374";
+var tileEmbedURL = "https://app.powerbi.com/embed?dashboardId=09821193-5c76-4a55-b960-74815806ecac&tileId=37167b28-d3ec-4d9e-b937-405f0b96bb87";
+var donutTileURL = "https://app.powerbi.com/embed?dashboardId=09821193-5c76-4a55-b960-74815806ecac&tileId=baecd6f4-7ff1-4aea-a882-fdb1dea1f885";
 
 angular.module('WebPortal')
-    .controller('overviewCtrl', function ($scope, $http, $location, Token, config) {
+    .controller('overviewCtrl', function ($scope, $http, $location, Token, config, $timeout) {
         $scope.userId = localStorage.getItem("userId");
         $scope.meterList = [];
         $scope.urls = [];
@@ -56,9 +56,9 @@ angular.module('WebPortal')
                 }
 
             })
-                .error(function (error) {
-                    alert("Error : " + JSON.stringify(error));
-                });
+            .error(function (error) {
+                    console.log("Error : " + JSON.stringify(error));
+            });
         }
         /**
          * 
@@ -71,17 +71,19 @@ angular.module('WebPortal')
                     dataType: 'json',
                     method: 'Get',
                 }).success(function (response) {
-                    console.log("Get Meter Urls of " + $scope.meterList[index].Serial + "::", response);
+                    //console.log("Get Meter Urls of " + $scope.meterList[index].Serial + "::", response);
                     response.Serial = $scope.meterList[index].Serial;
+                    response.Name = $scope.meterList[index].Name;
                     $scope.urls.push(response);
                     getUrls(index + 1);
                 })
-                    .error(function (error) {
+                .error(function (error) {
                         // alert("Error : " + JSON.stringify(error));
-                    });
+                    console.log("Error :", JSON.stringify(error));
+                });
             }
             else {
-                console.log($scope.urls);
+                console.log("Get Meter Urls [Info] ::",$scope.urls);
             }
         }
         /**
@@ -95,22 +97,23 @@ angular.module('WebPortal')
             }).success(function (response) {
                 console.log("Get Monthly Consumption [Info] ::", response);
                 $scope.MonthlyConsumption = response;
-
-                for (var j in $scope.meterList) {
+                for (var j = 0; j < $scope.meterList.length;j++) {
+                   // console.log("$scope.meterList", $scope.meterList[j]);
                     var index = $scope.MonthlyConsumption.findIndex(function (item, i) {
                         return item.Powerscout == $scope.meterList[j].Serial;
                     });
-                    if (index > 0) {
+                    if (index >=0) {
                         $scope.MonthlyConsumption[index].Latitude = $scope.meterList[j].Latitude;
                         $scope.MonthlyConsumption[index].Longitude = $scope.meterList[j].Longitude;
                         $scope.MonthlyConsumption[index].Name = $scope.meterList[j].Name;
                         createColorPushPin($scope.MonthlyConsumption[index]);
+                        
                     }
                 }
             })
-                .error(function (error) {
-                    alert("Error : " + JSON.stringify(error));
-                });
+            .error(function (error) {
+                    console.log("Error : " + JSON.stringify(error));
+            });
         }
         /**
          * 
@@ -133,8 +136,9 @@ angular.module('WebPortal')
          * @param meter
          */
         function createColorPushPin(meter) {
+            
             var location = new Microsoft.Maps.Location(meter.Latitude, meter.Longitude);
-            var radius = 0;
+            var radius = 15;
             var fillColor = 'rgba(60,162,224, 0.7)';
             if (meter.Powerscout == 'P371602077') {
                 fillColor = 'rgba(138, 212, 235, 0.7)';
@@ -155,7 +159,7 @@ angular.module('WebPortal')
                 fillColor = 'rgba(95, 107, 109, 0.7)';
             }
             if (meter.Monthly_KWH_Consumption == 0) {
-                radius = 0;
+                radius = 25;
             }
             else if (meter.Monthly_KWH_Consumption > 0 && meter.Monthly_KWH_Consumption <= 1000) {
                 if (meter.Monthly_KWH_Consumption < 500) {
@@ -192,19 +196,19 @@ angular.module('WebPortal')
                     radius = meter.Monthly_KWH_Consumption / 1000;
                 }
             }
+            
             var offset = new Microsoft.Maps.Point(0, 5);
             var svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="', ((radius + 5) * 2),
                 '" height="', ((radius + 5) * 2), '"><circle cx="', (radius + 5), '" cy="', (radius + 5), '" r="', radius, '" fill="', fillColor, '"/></svg>'];
-
+            var mname = meter.Name.substring(0, 10)+'..';
             var pushpin2 = new Microsoft.Maps.Pushpin(location, {
                 icon: svg.join(''),
-                anchor: new Microsoft.Maps.Point(radius, radius), text: meter.Name, textOffset: new Microsoft.Maps.Point(0, 10)
+                anchor: new Microsoft.Maps.Point(radius, radius), text: mname, textOffset: new Microsoft.Maps.Point(0, 10)
 
             });
-
             pushpin2.MeterSerial = meter.Powerscout;
             pushpin2.MeterName = meter.Name;
-            pushpin2.Monthly_Electric_Cost = meter.Monthly_Electric_Cost;
+            pushpin2.Monthly_Electric_Cost = meter.Monthly_electric_Cost;
             pushpin2.Monthly_KWH_Consumption = meter.Monthly_KWH_Consumption;
             map.entities.push(pushpin2);
             Microsoft.Maps.Events.addHandler(pushpin2, 'click', onPushpinClicked);
@@ -216,15 +220,38 @@ angular.module('WebPortal')
          * @param args
          */
         function onPushpinClicked(args) {
+            
             var index = $scope.urls.findIndex(function (item, i) {
                 return item.Serial == args.target.MeterSerial;
             });
             $scope.MeterName = args.target.MeterName;
-            embedReport($scope.urls[index].Report);
-            $scope.$apply();
-            $("#scrolldiv").animate({
-                scrollTop: $("#report").offset().top
+            
+            if (index >= 0) {
+                if ($scope.urls[index].Report != undefined) {
+                    embedReport($scope.urls[index].Report);
+                    $scope.$apply();
+                    $("#scrolldiv").animate({
+                        scrollTop: $("#report").offset().top
+                    });
+                }
+            }
+
+        }
+        function onSeriesClicked(meter) {
+            
+            var index = $scope.urls.findIndex(function (item, i) {
+                return item.Name == meter;
             });
+            $scope.MeterName = meter.Name;
+            if (index > 0) {
+                if ($scope.urls[index].Report != undefined) {
+                    embedReport($scope.urls[index].Report);
+                    $scope.$apply();
+                    $("#scrolldiv").animate({
+                        scrollTop: $("#reportscroll").offset().top+400
+                    });
+                }
+            }
 
         }
         /**
@@ -252,7 +279,7 @@ angular.module('WebPortal')
          */
         function embedTile() {
             var embedTileUrl = tileEmbedURL;
-            console.log("Tile");
+           
             if ("" === embedTileUrl) {
                 console.log("No embed URL found [Error] ::");
                 return;
@@ -262,7 +289,7 @@ angular.module('WebPortal')
             iframe.onload = postActionLoadTile;
         }
         function postActionLoadTile() {
-            console.log("Post Tile");
+            
             var accessToken = Token.data.accesstoken;
             if ("" === accessToken) {
                 console.log("Access token not found [Error] ::");
@@ -317,8 +344,6 @@ angular.module('WebPortal')
             $(".iframe-class-overview-page").addClass("iframe-class-resize");
             $(".iframe-class-resize").css("width", parentDivWidth);
             $(".iframe-class-resize").css("height", newHeight);
-            console.log("parentDivWidth", parentDivWidth);
-            console.log("height", newHeight);
             var accessToken = Token.data.accesstoken;
             var m = { action: "loadTile", accessToken: accessToken, height: newHeight, width: parentDivWidth };
             var message = JSON.stringify(m);
@@ -342,8 +367,7 @@ angular.module('WebPortal')
         $scope.country = '';
 
         $scope.meterSelection = function (e) {
-            console.log(e);
-            console.log(map);
+           
             //map.center = center;
             map.setView({
                 center: new Microsoft.Maps.Location(e.dataItem.Latitude, e.dataItem.Longitude),
@@ -384,6 +408,207 @@ angular.module('WebPortal')
             iframe = document.getElementById('reportIframe');
             iframe.contentWindow.postMessage(message, "*");;
         }
+
+       
+
+
+        // Sample options for first chart
+        $scope.currentMonth = {
+            chart: {
+                type: 'line',
+                events: {
+                    load: function (event) {
+                        
+                        
+                    }
+                }
+            },
+            title: {
+                text: 'Current Month'
+            },
+            xAxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'April', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            },
+            plotOptions: {
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function () {
+                                alert('Category: ' + this.category + ', value: ' + this.y);
+                            }
+                        }
+                    }
+                }
+            },
+            series: [{
+                data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+            }]
+            
+
+        };
+        $scope.nextMonth = {
+            chart: {
+                type: 'line',
+                events: {
+                    load: function (event) {
+
+                       
+                    }
+                }
+            },
+            title: {
+                text: 'Next Month'
+            },
+            xAxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            },
+            plotOptions: {
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function () {
+                                alert('Category: ' + this.category + ', value: ' + this.y);
+                            }
+                        }
+                    }
+                }
+            },
+            series: [{
+                data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+            }]
+
+
+        };
+        $scope.years = [2016, 2017];
+        $scope.selectedYear = 2016;
+        $scope.changeYear = function () {
+            console.log($scope.selectedYear);
+            $scope.YearlyConsumption.series = [];
+            $scope.YearlyConsumption.loading = true;       
+            $scope.YearlyConsumption.title.text='Total Electricity consumption (' + $scope.selectedYear + ')';   
+            getYearlyConsumption();
+        }
+        function getYearlyConsumption() {
+            $http({
+                url: config.restServer + "api/getmonthwiseconsumption/" + $scope.userId + "/" + $scope.selectedYear,
+                dataType: 'json',
+                method: 'Get',
+            }).success(function (response) {
+                console.log("Get Month Wise(Yearly) Consumption [Info] ::", response);
+                $scope.YearlyConsumption.loading = false;   
+                $scope.YearlyConsumption.series = [];
+                for (var i = 0; i < response.length; i++) {
+                    var data = [];
+                    data.push(response[i].MonthWiseConsumption.Jan);
+                    data.push(response[i].MonthWiseConsumption.Feb);
+                    data.push(response[i].MonthWiseConsumption.Mar);
+                    data.push(response[i].MonthWiseConsumption.Apr);
+                    data.push(response[i].MonthWiseConsumption.May);
+                    data.push(response[i].MonthWiseConsumption.Jun);
+                    data.push(response[i].MonthWiseConsumption.Jul);
+                    data.push(response[i].MonthWiseConsumption.Aug);
+                    data.push(response[i].MonthWiseConsumption.Sep);
+                    data.push(response[i].MonthWiseConsumption.Oct);
+                    data.push(response[i].MonthWiseConsumption.Nov);
+                    data.push(response[i].MonthWiseConsumption.Dec);
+                    $scope.YearlyConsumptionChart.reflow();
+                    $scope.YearlyConsumption.series.push({
+                        id: response[i].PowerScout,
+                        stack: 'meter',
+                        data: data,
+                        name: response[i].Name,
+                        serial: response[i].PowerScout,
+                    });
+
+                }
+
+            })
+            .error(function (error) {       
+               console.log("Error : " + JSON.stringify(error));
+            });
+        }
+        getYearlyConsumption();
+       
+       
+
+
+
+        $scope.YearlyConsumption = {
+            chart: {
+                type: 'column',
+                
+                events: {
+                    drilldown: function (e) {
+                        console.log(e.point); // The point, with name, that was clicked
+                    },
+                    load: function (event) {
+                        $scope.YearlyConsumptionChart = this;
+                    }
+                },
+               
+                lang: {
+                    loading: 'Loading...'
+                }
+
+
+            },
+            title: {
+                text: 'Total Electricity consumption (' + $scope.selectedYear+')'
+            },
+
+            xAxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            },
+
+            yAxis: {
+                allowDecimals: false,
+                min: 0,
+                title: {
+                    text: 'Total Consumption'
+                }
+            },
+
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.x + '</b><br/>' +
+                        this.series.name + ': ' + this.y + '<br/>' +
+                        'Total Consumptiom: ' + this.point.stackTotal;
+                }
+            },
+
+            plotOptions: {
+                column: {
+                    stacking: 'normal'
+                },
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function () {
+                                console.log(this.series.name);
+                                //alert('Category: ' + this.category + ', value: ' + this.y);
+                                onSeriesClicked(this.series.name);
+                            }
+                        }
+                    }
+                }
+            },
+
+            series: [
+               
+
+            ],
+            loading: true
+          
+         
+        }
+       
+   
+        
+
+
        
 
     });
