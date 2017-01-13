@@ -600,8 +600,10 @@ angular.module('WebPortal')
                
 
             ],
-            loading: true
-          
+            loading: true,
+            credits: {
+                enabled: false
+            },
          
         }
        
