@@ -51,6 +51,7 @@
                 </div>
                </div>
         </div>
+         
          <h4 class="header-text">MONTHLY CONSUMPTION REPORT</h4>
          <div class="jumbotron">
              <div class="container">
@@ -61,11 +62,14 @@
                              <div class="k-content">
                                  <div ng-if="YearlyConsumption.loading" class="loader"></div>
                              </div>
-                             <select class="k-content" ng-change="changeYear()" ng-model="selectedYear" ng-options="x for x in years" style="float:right;width: 10%;">                                 
-                             </select>                            
+                             <!--<select class="k-content" ng-change="changeYear()" ng-model="selectedYear" ng-options="x for x in years" style="float:right;width: 10%;">                                 
+                             </select>-->                            
                             <highchart ng-if="YearlyConsumption" config="YearlyConsumption" class="col-sm-12" style="height:80vh;"></highchart>
                         </div>
-                     </div>
+                         <span class="glyphicon glyphicon-circle-arrow-left gi-3x" ng-click="moveMonthBackward()"></span>
+                         <span class="glyphicon glyphicon-circle-arrow-right pull-right gi-3x" ng-click="moveMonthForward()"></span>
+                    </div>
+                     
                  </div>
              </div>
          </div>
@@ -80,10 +84,12 @@
                              <div class="k-content">
                                  <div ng-if="WeeklyConsumption.loading" class="loader"></div>
                              </div>
-                             <select class="k-content" ng-change="changeMonth()" ng-model="selectedMonth" ng-options="x for x in months" style="float:right;width: 10%;"></select>
+                             <!--<select class="k-content" ng-change="changeMonth()" ng-model="selectedMonth" ng-options="x for x in months" style="float:right;width: 10%;"></select>-->
 
                              <highchart ng-if="WeeklyConsumption" config="WeeklyConsumption" class="col-sm-12" style="height:80vh;"></highchart>
                          </div>
+                         <span class="glyphicon glyphicon-circle-arrow-left gi-3x" ng-click="moveWeekBackward()"></span>
+                         <span class="glyphicon glyphicon-circle-arrow-right pull-right gi-3x" ng-click="moveWeekForward()"></span>
                      </div>
                  </div>
              </div>
@@ -169,12 +175,5 @@
              </div>
          </div>
     </div>
-    <!--<highchart id="chart1" config="chartConfig1"></highchart>-->
-    <!--<div id="container" style="height: 400px"></div>
-    <div id="donut" style="height: 400px"></div>-->
-    <!--<hc-chart id="linechart" options="chartOptions">Placeholder for generic chart</hc-chart>-->
     
-    <!--<hc-pie-chart title="Browser usage" data="pieData">Placeholder for pie chart</hc-pie-chart>-->
-<!--<highchart id="chart1" config="YearlyConsumption"></highchart>-->
-
     

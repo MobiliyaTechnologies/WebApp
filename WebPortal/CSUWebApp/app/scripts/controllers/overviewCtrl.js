@@ -447,10 +447,14 @@ angular.module('WebPortal')
 
 
         };
+        var dt = new Date();
         $scope.years = [2016, 2017];
-        $scope.months = ['Jan', 'Feb', 'Mar', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        $scope.selectedYear = 2016;
-        $scope.selectedMonth = 'Nov';
+        //$scope.months = ['Jan', 'Feb', 'Mar', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        $scope.selectedYear = dt.getFullYear();
+        $scope.selectedMonth = months[dt.getMonth()];
+        console.log($scope.selectedMonth);
+        $scope.selectedMonthNo = months.indexOf($scope.selectedMonth);
         $scope.changeYear = function () {
             console.log($scope.selectedYear);
             $scope.YearlyConsumption.series = [];
@@ -490,29 +494,51 @@ angular.module('WebPortal')
             getNextMonthprediction();
             getCurrentMonthprediction();
         }
+        $scope.moveMonthBackward = function () {
+            $scope.selectedMonthNo = ($scope.selectedMonthNo - 1) % 12;
+            if ($scope.selectedMonthNo < 0) {
+                $scope.selectedMonthNo = 11;
+                $scope.selectedYear--;
+            }
+            $scope.YearlyConsumption.title.text = 'Total Electricity consumption (' + $scope.selectedYear + ')'; 
+            $scope.selectedMonth = months[$scope.selectedMonthNo];
+            $scope.YearlyConsumption.loading = true; 
+            $scope.YearlyConsumption.series = [];
+            $scope.YearlyConsumption.xAxis.categories = [];
+            getYearlyConsumption();
+        }
+        $scope.moveMonthForward = function () {
+            $scope.selectedMonthNo = ($scope.selectedMonthNo + 1) % 12;
+            if ($scope.selectedMonthNo ==0) {
+                $scope.selectedYear++;
+            }
+            $scope.YearlyConsumption.title.text = 'Total Electricity consumption (' + $scope.selectedYear + ')'; 
+            $scope.selectedMonth = months[$scope.selectedMonthNo];
+            $scope.YearlyConsumption.loading = true; 
+            $scope.YearlyConsumption.series = [];
+            $scope.YearlyConsumption.xAxis.categories = [];
+            getYearlyConsumption();
+
+        }
         function getYearlyConsumption() {
+             
+              
             $http({
-                url: config.restServer + "api/getmonthwiseconsumption/" + $scope.userId + "/" + $scope.selectedYear,
+                url: config.restServer + "api/getmonthwiseconsumptionforoffset/" + $scope.userId + "/" + $scope.selectedMonth+"/"+$scope.selectedYear+"/12",
                 dataType: 'json',
                 method: 'Get',
             }).success(function (response) {
                 console.log("Get Month Wise(Yearly) Consumption [Info] ::", response);
                 $scope.YearlyConsumption.loading = false;   
                 $scope.YearlyConsumption.series = [];
+                for (var i = 0; i < months.length; i++) {
+                   $scope.YearlyConsumption.xAxis.categories.push(months[(i + $scope.selectedMonthNo+1) % months.length]);
+                }    
                 for (var i = 0; i < response.length; i++) {
                     var data = [];
-                    data.push(response[i].MonthWiseConsumption.Jan);
-                    data.push(response[i].MonthWiseConsumption.Feb);
-                    data.push(response[i].MonthWiseConsumption.Mar);
-                    data.push(response[i].MonthWiseConsumption.Apr);
-                    data.push(response[i].MonthWiseConsumption.May);
-                    data.push(response[i].MonthWiseConsumption.Jun);
-                    data.push(response[i].MonthWiseConsumption.Jul);
-                    data.push(response[i].MonthWiseConsumption.Aug);
-                    data.push(response[i].MonthWiseConsumption.Sep);
-                    data.push(response[i].MonthWiseConsumption.Oct);
-                    data.push(response[i].MonthWiseConsumption.Nov);
-                    data.push(response[i].MonthWiseConsumption.Dec);
+                    for (var j = 0; j < months.length; j++) {
+                        data.push(response[i].MonthWiseConsumption[months[(j+$scope.selectedMonthNo + 1) % months.length]])
+                    }                      
                     $scope.YearlyConsumptionChart.reflow();
                     $scope.YearlyConsumption.series.push({
                         id: response[i].PowerScout,
@@ -528,6 +554,7 @@ angular.module('WebPortal')
             .error(function (error) {       
                console.log("Error : " + JSON.stringify(error));
             });
+          
         }
         getYearlyConsumption();
         $scope.YearlyConsumption = {
@@ -554,7 +581,7 @@ angular.module('WebPortal')
             },
 
             xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                categories:[]// ['Jan', 'Feb', 'Mar', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
             },
 
             yAxis: {
@@ -601,14 +628,44 @@ angular.module('WebPortal')
             },
 
         };
+        $scope.moveWeekBackward = function () {
+            $scope.selectedMonthNo = ($scope.selectedMonthNo - 1) % 12;
+            if ($scope.selectedMonthNo < 0) {
+                $scope.selectedMonthNo = 11;
+                $scope.selectedYear--;
+            }
+            $scope.selectedMonth = months[$scope.selectedMonthNo];
+            $scope.WeeklyConsumption.series = [];
+            $scope.WeeklyConsumption.loading = true;
+            getWeeklyConsumption();
+
+        }
+        $scope.moveWeekForward = function () {
+            $scope.selectedMonthNo = ($scope.selectedMonthNo + 1) % 12;
+            if ($scope.selectedMonthNo == 0) {
+                $scope.selectedYear++;
+            }
+            $scope.selectedMonth = months[$scope.selectedMonthNo];
+            $scope.WeeklyConsumption.series = [];
+            $scope.WeeklyConsumption.loading = true;           
+            getWeeklyConsumption();
+
+
+        }
         function getWeeklyConsumption() {
+            var month = months[($scope.selectedMonthNo + 1) % 12];
+
+            var year = $scope.selectedYear;
+            if (month == 'Jan')
+                year = $scope.selectedYear + 1;
             
             $http({
-                url: config.restServer + "api/getweekwisemonthlyconsumption/" + $scope.userId + "/" + $scope.selectedMonth + "/" + $scope.selectedYear,
+                    url: config.restServer + "api/getweekwisemonthlyconsumptionforoffset/" + $scope.userId + "/" + month + "/" + year+"/4",
                 dataType: 'json',
                 method: 'Get',
             }).success(function (response) {
                 console.log("Get Weekly Consumption [Info] ::", response);
+                $scope.WeeklyConsumption.title.text = 'Weekly Electricity consumption (' + $scope.selectedMonth + '/' + $scope.selectedYear + ')';
                 $scope.WeeklyConsumption.loading = false;
                 $scope.WeeklyConsumption.series = [];
                 for (var i = 0; i < response.length; i++) {

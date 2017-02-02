@@ -840,7 +840,25 @@ iframe {
     left: 50%;
     z-index: 1;
 }
+.gi-2x {
+    font-size: 2em;
+    color:black;
+}
 
+.gi-3x {
+    font-size: 3em;
+    color: black;
+}
+
+.gi-4x {
+    font-size: 4em;
+    color: black;
+}
+
+.gi-5x {
+    font-size: 5em;
+    color: black;
+}
 @keyframes spin {
     0% {
         transform: rotate(0deg);
