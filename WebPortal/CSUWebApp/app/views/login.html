@@ -49,19 +49,24 @@
                         <div id="login" class="form">
                             <h2>Login to your account</h2>
                             <form>
-                                <input class="form-control" placeholder="Email" id="username" name="username" type="text" />
-                                <input class="form-control" placeholder="Password" id="password" name="password" type="password" />
+                                <input  placeholder="Email" id="username" name="username" type="text"> 
+                                <input  placeholder="Password" id="password" name="password" type="password">
                                 <button ng-click="sendLogin()">Login</button>
                             </form>
                         </div>
                         <div id="register" class="form">
                             <h2>Create an account</h2>
                             <form>
-                                <input type="text" placeholder="Username" />
-                                <input type="password" placeholder="Password" />
-                                <input type="email" placeholder="Email Address" />
-                                <input type="tel" placeholder="Phone Number" />
-                                <button>Register</button>
+                                <input type="text" placeholder="First Name" ng-model="R_First_Name"/>
+                                <input type="text" placeholder="Last Name" ng-model="R_Last_Name" />
+                                <input type="email" placeholder="Email" ng-model="R_Email" />
+                                <input type="password" placeholder="Password"ng-model="R_Password" />
+                                
+                                <div style="margin-left:50px;margin-bottom:15px;">
+                                    <label class="radio-inline"><input style="margin-left:-50px;" ng-model="R_UserRole" type="radio" name="optradio" value="1">Admin</label>
+                                    <label class="radio-inline"><input style="margin-left:-50px;" ng-model="R_UserRole" type="radio" name="optradio" value="2">Student</label>
+                                </div>
+                                <button ng-click="registerUser()">Register</button>
                             </form>
                         </div>
                         <div id="forgotPassword" class="form">

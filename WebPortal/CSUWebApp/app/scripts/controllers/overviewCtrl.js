@@ -29,8 +29,9 @@ angular.module('WebPortal')
                 {
                     credentials: 'Ahmc1XzhRQwnhx-_HvtFWJH5y1TOqNaUEOZgzPPHQyyffV8z-UyK3tfrkaEMZpiv',
                     center: mapLocation,
-                    mapTypeId: Microsoft.Maps.MapTypeId.aerial,
-                    zoom: 18
+                    zoom: 18,
+                    mapTypeId: Microsoft.Maps.MapTypeId.road,
+
                 });
             getMeterList();
         }
@@ -373,6 +374,7 @@ angular.module('WebPortal')
                 center: new Microsoft.Maps.Location(e.dataItem.Latitude, e.dataItem.Longitude),
                 zoom: 18,
                 animate: true,
+                mapTypeId: Microsoft.Maps.MapTypeId.road
                    
 
             });
@@ -409,44 +411,8 @@ angular.module('WebPortal')
             iframe.contentWindow.postMessage(message, "*");;
         }
 
-       
 
-
-        // Sample options for first chart
-        $scope.currentMonth = {
-            chart: {
-                type: 'line',
-                events: {
-                    load: function (event) {
-                        
-                        
-                    }
-                }
-            },
-            title: {
-                text: 'Current Month'
-            },
-            xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'April', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-            },
-            plotOptions: {
-                series: {
-                    cursor: 'pointer',
-                    point: {
-                        events: {
-                            click: function () {
-                                alert('Category: ' + this.category + ', value: ' + this.y);
-                            }
-                        }
-                    }
-                }
-            },
-            series: [{
-                data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
-            }]
-            
-
-        };
+        
         $scope.nextMonth = {
             chart: {
                 type: 'line',
@@ -482,13 +448,47 @@ angular.module('WebPortal')
 
         };
         $scope.years = [2016, 2017];
+        $scope.months = ['Jan', 'Feb', 'Mar', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         $scope.selectedYear = 2016;
+        $scope.selectedMonth = 'Nov';
         $scope.changeYear = function () {
             console.log($scope.selectedYear);
             $scope.YearlyConsumption.series = [];
             $scope.YearlyConsumption.loading = true;       
             $scope.YearlyConsumption.title.text='Total Electricity consumption (' + $scope.selectedYear + ')';   
             getYearlyConsumption();
+
+            $scope.WeeklyConsumption.series = [];
+            $scope.WeeklyConsumption.loading = true;
+            $scope.WeeklyConsumption.title.text = 'Weekly Electricity consumption (' + $scope.selectedYear + ')';
+            $scope.currentMonth.series = [];
+            $scope.currentMonth.loading = true;
+            $scope.currentMonthPrediction.series = [];
+            $scope.currentMonthPrediction.loading = true;
+            $scope.nextMonthPrediction.series = [];
+            $scope.nextMonthPrediction.loading = true;
+            getWeeklyConsumption();
+            getCurrentMonthConsumption();
+            getNextMonthprediction();
+            getCurrentMonthprediction();
+        }
+        $scope.changeMonth = function () {
+            console.log($scope.selectedMonth);
+            $scope.WeeklyConsumption.series = [];
+            $scope.WeeklyConsumption.loading = true;
+            $scope.WeeklyConsumption.title.text = 'Weekly Electricity consumption (' + $scope.selectedYear + ')';
+            $scope.currentMonth.series = [];
+            $scope.currentMonth.loading = true;
+            $scope.nextMonth.series = [];
+            $scope.nextMonth.loading = true;
+            $scope.currentMonthPrediction.series = [];
+            $scope.currentMonthPrediction.loading = true;
+            $scope.nextMonthPrediction.series = [];
+            $scope.nextMonthPrediction.loading = true;
+            getWeeklyConsumption();
+            getCurrentMonthConsumption();
+            getNextMonthprediction();
+            getCurrentMonthprediction();
         }
         function getYearlyConsumption() {
             $http({
@@ -530,15 +530,10 @@ angular.module('WebPortal')
             });
         }
         getYearlyConsumption();
-       
-       
-
-
-
         $scope.YearlyConsumption = {
             chart: {
                 type: 'column',
-                
+
                 events: {
                     drilldown: function (e) {
                         console.log(e.point); // The point, with name, that was clicked
@@ -547,7 +542,7 @@ angular.module('WebPortal')
                         $scope.YearlyConsumptionChart = this;
                     }
                 },
-               
+
                 lang: {
                     loading: 'Loading...'
                 }
@@ -555,7 +550,7 @@ angular.module('WebPortal')
 
             },
             title: {
-                text: 'Total Electricity consumption (' + $scope.selectedYear+')'
+                text: 'Total Electricity consumption (' + $scope.selectedYear + ')'
             },
 
             xAxis: {
@@ -597,18 +592,319 @@ angular.module('WebPortal')
             },
 
             series: [
-               
+
 
             ],
             loading: true,
             credits: {
                 enabled: false
             },
-         
-        }
-       
+
+        };
+        function getWeeklyConsumption() {
+            
+            $http({
+                url: config.restServer + "api/getweekwisemonthlyconsumption/" + $scope.userId + "/" + $scope.selectedMonth + "/" + $scope.selectedYear,
+                dataType: 'json',
+                method: 'Get',
+            }).success(function (response) {
+                console.log("Get Weekly Consumption [Info] ::", response);
+                $scope.WeeklyConsumption.loading = false;
+                $scope.WeeklyConsumption.series = [];
+                for (var i = 0; i < response.length; i++) {
+                    var data = [];
+                    for (var j = 0; j < response[i].WeekWiseConsumption.length; j++) {
+                        data.push(response[i].WeekWiseConsumption[j]);
+                    }
+                    
+                    $scope.WeeklyConsumption.chart.title = 'Weekly Electricity consumption (' + $scope.selectedMonth + ')';
+                    $scope.WeeklyConsumption.series.push({
+                        id: response[i].PowerScout,
+                        stack: 'meter',
+                        data: data,
+                        name: response[i].Name,
+                        serial: response[i].PowerScout,
+                    });
+                    $scope.WeeklyConsumptionChart.reflow();
+                }
+
+            })
+           .error(function (error) {
+                    console.log("Error : " + JSON.stringify(error));
+            });
+        };
+        getWeeklyConsumption();
+        $scope.WeeklyConsumption = {
+            chart: {
+                type: 'column',
+
+                events: {
+                    drilldown: function (e) {
+                        console.log(e.point); // The point, with name, that was clicked
+                    },
+                    load: function (event) {
+                        $scope.WeeklyConsumptionChart = this;
+                    }
+                },
+
+                lang: {
+                    loading: 'Loading...'
+                }
+
+
+            },
+            title: {
+                text: 'Weekly Electricity consumption (' + $scope.selectedMonth + ')'
+            },
+
+            xAxis: {
+                categories: ['Week1', 'Week2', 'Week3', 'Week4', 'Week5','Week6']
+            },
+
+            yAxis: {
+                allowDecimals: false,
+                min: 0,
+                title: {
+                    text: 'Total Consumption'
+                }
+            },
+
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.x + '</b><br/>' +
+                        this.series.name + ': ' + this.y + '<br/>' +
+                        'Total Consumptiom: ' + this.point.stackTotal;
+                }
+            },
+
+            plotOptions: {
+                column: {
+                    stacking: 'normal'
+                },
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function () {
+                                console.log(this.series.name);
+                                //alert('Category: ' + this.category + ', value: ' + this.y);
+                                onSeriesClicked(this.series.name);
+                            }
+                        }
+                    }
+                }
+            },
+
+            series: [
+
+
+            ],
+            loading: true,
+            credits: {
+                enabled: false
+            },
+
+        };
+
    
-        
+
+        function getCurrentMonthConsumption() {
+            $http({
+                url: config.restServer + "api/getdaywisemonthlyconsumption/" + $scope.userId + "/" + $scope.selectedMonth + "/"+ $scope.selectedYear,
+                dataType: 'json',
+                method: 'Get',
+            }).success(function (response) {
+                console.log("Get CurrentMonthConsumption [Info] ::", response);
+
+                for (var i = 0; i < response.length; i++) {
+                    if (response[i].DayWiseConsumption != undefined) {
+                        $scope.currentMonth.series.push({
+
+                            data: response[i].DayWiseConsumption,
+                            name: response[i].Name,
+
+                        });
+                    }
+                }
+
+            })
+                .error(function (error) {
+                    console.log("Error : " + JSON.stringify(error));
+                });
+        }
+        getCurrentMonthConsumption();
+
+
+
+        function getNextMonthprediction() {
+            $http({
+                url: config.restServer + "api/getdaywisenextmonthprediction/" + $scope.userId + "/" + $scope.selectedMonth +"/"+ $scope.selectedYear,
+                dataType: 'json',
+                method: 'Get',
+            }).success(function (response) {
+                console.log("Get NextMonthPrediction [Info] ::", response);
+
+                for (var i = 0; i < response.length; i++) {
+
+                    if (response[i].DayWiseConsumptionPrediction != undefined) {
+                        $scope.nextMonthPrediction.series.push({
+
+                            data: response[i].DayWiseConsumptionPrediction,
+                            name: response[i].Name,
+
+                        });
+                    }
+                }
+
+
+            })
+                .error(function (error) {
+                    console.log("Error : " + JSON.stringify(error));
+                });
+        }
+        getNextMonthprediction();
+
+        function getCurrentMonthprediction() {
+            $http({
+                url: config.restServer + "api/getdaywisecurrentmonthprediction/" + $scope.userId + "/" + $scope.selectedMonth + "/" + $scope.selectedYear,
+                dataType: 'json',
+                method: 'Get',
+            }).success(function (response) {
+                console.log("Get CurrentMonthPrediction [Info] ::", response);
+
+                for (var i = 0; i < response.length; i++) {
+
+                    if (response[i].DayWiseConsumptionPrediction != undefined) {
+                        $scope.currentMonthPrediction.series.push({
+                            data: response[i].DayWiseConsumptionPrediction,
+                            name: response[i].Name,
+
+                        });
+                    }
+                }
+
+
+            })
+                .error(function (error) {
+                    console.log("Error : " + JSON.stringify(error));
+                });
+        }
+        getCurrentMonthprediction();
+
+
+        // Sample options for first chart
+        $scope.currentMonth = {
+            chart: {
+                type: 'line',
+                events: {
+                    load: function (event) {
+
+
+                    }
+                }
+            },
+            title: {
+                text: 'Current Month Day Wise'
+            },
+            xAxis: {
+                categories: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+            },
+            plotOptions: {
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function () {
+                                alert('Category: ' + this.category + ', value: ' + this.y);
+                            }
+                        }
+                    }
+                }
+            },
+            series: [],
+            credits: {
+                enabled: false
+            },
+
+
+
+        };
+
+        // Sample options for first chart
+        $scope.currentMonthPrediction = {
+            chart: {
+                type: 'line',
+                events: {
+                    load: function (event) {
+
+
+                    }
+                }
+            },
+            title: {
+                text: 'Current Month Prediction'
+            },
+            xAxis: {
+                categories: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+            },
+            plotOptions: {
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function () {
+                                alert('Category: ' + this.category + ', value: ' + this.y);
+                            }
+                        }
+                    }
+                }
+            },
+            series: [],
+            credits: {
+                enabled: false
+            },
+
+
+
+        };
+
+        // Sample options for first chart
+        $scope.nextMonthPrediction = {
+            chart: {
+                type: 'line',
+                events: {
+                    load: function (event) {
+
+
+                    }
+                }
+            },
+            title: {
+                text: 'Next Month Prediction'
+            },
+            xAxis: {
+                categories: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+            },
+            plotOptions: {
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function () {
+                                alert('Category: ' + this.category + ', value: ' + this.y);
+                            }
+                        }
+                    }
+                }
+            },
+            series: [],
+            credits: {
+                enabled: false
+            },
+
+
+
+        };
 
 
        

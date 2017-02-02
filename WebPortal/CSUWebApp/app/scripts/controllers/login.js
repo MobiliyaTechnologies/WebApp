@@ -8,11 +8,13 @@
  * Controller of the angulartestApp
  */
 angular.module('WebPortal')
-    .controller('loginCtrl', function ($scope, $http, $location, $state, Auth, Token, config, $interval) {
+    .controller('loginCtrl', ['$scope', '$http', '$location', '$state', 'Auth', 'Token', 'config','$interval', '$location', function ($scope, $http, $location, $state, Auth, Token, config, $interval ) {
         $scope.toggleClass = "fa fa-times fa-pencil";
         $scope.loading ="display:none;"
         console.log("Login Controller");
-
+        $scope.color = {
+            name: 'blue'
+        };
         //update token if not available 
         if (Token.data.accesstoken == '')
             Token.update(function () { });
@@ -38,10 +40,9 @@ angular.module('WebPortal')
                     "Content-Type": "application/json"
                 }
             }).success(function (response) {
-           
+            
                 console.log("Login Api response [Info]::",response);
                 if (response.Status_Code == 200) {
-
                     localStorage.setItem("userId", response.User_Id);
                     localStorage.setItem("UserName", response.First_Name);
                     localStorage.setItem("LastName", response.Last_Name);
@@ -137,7 +138,33 @@ angular.module('WebPortal')
                 alert("Please Enter Email")
             }
         }
-    });
+        $scope.registerUser= function () {
+            var JSONobj = new Object();
+            JSONobj.First_Name = $scope.R_First_Name;
+            JSONobj.Last_Name = $scope.R_Last_Name;
+            JSONobj.Email = $scope.R_Email;
+            JSONobj.Password = $scope.R_Password;
+            JSONobj.Role_Id = $scope.R_UserRole;
+            $http({
+                url: config.restServer + "/api/signup",
+                dataType: 'json',
+                method: 'POST',
+                data: JSONobj,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).success(function (response) {
+                console.log("Register Api response [Info]::", response);
+                alert("Registered Successfully");       
+            })
+            .error(function (error) {
+                $scope.loading = "display:none;"
+                alert("Error : " + JSON.stringify(error));
+            });
+        }
+
+        
+    }]);
 
 
 /**

@@ -61,31 +61,67 @@
                              <div class="k-content">
                                  <div ng-if="YearlyConsumption.loading" class="loader"></div>
                              </div>
-                             <select class="k-content" ng-change="changeYear()" ng-model="selectedYear" ng-options="x for x in years" style="float:right;width: 10%;">
-                                 
-                             </select>
-                            
+                             <select class="k-content" ng-change="changeYear()" ng-model="selectedYear" ng-options="x for x in years" style="float:right;width: 10%;">                                 
+                             </select>                            
                             <highchart ng-if="YearlyConsumption" config="YearlyConsumption" class="col-sm-12" style="height:80vh;"></highchart>
                         </div>
                      </div>
                  </div>
              </div>
          </div>
-         <!--<h4 class="header-text">ALL REPORTS</h4>
+
+         <h4 class="header-text">WEEKLY CONSUMPTION REPORT</h4>
          <div class="jumbotron">
              <div class="container">
                  <div class="ui-widget">
                      <div class="row">
-                         <div class="col-sm-6" >
-                             <hc-chart id="linechart" options="currentMonth">Placeholder for generic chart</hc-chart>
-                         </div>
-                         <div class="col-sm-6">
-                             <hc-chart id="linechart" options="nextMonth">Placeholder for generic chart</hc-chart>
+                         <div class="col-sm-12">
+                             <!--<hc-chart id="bargraph" options="barChartOptions" class="col-sm-12" style="height:80vh;">Placeholder for generic chart</hc-chart>-->
+                             <div class="k-content">
+                                 <div ng-if="WeeklyConsumption.loading" class="loader"></div>
+                             </div>
+                             <select class="k-content" ng-change="changeMonth()" ng-model="selectedMonth" ng-options="x for x in months" style="float:right;width: 10%;"></select>
+
+                             <highchart ng-if="WeeklyConsumption" config="WeeklyConsumption" class="col-sm-12" style="height:80vh;"></highchart>
                          </div>
                      </div>
                  </div>
              </div>
-         </div>-->
+         </div>
+
+
+         <h4 class="header-text">MONTHLY REPORTS</h4>
+         <div class="jumbotron">
+             <div class="container">
+                 <div class="ui-widget">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <highchart ng-if="currentMonth" config="currentMonth" class="col-sm-12" style="height:80vh;"></highchart>
+                         </div>
+                         <!--<div class="col-sm-6">
+                             <hc-chart id="linechart" options="nextMonth">Placeholder for generic chart</hc-chart>
+                         </div>-->
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <h4 class="header-text">PREDICTIONS REPORTS</h4>
+         <div class="jumbotron">
+             <div class="container">
+                 <div class="ui-widget">
+                     <div class="row">
+                         <div class="col-sm-6">
+                             <highchart ng-if="currentMonthPrediction" config="currentMonthPrediction" class="col-sm-12" style="height:80vh;"></highchart>
+                         </div>
+                         <div class="col-sm-6">
+                             <highchart ng-if="nextMonthPrediction" config="nextMonthPrediction" class="col-sm-12" style="height:80vh;"></highchart>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+
+        
          <h4  class="header-text">ALL REPORTS</h4>
          <div class="jumbotron" >
              <div class="container">
