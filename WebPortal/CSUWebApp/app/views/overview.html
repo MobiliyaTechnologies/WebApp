@@ -12,7 +12,7 @@
                 clearTimeout(resizeTimeout);
                 var resizeTimeout = setTimeout(function () {
                     angular.element(document.getElementById('iFrameEmbedTile')).scope().setIFrameSize();
-                }, 500);
+                }, 1000);
             });
         });
         function loadMapScenario() {
@@ -57,14 +57,13 @@
              <div class="container">
                  <div class="ui-widget">
                      <div class="row">
-                         <div class="col-sm-12">
-                             <!--<hc-chart id="bargraph" options="barChartOptions" class="col-sm-12" style="height:80vh;">Placeholder for generic chart</hc-chart>-->
+                         <div class="col-sm-12" >
                              <div class="k-content">
                                  <div ng-if="YearlyConsumption.loading" class="loader"></div>
                              </div>
-                             <!--<select class="k-content" ng-change="changeYear()" ng-model="selectedYear" ng-options="x for x in years" style="float:right;width: 10%;">                                 
-                             </select>-->                            
-                            <highchart ng-if="YearlyConsumption" config="YearlyConsumption" class="col-sm-12" style="height:80vh;"></highchart>
+                             <div class="highchart-wrapper">
+                                 <highchart ng-if="YearlyConsumption" class="highchart-container"  config="YearlyConsumption"></highchart>
+                             </div>                       
                         </div>
                          <span class="glyphicon glyphicon-circle-arrow-left gi-3x" ng-click="moveMonthBackward()"></span>
                          <span class="glyphicon glyphicon-circle-arrow-right pull-right gi-3x" ng-click="moveMonthForward()"></span>
@@ -80,14 +79,13 @@
                  <div class="ui-widget">
                      <div class="row">
                          <div class="col-sm-12">
-                             <!--<hc-chart id="bargraph" options="barChartOptions" class="col-sm-12" style="height:80vh;">Placeholder for generic chart</hc-chart>-->
                              <div class="k-content">
                                  <div ng-if="WeeklyConsumption.loading" class="loader"></div>
                              </div>
-                             <!--<select class="k-content" ng-change="changeMonth()" ng-model="selectedMonth" ng-options="x for x in months" style="float:right;width: 10%;"></select>-->
-
-                             <highchart ng-if="WeeklyConsumption" config="WeeklyConsumption" class="col-sm-12" style="height:80vh;"></highchart>
-                         </div>
+                             <div class="highchart-wrapper">
+                                <highchart ng-if="WeeklyConsumption" config="WeeklyConsumption" class="highchart-container"></highchart>
+                              </div>
+                           </div>
                          <span class="glyphicon glyphicon-circle-arrow-left gi-3x" ng-click="moveWeekBackward()"></span>
                          <span class="glyphicon glyphicon-circle-arrow-right pull-right gi-3x" ng-click="moveWeekForward()"></span>
                      </div>
@@ -102,7 +100,9 @@
                  <div class="ui-widget">
                      <div class="row">
                          <div class="col-sm-12">
-                             <highchart ng-if="currentMonth" config="currentMonth" class="col-sm-12" style="height:80vh;"></highchart>
+                             <div class="highchart-wrapper">
+                                 <highchart ng-if="currentMonth" config="currentMonth" class="highchart-container" style="height:80vh;"></highchart>
+                             </div>
                          </div>
                          <!--<div class="col-sm-6">
                              <hc-chart id="linechart" options="nextMonth">Placeholder for generic chart</hc-chart>
@@ -116,12 +116,12 @@
              <div class="container">
                  <div class="ui-widget">
                      <div class="row">
-                         <div class="col-sm-6">
-                             <highchart ng-if="currentMonthPrediction" config="currentMonthPrediction" class="col-sm-12" style="height:80vh;"></highchart>
-                         </div>
-                         <div class="col-sm-6">
-                             <highchart ng-if="nextMonthPrediction" config="nextMonthPrediction" class="col-sm-12" style="height:80vh;"></highchart>
-                         </div>
+                             <div class="highchart-wrapper col-sm-6">
+                                 <highchart ng-if="currentMonthPrediction" config="currentMonthPrediction" class="highchart-container"></highchart>
+                             </div>
+                             <div class="highchart-wrapper col-sm-6">
+                                     <highchart ng-if="nextMonthPrediction" config="nextMonthPrediction" class="highchart-container"></highchart>
+                             </div>
                      </div>
                  </div>
              </div>
