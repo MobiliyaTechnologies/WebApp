@@ -230,6 +230,7 @@ angular.module('WebPortal')
             if (index >= 0) {
                 if ($scope.urls[index].Report != undefined) {
                     embedReport($scope.urls[index].Report);
+                    changeLayout($scope.MeterName);
                     $scope.$apply();
                     $("#scrolldiv").animate({
                         scrollTop: $("#report").offset().top
@@ -387,7 +388,9 @@ angular.module('WebPortal')
             //    }
             //});
         }
-
+        function changeLayout(meterName) {
+            console.log("MeterName ::", meterName);
+        }
         function embedReport(reportURL) {
             var embedUrl = reportURL;
             if ("" === embedUrl) {
