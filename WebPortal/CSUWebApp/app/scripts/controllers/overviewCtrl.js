@@ -656,14 +656,14 @@ angular.module('WebPortal')
 
         }
         function getWeeklyConsumption() {
-            var month = months[($scope.selectedMonthNo + 1) % 12];
+            var month = months[($scope.selectedMonthNo  ) % 12];
 
             var year = $scope.selectedYear;
             if (month == 'Jan')
                 year = $scope.selectedYear + 1;
             
             $http({
-                    url: config.restServer + "api/getweekwisemonthlyconsumptionforoffset/" + $scope.userId + "/" + month + "/" + year+"/4",
+                 url: config.restServer + "api/getweekwisemonthlyconsumptionforoffset/" + $scope.userId + "/" + month + "/" + year+"/4",
                 dataType: 'json',
                 method: 'Get',
             }).success(function (response) {

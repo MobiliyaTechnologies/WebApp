@@ -64,7 +64,7 @@
                     <li ng-click="makeActive(0)" class="side-menu-li" ng-class="{active: $state.includes('overview')}"><a  ui-sref="overview" style="{{li_css[0]}}">DASHBOARD <span class="sr-only">(current)</span></a></li>
                     <li ng-click="makeActive(1)" class="side-menu-li" ng-class="{active: $state.includes('reports')}"><a ui-sref="reports" style="{{li_css[1]}}">REPORTS</a></li>
                     <li ng-click="makeActive(2)" class="side-menu-li" ng-class="{active: $state.includes('profile')}"><a ui-sref="profile" style="{{li_css[2]}}">PROFILE</a></li>
-                    
+                    <li ng-click="makeActive(3)" class="side-menu-li" ng-class="{active: $state.includes('alerts')}"><a ui-sref="alerts" style="{{li_css[3]}}">ALERTS</a></li>
                 </ul>
              
                    <div class="weather-widget" ng-show="weather.hasState == 'has-success'">
