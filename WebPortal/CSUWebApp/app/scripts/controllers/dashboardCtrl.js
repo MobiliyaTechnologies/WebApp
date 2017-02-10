@@ -46,19 +46,28 @@ angular.module('WebPortal')
                 $scope.li_css[0] = 'background-color: #192c1f;color:#ffd600;';
                 $scope.li_css[1] = 'background-color: #31573e;color:white;';
                 $scope.li_css[2] = 'background-color: #31573e;color:white;';
+                $scope.li_css[3] = 'background-color: #192c1f;color:white;';
             }
             else if (index == 1) {
                 $scope.li_css[0] = 'background-color: #31573e;color:white;';
                 $scope.li_css[1] = 'background-color: #192c1f;color:#ffd600;';
                 $scope.li_css[2] = 'background-color: #31573e;color:white;';
+                $scope.li_css[3] = 'background-color: #192c1f;color:white;';
             }
             else if (index == 2) {
                 
                 $scope.li_css[0] = 'background-color: #31573e;color:white;';
                 $scope.li_css[1] = 'background-color: #31573e;color:white;';
                 $scope.li_css[2] = 'background-color: #192c1f;color:#ffd600;';
+                $scope.li_css[3] = 'background-color: #31573e;color:white;';
             }
-           
+            else if (index == 3) {
+
+                $scope.li_css[0] = 'background-color: #31573e;color:white;';
+                $scope.li_css[1] = 'background-color: #31573e;color:white;';
+                $scope.li_css[2] = 'background-color: #31573e;color:white;';
+                $scope.li_css[3] = 'background-color: #192c1f;color:#ffd600;';
+            }
 
         }
 
