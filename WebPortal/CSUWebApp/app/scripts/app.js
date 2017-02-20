@@ -17,8 +17,9 @@ angular
         'ui.router',
         'kendo.directives',
         'ui.bootstrap',
-        'highcharts-ng'
-
+        'highcharts-ng',
+        'datatables',
+        'ngDragDrop'
     ])
 
 
@@ -57,6 +58,12 @@ angular
                 parent: 'dashboard',
                 templateUrl: './app/views/profile.html',
                 controller: 'profileCtrl'
+            })
+            .state('alerts', {
+                url: '/alerts',
+                parent: 'dashboard',
+                templateUrl: './app/views/alerts.html',
+                controller: 'alertsCtrl'
             });
 
     })
@@ -105,7 +112,8 @@ angular
             data,
             update: function (callback) {
                 $http({
-                    url: "http://csuwebapp.azurewebsites.net//PowerBIService.asmx/GetAccessToken",
+                    //url: "http://csuwebapp.azurewebsites.net/PowerBIService.asmx/GetAccessToken",
+                    url: "http://localhost:65159/PowerBIService.asmx/GetAccessToken",
                     method: 'GET'
 
                 }).success(function (response) {

@@ -166,24 +166,43 @@
                              <div id="report" class="dash-unit col-sm-12" style="height:100%;padding:0;">
                                  <iframe id="reportIframe" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
                              </div>
-                             <div id="reportscroll">
-
-                             </div>
+                             
                          </div>
                      </div>
                  </div>
              </div>
          </div>
 
-         <h4 class="header-text">METER REPORT&nbsp;{{MeterName}}</h4>
-         <div class="jumbotron">
+         <h4 class="header-text">CLASS LAYOUT</h4>
+         <div id="layout" class="jumbotron">
              <div class="container">
                  <div class="ui-widget">                     
                          <div class="row">
-                             <div class="col-sm-12">
-                                 <img src="../../Assets/Basement-1.jpg" alt="Mountain View" style="width:100%;height:100%;">
+                             <div class="col-sm-9">
+                                 <img src="./app/images/map_04.png" alt="Mountain View" style="width:990px;height:600px;">
+                                 <div ng-repeat="sensor in sensors">
+                                     <div ng-if=sensor.Class_Id id="sensor_layout_{{sensor.Sensor_Id}}" data-drag="true" class="sensor col-sm-3" style="position:absolute;display:block;top:{{sensor.Class_X+($index*20)+50}}px;left:{{sensor.Class_Y+($index*20)-110}}px" ng-click="showSensorDetails(sensor)">
+                                         <h5 class="blink_me" style="position:absolute;margin-left:6px;margin-top:5px;">{{sensor.Temperature.toFixed(0)}}</h5>
+                                         <img src="./app/images/bullet_green.svg" alt="Mountain View" style="height:30px; width:30px;z-index:1;">
+                                     </div>
+                                 </div>
+                             </div>
+                             <div class="col-sm-3" style="color:black;">
+                                 <div class="panel panel-default">
+                                     <div class="panel-body">
+                                         <div class="sensor-detail  col-sm-12">
+                                             <h3>SENSOR DETAILS </h3></br>
+                                             <Label>Humidity :&nbsp;&nbsp;</Label>{{selectedSensor.Humidity.toFixed(2)}}</br>
+                                             <Label>Brightness :&nbsp;&nbsp;</Label>{{selectedSensor.Brightness}}</br>
+                                             <Label>Temperature :&nbsp;&nbsp;</Label>{{selectedSensor.Temperature.toFixed(2)}}</br>
+                                         </div>
+                                     </div>
+                                 </div>
+                             
+                                 
                              </div>
                          </div>
+                     
                  </div>
              </div>
          </div>

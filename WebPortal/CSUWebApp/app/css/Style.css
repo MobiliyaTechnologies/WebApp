@@ -379,10 +379,11 @@ iframe {
     display: inline-block;
     position: relative;
     padding: 0.6em;
-    background: #3498db;
+    background: #31573e;
     border-radius: 0.2em;
     font-size: 1.3em;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
 }
 
     .notification::before,
@@ -409,7 +410,7 @@ iframe {
         line-height: 100%;
         border: 2px #fff solid;
         border-radius: 60px;
-        background: #3498db;
+        background: #31573e;
         opacity: 0;
         content: attr(data-count);
         opacity: 0;
@@ -754,6 +755,7 @@ iframe {
 }
 .header-text {
     font-weight: 300;
+    color:white;
 }
 .side-menu {
     border: dashed 1px;
@@ -875,5 +877,18 @@ iframe {
 
     100% {
         transform: rotate(360deg);
+    }
+}
+
+.app-modal-window .modal-dialog {
+    width: 1500px;
+}
+.blink_me {
+    animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
     }
 }
