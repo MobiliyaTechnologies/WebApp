@@ -31,8 +31,9 @@ angular.module('WebPortal')
             var JSONobj = new Object();
             JSONobj.Email = $("#username").val();
             JSONobj.Password = $("#password").val();
+            console.log("Jsonobj", JSONobj);
             $http({
-                url: config.restServer + "/api/signin",
+                url: config.restServer + "api/signin",
                 dataType: 'json',
                 method: 'POST',
                 data: JSONobj,

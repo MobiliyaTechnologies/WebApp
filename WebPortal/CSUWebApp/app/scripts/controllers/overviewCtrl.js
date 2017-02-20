@@ -233,7 +233,7 @@ angular.module('WebPortal')
                     changeLayout($scope.MeterName);
                     $scope.$apply();
                     $("#scrolldiv").animate({
-                        scrollTop: $("#report").offset().top
+                        scrollTop: $("#layout").offset().top
                     });
                 }
             }
@@ -250,7 +250,7 @@ angular.module('WebPortal')
                     embedReport($scope.urls[index].Report);
                     $scope.$apply();
                     $("#scrolldiv").animate({
-                        scrollTop: $("#reportscroll").offset().top+400
+                        scrollTop: $("#layout").offset().top+400
                     });
                 }
             }
@@ -967,7 +967,31 @@ angular.module('WebPortal')
         };
 
 
-       
+        function getSensorList() {
+
+            $http({
+                url: config.restServer + "api/getallsensors/" + localStorage.getItem("userId"),
+                dataType: 'json',
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).success(function (response) {
+                console.log("Get Sensor list response [Info]::", response);
+                $scope.sensors = response;
+
+            })
+                .error(function (error) {
+                    alert("Error : " + JSON.stringify(error));
+                });
+
+        }
+        getSensorList();
+        $scope.showSensorDetails = function (sensor) {
+            console.log("Sensor ::", sensor);
+            $scope.selectedSensor = sensor;
+
+
+        }
 
     });
 

@@ -97,7 +97,69 @@ angular.module('WebPortal')
                 $scope.avatar = result.src;
             });
         };
-        
+        function subscribeTopic(token) {
+            $http({
+                url: "https://iid.googleapis.com/iid/v1/" + token + "/rel/topics/Alerts",
+                dataType: 'json',
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "key=AIzaSyBkgKls7ACvfll8pYuuicCr2e9r17_55Eg"
+
+                }
+            }).success(function (response) {
+                console.log("Successfully subscribed to topic 'Alerts'")
+
+            })
+                .error(function (error) {
+                    alert("Error : " + JSON.stringify(error));
+                });
+        }
+
+        var config = {
+            apiKey: "AIzaSyDOmoRglupPYwYYIr3lihNYKXUsEOVpezw",
+            authDomain: "csu-android-app.firebaseapp.com",
+            databaseURL: "https://csu-android-app.firebaseio.com",
+            storageBucket: "csu-android-app.appspot.com",
+            messagingSenderId: "107379564375"
+        };
+        firebase.initializeApp(config);
+        const messaging = firebase.messaging();      
+           messaging.requestPermission()
+            .then(function () {
+                console.log("[Info] :: User Granted Permission");
+                return messaging.getToken();
+            })
+            .then(function (token) {
+                console.log("Registration token ::", token);
+                subscribeTopic(token);
+            })
+            .catch(function (err) {
+                console.log("[Info] :: User not Granted Permission [Error]" ,err);
+            })
+           messaging.onMessage(function (payload) {
+               console.log(payload);
+               var el = document.querySelector('.notification');
+               var count = Number(el.getAttribute('data-count')) || 0;
+               el.setAttribute('data-count', count + 1);
+               el.classList.remove('notify');
+               el.offsetWidth = el.offsetWidth;
+               el.classList.add('notify');
+               if (count === 0) {
+                   el.classList.add('show-count');
+               }
+           });
+           $scope.showAlerts = function () {
+               var el = document.querySelector('.notification');               
+               el.setAttribute('data-count', 0);
+               el.classList.remove('show-count');
+               $state.go('alerts');
+           }
+
+           
+
+
+
 
     });
 angular.module('WebPortal').controller('ModalInstanceCtrl', function ($scope, $modalInstance, images, $http) {
@@ -148,4 +210,9 @@ angular.module('WebPortal').controller('ModalInstanceCtrl', function ($scope, $m
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
+
+   
+
+
+
 });
