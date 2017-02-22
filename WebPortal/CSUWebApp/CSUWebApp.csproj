@@ -111,10 +111,13 @@
     <Content Include="app\images\flat-avatar.png" />
     <Content Include="app\scripts\controllers\dashboardCtrl.js" />
     <Content Include="app\scripts\app.js" />
+    <Content Include="app\scripts\controllers\feedbackCtrl.js" />
     <Content Include="app\scripts\controllers\login.js" />
     <Content Include="app\scripts\controllers\overviewCtrl.js" />
     <Content Include="app\scripts\controllers\profileCtrl.js" />
     <Content Include="app\styles\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="app\views\alerts.html" />
+    <Content Include="app\views\feedback.html" />
     <Content Include="app\views\overview.html" />
     <Content Include="app\views\reports.html" />
     <Content Include="Assets\CSU_2.jpg" />
@@ -1041,7 +1044,9 @@
     <Content Include="Assets\IC488534.jpeg" />
     <Content Include="app\css\index.css" />
     <Content Include="index.html" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">

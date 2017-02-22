@@ -5,7 +5,7 @@
     <title></title>
 </head>
 <body>
-    <h4 class="header-text">ALERTS LIST</h4>
+    <h4 class="header-text" >ALERTS LIST</h4>
     <div class="jumbotron" style="height:80vh;">
                      <div class="content">
                         <div class="container-fluid">
@@ -18,7 +18,7 @@
                                         <thead>
                                         <th>Alert Type</th>
                                         <th>Class Name</th>
-                                        <th>Sensor Name</th>
+                                        <th>Time</th>
                                         <th>Alert Details</th>
                                         <th>View Details</th>
                                         </thead>
@@ -26,7 +26,7 @@
                                             <tr ng-repeat="req in alerts">
                                                 <td>{{req.Alert_Type}}</td>                                                
                                                 <td>{{req.Class_Name}}</td>
-                                                <td>{{req.Sensor_Name}}</td>
+                                                <td>{{req.Timestamp | date}}</td>
                                                 <td>{{req.Alert_Desc}}</td>
                                                 <td><a ng-click="openPopup(req)" title="View Details"><i class="fa fa-eye"></i></a></td>
                                             </tr>
@@ -46,7 +46,7 @@
                 <span style="font-size:3.5em;" class="glyphicon glyphicon-alert" aria-hidden="true"></span>
             </div>
             <div class="col-lg-8">
-                <h3>Alert Details</h3>
+                <h3 >Alert Details</h3>
             </div>
             <!--<p class="modal-title"></p>-->
         </div>
@@ -95,7 +95,7 @@
                 <img src="./app/images/map_04.png" alt="Mountain View" style="width:1100px;height:600px;">
 
                 <div ng-repeat="sensor in sensors">
-                    <div ng-if=!sensor.Class_Id id="sensor_layout_{{sensor.Sensor_Id}}" data-drag="true" class="sensor col-sm-3" style="display:none;">
+                    <div title="{{sensor}}" ng-if=!sensor.Class_Id id="sensor_layout_{{sensor.Sensor_Id}}" data-drag="true" class="sensor col-sm-3" style="display:none;">
                         <img src="./app/images/bullet.gif" alt="Mountain View" style="height:20px; width:20px;z-index:1;">
                     </div>
                 </div>
