@@ -1,4 +1,4 @@
-﻿@import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,300,600);
+﻿@import url(https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,300,600);
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 html {
     font-family: sans-serif;
@@ -6908,6 +6908,7 @@ button.close {
     bottom: 0;
     background: #31573e;
     color: #666;
+    margin-top:60px;
 }
 
     .dashboard-page .sub-header {
@@ -6971,8 +6972,8 @@ button.close {
     }
 
     .dashboard-page .nav-sidebar > .active > a, .dashboard-page .nav-sidebar > .active > a:hover, .dashboard-page .nav-sidebar > .active > a:focus {
-        color: #fff;
-        background-color: #31573e;
+        /*color: #fff;
+        background-color: #31573e;*/
     }
 
 .dashboard-page .main {
@@ -7064,13 +7065,13 @@ button.close {
     }
 
     .btn-outline.btn-white {
-        box-shadow: 0 0 0 2px rgba(255,255,255,.8)inset;
-        color: rgba(255,255,255,.8);
+        box-shadow: 0 0 0 2px #1d4c2a inset;
+        color: #1d4c2a;
     }
 
         .btn-outline.btn-white:hover {
             box-shadow: 0 0 0 2px #fff inset;
-            color: #fff;
+            color: #1d4c2a;
         }
 
     .btn-outline.btn-primary {
@@ -7176,7 +7177,7 @@ button.close {
 html, body {
     overflow: hidden;
 }
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,300,600);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,300,600);
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 html {
     font-family: sans-serif;
@@ -7207,7 +7208,8 @@ audio, canvas, progress, video {
 }
 
 a {
-    background-color: transparent;
+    
+    color:white;
 }
 
     a:active, a:hover {
@@ -14047,12 +14049,13 @@ button.close {
 
 .dashboard-page {
     position: absolute;
-    top: 0;
+    top: 70;
     left: 0;
     right: 0;
     bottom: 0;
-    background: #31573e;
+    background: #fff;
     color: #666;
+    margin-top: 60px;
 }
 
     .dashboard-page .sub-header {
@@ -14096,7 +14099,7 @@ button.close {
         padding: 0 20px 20px;
         overflow-x: hidden;
         overflow-y: auto;
-        background-color: #ecc608;
+        background-color: #fff;
         border-right: 1px solid #eee;
     }
 }
@@ -14106,7 +14109,7 @@ button.close {
 }
 
 .dashboard-page .nav-sidebar {
-    margin: 20px -21px 20px -20px;
+    
 }
 
     .dashboard-page .nav-sidebar > li > a {
@@ -14116,8 +14119,8 @@ button.close {
     }
 
     .dashboard-page .nav-sidebar > .active > a, .dashboard-page .nav-sidebar > .active > a:hover, .dashboard-page .nav-sidebar > .active > a:focus {
-        color: #fff;
-        background-color: #31573e;
+        /*color: #fff;
+        background-color: white;*/
     }
 
 .dashboard-page .main {
@@ -14209,13 +14212,13 @@ button.close {
     }
 
     .btn-outline.btn-white {
-        box-shadow: 0 0 0 2px rgba(255,255,255,.8)inset;
-        color: rgba(255,255,255,.8);
+        box-shadow: 0 0 0 2px #1d4c2a inset;
+        color: #1d4c2a;
     }
 
         .btn-outline.btn-white:hover {
-            box-shadow: 0 0 0 2px #fff inset;
-            color: #fff;
+            box-shadow: 0 0 0 2px #1d4c2a inset;
+            color: #1d4c2a;
         }
 
     .btn-outline.btn-primary {

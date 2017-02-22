@@ -233,7 +233,7 @@ angular.module('WebPortal')
                     changeLayout($scope.MeterName);
                     $scope.$apply();
                     $("#scrolldiv").animate({
-                        scrollTop: $("#layout").offset().top
+                        scrollTop: $("#report").offset().top
                     });
                 }
             }
@@ -864,7 +864,7 @@ angular.module('WebPortal')
                 }
             },
             title: {
-                text: 'Current Month Day Wise'
+                text: 'Day Wise Current Month Consumption'
             },
             xAxis: {
                 categories: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
@@ -989,9 +989,44 @@ angular.module('WebPortal')
         $scope.showSensorDetails = function (sensor) {
             console.log("Sensor ::", sensor);
             $scope.selectedSensor = sensor;
-
-
         }
+        function getRecommendation() {
+            $http({
+                url: config.restServer + "api/getrecommendations/" + localStorage.getItem("userId"),
+                dataType: 'json',
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).success(function (response) {
+                console.log("Get Recommendation list [Info]::", response);
+                $scope.recommendations = response;
+
+            })
+            .error(function (error) {
+                    alert("Error : " + JSON.stringify(error));
+            });
+        }
+        getRecommendation();
+
+        function getInsight() {
+            $http({
+                url: config.restServer + "api/getinsightdata/" + localStorage.getItem("userId"),
+                dataType: 'json',
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).success(function (response) {
+                console.log("Get Recommendation list [Info]::", response);
+                $scope.insight = response;
+                $scope.insight.ConsumptionValue = Math.round($scope.insight.ConsumptionValue)/10;
+                $scope.insight.PredictedValue = Math.round($scope.insight.PredictedValue)/10;
+                $scope.insight.overused = response.ConsumptionValue - response.PredictedValue;
+              })
+            .error(function (error) {
+                    alert("Error : " + JSON.stringify(error));
+            });
+        }
+        getInsight();
 
     });
 

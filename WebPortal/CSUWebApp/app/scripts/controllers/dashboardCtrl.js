@@ -7,7 +7,11 @@ angular.module('WebPortal')
         $scope.lastname = localStorage.getItem("LastName");
         $scope.li_css = ['background-color: #192c1f;color:#ffd600;', 'side-menu-li-inactive', 'side-menu-li-inactive'];
         $scope.li_color = ['white', 'white', 'red'];    
-
+        $scope.li_css[0] = 'border-left:solid 5px #c6d82e;';
+        $scope.li_css[1] = 'background-color: white;color:#192c1f;';
+        $scope.li_css[2] = 'background-color: white;color:#192c1f;';
+        $scope.li_css[3] = 'background-color: white;color:#192c1f;';
+        $scope.li_css[4] = 'background-color: white;color:#192c1f;';
         
         if (localStorage.getItem("Avatar")=="null") {
             console.log("$scope.avatar", $scope.avatar);
@@ -43,30 +47,42 @@ angular.module('WebPortal')
         
         $scope.makeActive = function(index){
             if (index == 0) {
-                $scope.li_css[0] = 'background-color: #192c1f;color:#ffd600;';
-                $scope.li_css[1] = 'background-color: #31573e;color:white;';
-                $scope.li_css[2] = 'background-color: #31573e;color:white;';
-                $scope.li_css[3] = 'background-color: #192c1f;color:white;';
+                $scope.li_css[0] = 'border-left:solid 5px #c6d82e;';
+                $scope.li_css[1] = 'border-left:solid 1px;';
+                $scope.li_css[2] = 'border-left:solid 1px;';
+                $scope.li_css[3] = 'border-left:solid 1px;';
+                $scope.li_css[4] = 'border-left:solid 1px;';
             }
             else if (index == 1) {
-                $scope.li_css[0] = 'background-color: #31573e;color:white;';
-                $scope.li_css[1] = 'background-color: #192c1f;color:#ffd600;';
-                $scope.li_css[2] = 'background-color: #31573e;color:white;';
-                $scope.li_css[3] = 'background-color: #192c1f;color:white;';
+                $scope.li_css[0] = 'border-left:solid 1px;';
+                $scope.li_css[1] = 'border-left:solid 5px #c6d82e;';
+                $scope.li_css[2] = 'border-left:solid 1px;';
+                $scope.li_css[3] = 'border-left:solid 1px;';
+                $scope.li_css[4] = 'border-left:solid 1px;';
             }
             else if (index == 2) {
                 
-                $scope.li_css[0] = 'background-color: #31573e;color:white;';
-                $scope.li_css[1] = 'background-color: #31573e;color:white;';
-                $scope.li_css[2] = 'background-color: #192c1f;color:#ffd600;';
-                $scope.li_css[3] = 'background-color: #31573e;color:white;';
+                $scope.li_css[0] = 'border-left:solid 1px;';
+                $scope.li_css[1] = 'border-left:solid 1px;';
+                $scope.li_css[2] = 'border-left:solid 5px #c6d82e;';
+                $scope.li_css[3] = 'border-left:solid 1px;';
+                $scope.li_css[4] = 'border-left:solid 1px;';
             }
             else if (index == 3) {
 
-                $scope.li_css[0] = 'background-color: #31573e;color:white;';
-                $scope.li_css[1] = 'background-color: #31573e;color:white;';
-                $scope.li_css[2] = 'background-color: #31573e;color:white;';
-                $scope.li_css[3] = 'background-color: #192c1f;color:#ffd600;';
+                $scope.li_css[0] = 'border-left:solid 1px;';
+                $scope.li_css[1] = 'border-left:solid 1px;';
+                $scope.li_css[2] = 'border-left:solid 1px;';
+                $scope.li_css[3] = 'border-left:solid 5px #c6d82e;';
+                $scope.li_css[4] = 'border-left:solid 1px;';
+            }
+            else if (index == 4) {
+
+                $scope.li_css[0] = 'border-left:solid 1px;';
+                $scope.li_css[1] = 'border-left:solid 1px;';
+                $scope.li_css[2] = 'border-left:solid 1px;';
+                $scope.li_css[3] = 'border-left:solid 1px;';
+                $scope.li_css[4] = 'border-left:solid 5px #c6d82e;';
             }
 
         }
@@ -197,6 +213,7 @@ angular.module('WebPortal').controller('ModalInstanceCtrl', function ($scope, $m
             }
         }).success(function (response) {
             console.log("Change Avatar response [Info] ::", response);
+            localStorage.setItem("Avatar", response);
             $modalInstance.close($scope.selected.image);
         })
         .error(function (error) {

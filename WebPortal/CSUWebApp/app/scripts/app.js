@@ -31,7 +31,6 @@ angular
 
             .state('login', {
                 url: '/login',
-                // parent: 'base',
                 templateUrl: './app/views/login.html',
                 controller: 'loginCtrl'
             })
@@ -64,12 +63,24 @@ angular
                 parent: 'dashboard',
                 templateUrl: './app/views/alerts.html',
                 controller: 'alertsCtrl'
-            });
+            })
+            .state('feedback', {
+                url: '/feedback',
+                parent: 'dashboard',
+                templateUrl: './app/views/feedback.html',
+                controller: 'feedbackCtrl'
+            })
+            .state('recommendation', {
+                url: '/recommendation',
+                parent: 'dashboard',
+                templateUrl: './app/views/recommendation.html',
+                controller: 'recommendationCtrl'
+            })
 
     })
     .constant('config', {
         restServer: "http://powergridrestservice.azurewebsites.net/",
-        //serverURL:"http://52.91.107.160:2000/"
+        //serverURL:"http://52.91.107.160:2000/",
     })
     .factory('Auth', function ($rootScope, $window) {
         this.userIsLoggedIn;
@@ -121,9 +132,9 @@ angular
                     callback();
 
                 })
-                .error(function (error) {
-                    console.log("Token Error :: " + JSON.stringify(error));
-                });
+                    .error(function (error) {
+                        console.log("Token Error :: " + JSON.stringify(error));
+                    });
             }
         };
     })
@@ -354,4 +365,27 @@ angular
                 Highcharts.chart(element[0], scope.options);
             }
         };
+    })
+    .directive('header', headerDirective)
+    .run(function ($state, $rootScope) {
+        $rootScope.$state = $state;
     });
+function headerDirective() {
+    return {
+        bindToController: true,
+        controller: HeaderController,
+        controllerAs: 'vm',
+        restrict: 'EA',
+        scope: {
+            controller: '='
+        },
+        templateUrl: 'app/views/Directive/header.html'
+    };
+
+    function HeaderController($scope, $location, $rootScope) {
+        $rootScope.hideHeader = ($location.path() === '/login') ? true : false;
+        console.log($rootScope.hideHeader);
+    }
+}
+
+    
