@@ -62,17 +62,17 @@
                                      <div class="recommendation-bar-content">
                                          <div class="col-sm-4">
                                              <span class="glyphicon glyphicon-arrow-up arrow" aria-hidden="true"></span>
-                                             <h2 style="">{{insight.ConsumptionValue}}K</h2>
-                                             <label>CONSUMED IN LAST MONTH</label>
+                                             <h2 style="">{{insight.ConsumptionValue.toFixed(2)}}K</h2>
+                                             <label>CONSUMED IN LAST WEEK(KWH)</label>
                                          </div>
                                          <div class="col-sm-4">
                                              <span class="glyphicon glyphicon-arrow-down arrow" aria-hidden="true"></span>
-                                             <h2 style="">{{insight.overused}}K</h2>
-                                             <label>OVERUSED</label>
+                                             <h2 style="">{{insight.overused.toFixed(2)}}K</h2>
+                                             <label>{{usage}}</label>
                                          </div>
                                          <div class="col-sm-4">
                                              <span class="glyphicon glyphicon-arrow-up arrow" aria-hidden="true"></span>
-                                             <h2 style="">{{insight.PredictedValue}}K</h2>
+                                             <h2 style="">{{insight.PredictedValue.toFixed(2)}}K</h2>
                                              <label>EXPECTED</label>
                                          </div>
                                      </div>
@@ -112,8 +112,8 @@
                          <div class="col-sm-9">
                              <img src="./app/images/map_04.png" alt="Mountain View" style="width:990px;height:600px;">
                              <div ng-repeat="sensor in sensors">
-                                 <div ng-if=sensor.Class_Id id="sensor_layout_{{sensor.Sensor_Id}}" data-drag="true" class="sensor col-sm-3" style="position:absolute;display:block;top:{{sensor.Class_X+($index*20)+50}}px;left:{{sensor.Class_Y+($index*20)-110}}px;cursor:pointer;cursor:pointer;" ng-click="showSensorDetails(sensor)">
-                                     <h5 class="blink_me" style="position:absolute;margin-left:6px;margin-top:5px;cursor:pointer;">{{sensor.Temperature.toFixed(0)}}</h5>
+                                 <div ng-if=sensor.Class_Id id="sensor_layout_{{sensor.Sensor_Id}}" data-drag="true" class="sensor col-sm-3" style="position:absolute;display:block;top:{{sensor.Class_X+($index*20)}}px;left:{{sensor.Class_Y+($index*20)-60}}px;cursor:pointer;cursor:pointer;" ng-click="showSensorDetails(sensor)">
+                                     <h5 class="blink_me" style="position:absolute;margin-left:6px;margin-top:5px;cursor:pointer;color:white;">{{sensor.Temperature.toFixed(0)}}</h5>
                                      <img src="./app/images/bullet_green.svg" alt="Mountain View" style="height:30px; width:30px;z-index:1;">
                                  </div>
                              </div>
@@ -125,7 +125,7 @@
                                          <h3>SENSOR DETAILS </h3></br>
                                          <h4>{{selectedSensor.Sensor_Name}}</h4>
                                          <Label>Humidity :&nbsp;&nbsp;</Label>{{selectedSensor.Humidity.toFixed(2)}}</br>
-                                         <Label>Brightness :&nbsp;&nbsp;</Label>{{selectedSensor.Brightness}}</br>
+                                         <Label>Brightness :&nbsp;&nbsp;</Label>{{selectedSensor.Brightness.toFixed(2)}}</br>
                                          <Label>Temperature :&nbsp;&nbsp;</Label>{{selectedSensor.Temperature.toFixed(2)}}</br>
                                      </div>
                                  </div>
@@ -206,12 +206,14 @@
              <div class="container">
                  <div class="ui-widget">
                      <div class="row">
-                             <div class="highchart-wrapper col-sm-6">
-                                 <highchart ng-if="currentMonthPrediction" config="currentMonthPrediction" class="highchart-container"></highchart>
+                         <div class="col-sm-12">
+                             <div  class="highchart-wrapper ">
+                                 <highchart ng-if="currentMonthPrediction.series" config="currentMonthPrediction"  class="highchart-container"></highchart>
                              </div>
-                             <div class="highchart-wrapper col-sm-6">
-                                     <highchart ng-if="nextMonthPrediction" config="nextMonthPrediction" class="highchart-container"></highchart>
-                             </div>
+                         </div>
+                             <!--<div ng-hide="true" ng-if="nextMonthPrediction.series" class="highchart-wrapper col-sm-6">
+                                     <highchart  config="nextMonthPrediction" class=""></highchart>
+                             </div>-->
                      </div>
                  </div>
              </div>

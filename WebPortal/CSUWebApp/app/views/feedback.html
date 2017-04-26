@@ -1,43 +1,35 @@
 ﻿<div>
-
-    <a ui-sref="overview" class="pull-right btn btn-primary btn-outline" style="color:white;">Back to Dashboard</a>
-    <h4 style="color:white;">FEEDBACK REPORT</h4>
-
+    <h4>FEEDBACK REPORT</h4>
     <div class="jumbotron">
-       
-            <div class="container" style="height:80vh;">
-                
-                    <div class="row">        
-                       
-                        <div class="highchart-wrapper col-sm-9">
-                            <div ng-if="loading" class="loader"></div>
-                            <div class="panel panel-default">
-                                <div class="panel-body" style="height:70vh;">
-                                    <highchart ng-if="YearlyConsumption" config="YearlyConsumption" style="height:60vh;"></highchart>
-                                </div>
-                                </div>
-                            </div>
-
-                                <div class="col-sm-3" style="color:black">
-                                    <div class="panel panel-default">
-                                        <div class="panel-body" style="height:70vh;overflow:auto;">
-                                            <div class="sensor-detail  col-sm-12">
-                                                <label>Select Classroom &nbsp;</label><select ng-options="class.ClassId as class.ClassName for class in Classes" ng-change="getFeedbackCount()" ng-model="selectedClass" style="z-index:1;"></select>   </label>    </br>       
-                                                <h3>CLASS DETAILS </h3></br>
-                                                <div ng-repeat="sensor in sensors">
-                                                <h4>{{sensor.Sensor_Name}}</h4>
-                                                <Label>Humidity :&nbsp;&nbsp;</Label>{{sensor.Humidity.toFixed(2)}}</br>
-                                                <Label>Brightness :&nbsp;&nbsp;</Label>{{sensor.Brightness}}</br>
-                                                <Label>Temperature :&nbsp;&nbsp;</Label>{{sensor.Temperature.toFixed(2)}}</br>
-                                                </div>
-                                              </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
+        <div class="container">
+            <div class="row">
+                <div class="highchart-wrapper col-sm-9">
+                    <div ng-if="loading" class="loader"></div>
+                    <div class="panel panel-default">
+                        <div class="panel-body" style="height:70vh;">
+                            <highchart ng-if="feedbackChart" config="feedbackChart" style="height:60vh;"></highchart>
                         </div>
-</div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="panel panel-default">
+                        <div class="panel-body" style="height:70vh;overflow:auto;">
+                            <div class="sensor-detail  col-sm-12">
+                                <label>Select Classroom &nbsp;</label><select ng-options="class.ClassId as class.ClassDescription for class in Classes" ng-change="getFeedbackCount()" ng-model="selectedClass" style="z-index:1;width:70px;"></select>   </label>    </br>
+                                <h3>CLASS DETAILS </h3></br>
+                                <div ng-repeat="sensor in sensors">
+                                    <h4>{{sensor.Sensor_Name}}</h4>
+                                    <Label>Humidity :&nbsp;&nbsp;</Label>{{sensor.Humidity.toFixed(2)}}</br>
+                                    <Label>Brightness :&nbsp;&nbsp;</Label>{{sensor.Brightness.toFixed(2)}}</br>
+                                    <Label>Temperature :&nbsp;&nbsp;</Label>{{sensor.Temperature.toFixed(2)}}</br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 

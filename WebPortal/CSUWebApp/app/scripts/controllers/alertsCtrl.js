@@ -1,69 +1,106 @@
 ﻿angular.module('WebPortal')
-.controller('alertsCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal,config) {
-    console.log("Alerts Controller");
-    
-    $scope.getAlerts = function(){
-        $scope.datatable={'loader': true};
-        $scope.loading = true;
-        $http({
-            url: config.restServer + "api/getallalerts/"+localStorage.getItem("userId"),
-            dataType: 'json',
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).success(function (response) {
+    .controller('alertsCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, DTOptionsBuilder) {
+        console.log("[Info] :: Alerts Controller");
+        $scope.dtOptions = DTOptionsBuilder.newOptions()
+            .withPaginationType('full_numbers')
+            .withDisplayLength(10)
+            .withOption('order', [2, 'desc']);
 
-            console.log("get alert response [Info]::", response);
-            $scope.datatable.loader = false;
-            $scope.alerts = response;    
-
-        })
-        .error(function (error) {
-                 alert("Error : " + JSON.stringify(error));
-        });
-    }
-    $scope.getAlerts();
-    $scope.openPopup = function (alert) {
-          if (alert.Alert_Type != 'Device Alert') {
-              var modalInstance = $modal.open({
-                  templateUrl: 'alertModal.html',
-                  controller: 'alertModalCtrl',
-
-                  resolve: {
-                      alerts: function () {
-                          return alert;
-                      }
-                  }
-              }).result.then(function (result) {
-                  $scope.getAlerts();
-              });
-          }
-          else {
-              $scope.openDeviceAlertPopup(alert);
-          }
-    };
-    
-    $scope.openDeviceAlertPopup = function (alert) {
-        var modalInstance = $modal.open({
-            templateUrl: 'deviceAlertModal.html',
-            controller: 'deviceAlertModalModalCtrl',
-            windowClass: 'app-modal-window',
-
-            resolve: {
-                alerts: function () {
-                    return alert;
+        /**
+        * Function to get all alerts generated  
+        */
+        $scope.getAllAlerts = function () {
+            $scope.datatable = { 'loader': true };
+            $http({
+                url: config.restServer + "api/getallalerts/" + localStorage.getItem("userId"),
+                dataType: 'json',
+                headers: {
+                    "Content-Type": "application/json"
                 }
-            }
-        }).result.then(function (result) {
-            $scope.getAlerts();
-        });
-    };
-    
+            }).success(function (response) {
 
-      
+                console.log("[Info]:: Get all alerts response ", response);
+                $scope.datatable.loader = false;
+                $scope.alerts = response;
+
+            })
+                .error(function (error) {
+                    alert("Error : " + JSON.stringify(error));
+                });
+        }
+        $scope.getAllAlerts();
+
+        /**
+        * Function to open popup according to type of alert  
+        */
+        $scope.openPopup = function (alert) {
+            if (alert.Alert_Type == 'Device Alert') {
+                $scope.openDeviceAlertPopup(alert);
+            }
+            else if (alert.Alert_Type == 'Anomaly') {
+                $scope.openAnomalyAlertPopup(alert);
+            }
+            else {
+                var modalInstance = $modal.open({
+                    templateUrl: 'alertModal.html',
+                    controller: 'alertModalCtrl',
+
+                    resolve: {
+                        alerts: function () {
+                            return alert;
+                        }
+                    }
+                }).result.then(function (result) {
+                    $scope.getAlerts();
+                });
+            }
+
+
+        };
+
+        /**
+        * Function to open popup for device related alert 
+        */
+        $scope.openDeviceAlertPopup = function (alert) {
+            var modalInstance = $modal.open({
+                templateUrl: 'deviceAlertModal.html',
+                controller: 'deviceAlertModalCtrl',
+                windowClass: 'app-modal-window',
+
+                resolve: {
+                    alerts: function () {
+                        return alert;
+                    }
+                }
+            }).result.then(function (result) {
+                $scope.getAlerts();
+            });
+        };
+        /**
+        * Function to open popup for anamoly related alert 
+        */
+        $scope.openAnomalyAlertPopup = function (alert) {
+            var modalInstance = $modal.open({
+                templateUrl: 'anomalyAlertModal.html',
+                controller: 'anomalyAlertModalCtrl',
+                windowClass: 'app-modal-anomaly',
+
+                resolve: {
+                    alerts: function () {
+                        return alert;
+                    }
+                }
+            }).result.then(function (result) {
+                $scope.getAlerts();
+            });
+        };
+
     });
-angular.module('WebPortal').controller('alertModalCtrl', function ($scope, $modalInstance, alerts, $http,config) {
-    
+
+/**
+ * Controller for alert detail popup
+ */
+angular.module('WebPortal').controller('alertModalCtrl', function ($scope, $modalInstance, alerts, $http, config) {
     $http({
         url: config.restServer + "api/getalertdetails/" + localStorage.getItem("userId") + "/" + alerts.Sensor_Log_Id,
         dataType: 'json',
@@ -71,16 +108,17 @@ angular.module('WebPortal').controller('alertModalCtrl', function ($scope, $moda
             "Content-Type": "application/json"
         }
     }).success(function (response) {
-
-        console.log("Get alert Details response [Info]::", response);
-        $scope.selectAlert = response;
-        acknowledgeAlert(alerts);
-
-    })
-    .error(function (error) {
+            console.log("[Info]:: Get alert Details response ", response);
+            $scope.selectAlert = response;
+            acknowledgeAlert(alerts);
+        })
+        .error(function (error) {
             $scope.loading = "display:none;"
             alert("Error : " + JSON.stringify(error));
-    });
+        });
+    /**
+     * Function to update acknowledge sattus of alert 
+     */
     function acknowledgeAlert(alerts) {
 
         if (!alerts.Is_Acknowledged) {
@@ -88,121 +126,16 @@ angular.module('WebPortal').controller('alertModalCtrl', function ($scope, $moda
             JSONobj.Alert_Id = alerts.Alert_Id;
             JSONobj.Acknowledged_By = localStorage.getItem("UserName");
             $http({
-                url: config.restServer + "api/acknowledgealert/" + localStorage.getItem("userId") ,
+                url: config.restServer + "api/acknowledgealert/" + localStorage.getItem("userId"),
                 dataType: 'json',
-                method:'POST',
+                method: 'POST',
                 data: JSONobj,
                 headers: {
                     "Content-Type": "application/json"
                 }
             }).success(function (response) {
                 console.log("Get alert acknolwedgement response [Info]::", response);
-                
-            })
-            .error(function (error) {
-                $scope.loading = "display:none;"
-                alert("Error : " + JSON.stringify(error));
-            });
-        }
-    }
-    $scope.ok = function () {
-         $modalInstance.close();
-    };
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-    };
-});
 
-
-angular.module('WebPortal').controller('deviceAlertModalModalCtrl', function ($scope, $modalInstance, alerts, $http, config) {
-
-    function getUnmappedSensorList() {
-
-        $http({
-            url: config.restServer + "api/getallsensors/" + localStorage.getItem("userId"),
-            dataType: 'json',
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).success(function (response) {
-            console.log("Get Sensor list response [Info]::", response);
-            $scope.sensors = response;  
-
-        })
-        .error(function (error) {
-                alert("Error : " + JSON.stringify(error));
-        });
-
-    }
-    getUnmappedSensorList();
-
-
-
-    function getClassRoomList() {
-        $http({
-            url: config.restServer + "api/getclassrooms/" + localStorage.getItem("userId"),
-            dataType: 'json',
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).success(function (response) {
-
-            console.log("Get Classroom Details response [Info]::", response);
-            $scope.classrooms = response;
-            var tablePos = $("#class-table").offset();
-            var top = tablePos.top+40;
-            var left = tablePos.left;
-            
-            for (var i = 0; i < $scope.classrooms.length; i++) {
-                
-                $scope.classrooms[i].top = top;
-                $scope.classrooms[i].left = left;
-                top = top + 40;
-            }
-
-        })
-        .error(function (error) {
-             alert("Error : " + JSON.stringify(error));
-        });
-    }
-    getClassRoomList();
-    var mapping = [];
-    $scope.dropped = function (sensorId) {
-             var sid = sensorId.target.title;
-             var sensorPos = $("#sensor_" + sid).offset();
-             for (var i = 0; i < $scope.classrooms.length; i++) {
-                if (sensorPos.top > $scope.classrooms[i].top-5 && sensorPos.top < $scope.classrooms[i].top + 45) {
-                    console.log("Class Room Mapped ::", $scope.classrooms[i]);
-                    $("#sensor_layout_"+sid).css({ display: 'block', left: $scope.classrooms[i].Y-50, top: $scope.classrooms[i].X+50,position:'absolute' });
-                    var found = mapping.filter(function (item) { return item.sen === sid; });
-                    var index = mapping.findIndex(function (item, i) {
-                        return item.Sensor_Id == sid;
-                    });
-                    if (index >= 0) {
-                        mapping[index].Class_Id = $scope.classrooms[i].ClassId;
-                    }
-                    else {
-                        mapping.push({ 'Sensor_Id': sid, 'Class_Id': $scope.classrooms[i].ClassId})
-                    }
-                }
-            }
-    }
-    $scope.associateSensor = function () {
-        console.log(mapping);
-        for (var i = 0; i < mapping.length; i++) {
-            
-            $http({
-                url: config.restServer + "api/mapsensortoclass/" + localStorage.getItem("userId"),
-                dataType: 'json',
-                method: 'POST',
-                data: mapping[i],
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).success(function (response) {
-                console.log("Assign Sendor  response [Info]::", response);
-                alert("Sensor mapped with class ");
-                $modalInstance.close();
             })
                 .error(function (error) {
                     $scope.loading = "display:none;"
@@ -216,4 +149,164 @@ angular.module('WebPortal').controller('deviceAlertModalModalCtrl', function ($s
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
+});
+
+/**
+ * Controller for device alert popup
+ */
+angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope, $modalInstance, alerts, $http, config) {
+
+    /**
+     * Function to get unmapped sensor associated with user 
+     */
+    function getUnmappedSensorList() {
+        $http({
+            url: config.restServer + "api/getallsensors/" + localStorage.getItem("userId"),
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).success(function (response) {
+            console.log("[Info]:: Get Unmapped Sensor list response ", response);
+            $scope.sensors = response;
+
+        })
+            .error(function (error) {
+                alert("Error : " + JSON.stringify(error));
+            });
+
+    }
+    getUnmappedSensorList();
+    
+    /**
+     * Function to get classroom list  
+     */
+    function getClassRoomList() {
+        $http({
+            url: config.restServer + "api/getclassrooms/" + localStorage.getItem("userId"),
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).success(function (response) {
+
+            console.log("[Info]:: Get Classroom Details response ", response);
+            $scope.classrooms = response;
+            var tablePos = $("#class-table").offset();
+            var top = tablePos.top + 40;
+            var left = tablePos.left;
+            for (var i = 0; i < $scope.classrooms.length; i++) {
+                $scope.classrooms[i].top = top;
+                $scope.classrooms[i].left = left;
+                top = top + 40;
+            }
+
+        })
+            .error(function (error) {
+                alert("Error : " + JSON.stringify(error));
+            });
+    }
+    getClassRoomList();
+    var mapping = [];
+
+    /**
+     * Function to map unmapped sensor when its classroom when dropped on UI  
+     */
+    $scope.dropped = function (sensorId) {
+        var sid = sensorId.target.title;
+        console.log(sid);
+        var sensorPos = $("#sensor_" + sid).offset();
+        for (var i = 0; i < $scope.classrooms.length; i++) {
+            if (sensorPos.top > $scope.classrooms[i].top - 5 && sensorPos.top < $scope.classrooms[i].top + 45) {
+                console.log("Class Room Mapped ::", $scope.classrooms[i]);
+                $("#sensor_layout_" + sid).css({ display: 'block', left: $scope.classrooms[i].Y, top: $scope.classrooms[i].X, position: 'absolute' });
+                var found = mapping.filter(function (item) { return item.sen === sid; });
+                var index = mapping.findIndex(function (item, i) {
+                    return item.Sensor_Id == sid;
+                });
+                if (index >= 0) {
+                    mapping[index].Class_Id = $scope.classrooms[i].ClassId;
+                }
+                else {
+                    mapping.push({ 'Sensor_Id': sid, 'Class_Id': $scope.classrooms[i].ClassId })
+                }
+            }
+        }
+    }
+    /**
+     * Function to call update api of Mapping of sensor with classroom   
+     */
+    $scope.associateSensor = function () {
+
+        for (var i = 0; i < mapping.length; i++) {
+
+            $http({
+                url: config.restServer + "api/mapsensortoclass/" + localStorage.getItem("userId"),
+                dataType: 'json',
+                method: 'POST',
+                data: mapping[i],
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).success(function (response) {
+                console.log("[Info]:: Assign Sendor  response ", response);
+
+                $modalInstance.close();
+            })
+                .error(function (error) {
+                    $scope.loading = "display:none;"
+                    //alert("Error : " + JSON.stringify(error));
+                });
+        }
+    }
+    $scope.ok = function () {
+        $modalInstance.close();
+    };
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+});
+
+/**
+ * Controller for anamoly alert popup
+ */
+angular.module('WebPortal').controller('anomalyAlertModalCtrl', function ($scope, DTOptionsBuilder, $modalInstance, alerts, $http, config) {
+
+    var time = new Date(alerts.Timestamp);
+    var unixtime = time.getTime() / 1000;
+    unixtime = unixtime.toFixed(0)
+    /**
+     * Function to get anamoly alet details  
+     */
+    function getAnomalyDetails() {
+        $http({
+            url: config.restServer + "/api/getAnomalyDetailsByDay/" + localStorage.getItem("userId") + "/" + unixtime,
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).success(function (response) {
+            console.log("Get Anomaly Details response [Info]::", response);
+            $scope.anomaly = response;
+            $scope.dtOptions = DTOptionsBuilder.newOptions()
+                .withPaginationType('full_numbers')
+                .withDisplayLength(7);
+            var data = [];
+
+
+        })
+            .error(function (error) {
+                alert("Error : " + JSON.stringify(error));
+            });
+    }
+    getAnomalyDetails();
+
+    $scope.ok = function () {
+        $modalInstance.close();
+    };
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+
 });

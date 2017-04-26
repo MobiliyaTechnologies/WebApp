@@ -1,44 +1,39 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
-    <h4 class="header-text" >ALERTS LIST</h4>
+﻿<div>
+    <h4 class="header-text">ALERTS LIST</h4>
     <div class="jumbotron" style="height:80vh;">
-                     <div class="content">
-                        <div class="container-fluid">
-                            <div class="row" >
-                                <div class="k-content">
-                                    <div ng-if="datatable.loader" class="loader"></div>
-                                </div>
-                                <div class="table-responsive">
-                                    <table id="entry-grid" datatable="ng" width="100%">
-                                        <thead>
-                                        <th>Alert Type</th>
-                                        <th>Class Name</th>
-                                        <th>Time</th>
-                                        <th>Alert Details</th>
-                                        <th>View Details</th>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="req in alerts">
-                                                <td>{{req.Alert_Type}}</td>                                                
-                                                <td>{{req.Class_Name}}</td>
-                                                <td>{{req.Timestamp | date}}</td>
-                                                <td>{{req.Alert_Desc}}</td>
-                                                <td><a ng-click="openPopup(req)" title="View Details"><i class="fa fa-eye"></i></a></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="k-content">
+                        <div ng-if="datatable.loader" class="loader"></div>
                     </div>
+                    <div class="table-responsive">
+                        <table id="entry-grid" datatable="ng" width="100%" dt-options="dtOptions">
+                            <thead>
+                            <th>Alert Type</th>
+                            <th>Class Name</th>
+                            <th>Time</th>
+                            <th>Alert Details</th>
+                            <th>View Details</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="alert in alerts | orderBy:'Time'">
+                                    <td>{{alert.Alert_Type}}</td>
+                                    <td>{{alert.Class_Name}}</td>
+                                    <td>{{alert.Timestamp | date}}</td>
+                                    <td>{{alert.Alert_Desc}}</td>
+                                    <td><a ng-click="openPopup(alert)" title="View Details"><i class="fa fa-eye"></i></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-</body>
-</html>
+    </div>
+</div>
+
+
 <script type="text/ng-template" id="alertModal.html">
     <div class="modal-header">
         <div class="row">
@@ -46,26 +41,26 @@
                 <span style="font-size:3.5em;" class="glyphicon glyphicon-alert" aria-hidden="true"></span>
             </div>
             <div class="col-lg-8">
-                <h3 >Alert Details</h3>
+                <h3>Alert Details</h3>
             </div>
             <!--<p class="modal-title"></p>-->
         </div>
     </div>
     <div class="modal-body">
         <div class="row">
-            
+
             <div class="col-lg-4 col-lg-offset-2" style="height:30vh;">
-               <label>Battery_Remaining :</label></br>
-               <label>Class_Id :</label></br>
-               <label>Humidity :</label></br>
-               <label>Battery_Remaining :</label></br>
-               <label>Is_Light_ON :</label></br>
-               <label>Last_Updated :</label> </br>
-               <label>Light_Intensity :</label></br>
-               <label>Sensor_Id :</label></br>
-               <label>Temperature :</label> </br>
-               <label>Timestamp :</label> 
-              </div>
+                <label>Battery_Remaining :</label></br>
+                <label>Class_Id :</label></br>
+                <label>Humidity :</label></br>
+                <label>Battery_Remaining :</label></br>
+                <label>Is_Light_ON :</label></br>
+                <label>Last_Updated :</label> </br>
+                <label>Light_Intensity :</label></br>
+                <label>Sensor_Id :</label></br>
+                <label>Temperature :</label> </br>
+                <label>Timestamp :</label>
+            </div>
             <div class="col-lg-4" style="height:30vh;">
                 <label>{{selectAlert.Battery_Remaining}}</label></br>
                 <label>{{selectAlert.Class_Id}}</label></br>
@@ -87,32 +82,34 @@
     </div>
 </script>
 
+
 <script type="text/ng-template" id="deviceAlertModal.html">
-   
+
     <div class="modal-body">
         <div class="row">
             <div class="col-sm-8">
                 <img src="./app/images/map_04.png" alt="Mountain View" style="width:1100px;height:600px;">
 
                 <div ng-repeat="sensor in sensors">
-                    <div title="{{sensor}}" ng-if=!sensor.Class_Id id="sensor_layout_{{sensor.Sensor_Id}}" data-drag="true" class="sensor col-sm-3" style="display:none;">
+                    <div title="Sensor ID :{{sensor}}" ng-if=!sensor.Class_Id id="sensor_layout_{{sensor.Sensor_Id}}" data-drag="true" class="sensor col-sm-3" style="display:none;">
                         <img src="./app/images/bullet.gif" alt="Mountain View" style="height:20px; width:20px;z-index:1;">
                     </div>
                 </div>
             </div>
             <div class="col-sm-4">
-                <div class="row" >
-                    <div >
+                <div class="row" style="height:50px;">
+                    <div>
                         Unmapped Sensors :
                         <div ng-if="sensor" ng-repeat="sensor in sensors">
-                            <div  ng-if=!sensor.Class_Id id="sensor_{{sensor.Sensor_Id}}" title="{{sensor.Sensor_Id}}" data-drag="true" jqyoui-draggable="{onStop:'dropped({{sensor.Sensor_Id}})'}" class="sensor col-sm-3" >
-                                <img class="col-sm-12" src="./app/images/sensor.png" alt="Mountain View" style="height:40px;z-index:1;">
+                            <div ng-if=!sensor.Class_Id title="{{sensor.Sensor_Id}}" id="sensor_{{sensor.Sensor_Id}}" data-drag="true" jqyoui-draggable="{onStop:'dropped({{sensor.Sensor_Id}})'}" class="sensor col-sm-3">
+                                <img class="col-sm-12" src="./app/images/sensor.png" alt="Mountain View" style="height:35px;z-index:1;">
                             </div>
                         </div>
                     </div>
-                <div class="col-sm-12">
-                    
-                    <table id="class-table" class="table table-bordered">                        
+                </div>
+                <div class="row">
+
+                    <table id="class-table" class="table table-bordered">
                         <thead>
                             <tr height="40px">
                                 <th>ClassRoom</th>
@@ -120,7 +117,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr height="40px" ng-repeat="class in classrooms" >
+                            <tr height="40px" ng-repeat="class in classrooms">
                                 <td>{{class.ClassName}}</td>
                                 <td></td>
                             </tr>
@@ -128,17 +125,36 @@
                     </table>
                 </div>
             </div>
-            
-
+            <div class="row">
+            </div>
 
         </div>
-        <div class="row">
-            
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="associateSensor()">Associate</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
         </div>
+</script>
+<script type="text/ng-template" id="anomalyAlertModal.html">
 
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="associateSensor()">Associate</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <div class="modal-body" style="height:70vh;">
+        <h2>Anomaly Details :</h2>
+        <div class="table-responsive">
+            <table id="entry-grid1" datatable="ng" width="80%" dt-options="dtOptions">
+                <thead>
+                <th>Meter Name</th>
+                <th>Time Stamp</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="req in anomaly | orderBy:'Timestamp'">
+                        <td>{{req.Breaker_details}}</td>
+                        <td>{{req.Timestamp}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="associateSensor()">Associate</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
     </div>
 </script>

@@ -1,81 +1,43 @@
 ﻿var reportURL = "https://app.powerbi.com/reportEmbed?reportId=ff04edce-c5c4-471c-8a44-5fb954685e32";
 angular.module('WebPortal')
     .controller('reportCtrl', function ($scope, $http, $location, $state, Auth, config, Token) {
+        console.log("[Info] :: Report Controller Loaded")
+        //Check for token if available display report or else get the token
         if (Token.data.accesstoken != '') {
-            displayGraph();
+            displayReport();
         }
         else {
-            Token.update(displayGraph);
-        }
-        function displayGraph() {
-            //embedTile();
-            embedReport();
-           
-        }
-        var width = 1024;
-        var height = 768;
-       
-        function embedReport() {
-            var embedUrl = reportURL;
-            if ("" === embedUrl) {
+            Token.update(displayReport);
+        }    
+        function displayReport() {
+            if ("" === reportURL) {
                 console.log("No embed URL found");
                 return;
             }
-
-
-            // to load a report do the following:
-            // 1: set the url
-            // 2: add a onload handler to submit the auth token
-            iframe = document.getElementById('iFrameEmbedReport');
-            iframe.src = embedUrl;
-            iframe.onload = postActionLoadReport;
-        };
-
-        function postActionLoadReport() {
-
-            // get the access token.
-            accessToken = Token.data.accesstoken
-            // return if no a
-            if ("" === accessToken) {
-                console.log("Access token not found");
-                return;
-            }
-
-            // construct the push message structure
-            // this structure also supports setting the reportId, groupId, height, and width.
-            // when using a report in a group, you must provide the groupId on the iFrame SRC
-            var m = { action: "loadReport", accessToken: accessToken };
-            message = JSON.stringify(m);
-
-            // push the message.
-            iframe = document.getElementById('iFrameEmbedReport');
-            iframe.contentWindow.postMessage(message, "*");;
-        }
-
+            iframe = document.getElementById('genericReport');
+            iframe.src = reportURL;
+            iframe.onload = $scope.setIFrameSize;
+        };      
 
         $scope.setIFrameSize = function () {
             var ogWidth = 700;
             var ogHeight = 600;
             var ogRatio = ogWidth / ogHeight;
             var windowWidth = $(window).width();
-            //if (windowWidth < 480) {
             var parentDivWidth = $(".iframe-class").parent().width();
             var newHeight = (parentDivWidth / ogRatio);
             $(".iframe-class").addClass("iframe-class-resize");
             $(".iframe-class-resize").css("width", parentDivWidth);
             $(".iframe-class-resize").css("height", newHeight);
             var accessToken = Token.data.accesstoken;
-           
-
-
+            if ("" === accessToken) {
+                console.log("[Error] :: Access token not found");
+                return;
+            }     
             var m = { action: "loadReport", accessToken: accessToken, height: newHeight, width: parentDivWidth  };
             message = JSON.stringify(m);
-
-            // push the message.
-            iframe = document.getElementById('iFrameEmbedReport');
-            iframe.contentWindow.postMessage(message, "*");;
-
-
+            iframe = document.getElementById('genericReport');
+            iframe.contentWindow.postMessage(message, "*");
         }
 
     });

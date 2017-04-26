@@ -6,26 +6,29 @@ angular.module('WebPortal')
         $scope.username = localStorage.getItem("UserName");
         $scope.lastname = localStorage.getItem("LastName");
         $scope.li_css = ['background-color: #192c1f;color:#ffd600;', 'side-menu-li-inactive', 'side-menu-li-inactive'];
-        $scope.li_color = ['white', 'white', 'red'];    
+        $scope.li_color = ['white', 'white', 'red'];
         $scope.li_css[0] = 'border-left:solid 5px #c6d82e;';
         $scope.li_css[1] = 'background-color: white;color:#192c1f;';
         $scope.li_css[2] = 'background-color: white;color:#192c1f;';
         $scope.li_css[3] = 'background-color: white;color:#192c1f;';
         $scope.li_css[4] = 'background-color: white;color:#192c1f;';
-        
-        if (localStorage.getItem("Avatar")=="null") {
+
+        if (localStorage.getItem("Avatar") == "null") {
             console.log("$scope.avatar", $scope.avatar);
             $scope.avatar = "Avatar_1.png";
-        } 
+        }
         else {
             $scope.avatar = localStorage.getItem("Avatar");
         }
 
+        /**
+        * Function to call logout api  
+        */
         $scope.logout = function () {
             console.log("logout [info] ::");
             var JSONobj = new Object();
             JSONobj.Email = localStorage.getItem("Email");
-           
+
             $http({
                 url: restServer + "api/signout",
                 dataType: 'json',
@@ -36,16 +39,15 @@ angular.module('WebPortal')
 
                 }
             }).success(function (response) {
-                
                 $state.go('login');
-               
+
             })
-            .error(function (error) {
-                alert("Error : " + JSON.stringify(error));
-            });
+                .error(function (error) {
+                    alert("Error : " + JSON.stringify(error));
+                });
         };
-        
-        $scope.makeActive = function(index){
+
+        $scope.makeActive = function (index) {
             if (index == 0) {
                 $scope.li_css[0] = 'border-left:solid 5px #c6d82e;';
                 $scope.li_css[1] = 'border-left:solid 1px;';
@@ -61,7 +63,7 @@ angular.module('WebPortal')
                 $scope.li_css[4] = 'border-left:solid 1px;';
             }
             else if (index == 2) {
-                
+
                 $scope.li_css[0] = 'border-left:solid 1px;';
                 $scope.li_css[1] = 'border-left:solid 1px;';
                 $scope.li_css[2] = 'border-left:solid 5px #c6d82e;';
@@ -75,6 +77,7 @@ angular.module('WebPortal')
                 $scope.li_css[2] = 'border-left:solid 1px;';
                 $scope.li_css[3] = 'border-left:solid 5px #c6d82e;';
                 $scope.li_css[4] = 'border-left:solid 1px;';
+                $scope.alertCount = 0;
             }
             else if (index == 4) {
 
@@ -100,8 +103,8 @@ angular.module('WebPortal')
         $scope.openPopup = function (size) {
 
             var modalInstance = $modal.open({
-                templateUrl: 'myModalContent.html',
-                controller: 'ModalInstanceCtrl',
+                templateUrl: 'changeAvatarModal.html',
+                controller: 'changeAvatarCtrl',
                 size: size,
                 resolve: {
                     images: function () {
@@ -113,6 +116,10 @@ angular.module('WebPortal')
                 $scope.avatar = result.src;
             });
         };
+
+        /**
+        * Function to subscribe topic for firebase  
+        */
         function subscribeTopic(token) {
             $http({
                 url: "https://iid.googleapis.com/iid/v1/" + token + "/rel/topics/Alerts",
@@ -124,14 +131,16 @@ angular.module('WebPortal')
 
                 }
             }).success(function (response) {
-                console.log("Successfully subscribed to topic 'Alerts'")
+                console.log("[Info] :: Successfully subscribed to topic 'Alerts'")
 
             })
                 .error(function (error) {
                     alert("Error : " + JSON.stringify(error));
                 });
         }
-
+        /**
+        * Firebase Credentials
+        */
         var config = {
             apiKey: "AIzaSyDOmoRglupPYwYYIr3lihNYKXUsEOVpezw",
             authDomain: "csu-android-app.firebaseapp.com",
@@ -140,47 +149,88 @@ angular.module('WebPortal')
             messagingSenderId: "107379564375"
         };
         firebase.initializeApp(config);
-        const messaging = firebase.messaging();      
-           messaging.requestPermission()
+        /**
+        * Function to get permission of firebase from user
+        */
+        const messaging = firebase.messaging();
+        messaging.requestPermission()
             .then(function () {
                 console.log("[Info] :: User Granted Permission");
                 return messaging.getToken();
             })
             .then(function (token) {
-                console.log("Registration token ::", token);
+                console.log("[Info] ::  Registration token ", token);
                 subscribeTopic(token);
             })
             .catch(function (err) {
-                console.log("[Info] :: User not Granted Permission [Error]" ,err);
+                console.log("[Info] :: User not Granted Permission [Error]", err);
             })
-           messaging.onMessage(function (payload) {
-               console.log(payload);
-               var el = document.querySelector('.notification');
-               var count = Number(el.getAttribute('data-count')) || 0;
-               el.setAttribute('data-count', count + 1);
-               el.classList.remove('notify');
-               el.offsetWidth = el.offsetWidth;
-               el.classList.add('notify');
-               if (count === 0) {
-                   el.classList.add('show-count');
-               }
-           });
-           $scope.showAlerts = function () {
-               var el = document.querySelector('.notification');               
-               el.setAttribute('data-count', 0);
-               el.classList.remove('show-count');
-               $state.go('alerts');
-           }
+        $scope.alertCount = 0;
+        messaging.onMessage(function (payload) {
+            $scope.alertCount++;
+        });
+        $scope.showAlerts = function () {
+            $state.go('alerts');
+        }
 
-           
+        $scope.changeState=function(state){
+            $state.go(state);
+        }
 
 
+        //applicaionID created in AD B2C portal
+        var applicationId = '3bdf8223-746c-42a2-ba5e-0322bfd9ff76';
+        var scope = 'openid ' + applicationId;
+        var responseType = 'token id_token';
+        var redirectURI = './redirect.html';
 
+        //update the policy names with the exact name from the AD B2C policies blade
+        var policies = {
+            signInPolicy: "B2C_1_b2cSignin",
+            editProfilePolicy: "B2C_1_b2cSiPe",
+            signInSignUpPolicy: "B2C_1_b2cSiUpIn"
+        };
 
+        var loginDisplayType = {
+            PopUp: 'popup',
+            None: 'none',
+            Page: 'page' //default is popup, if we use page option, webpage gets redirected to b2c login page then to redirect html.
+
+        };
+
+        var helloNetwork = {
+            adB2CSignIn: 'adB2CSignIn',
+            adB2CSignInSignUp: 'adB2CSignInSignUp',
+            adB2CEditProfile: 'adB2CEditProfile'
+        };       
+        
+
+        function policyLogout(network, policy) {
+            
+            console.log("Logoutttt");
+            hello.logout(network, { force: true }).then(function (auth) {
+                bootbox.alert('policy: ' + policy + ' You are logging out from AD B2C');
+            }, function (e) {
+                bootbox.alert('Logout error: ' + e.error.message);
+            });
+        }
+        $scope.logoutb2c = function () {
+            hello.init({
+                adB2CSignIn: applicationId,
+                adB2CSignInSignUp: applicationId,
+                adB2CEditProfile: applicationId
+            }, {
+                    redirect_uri: '/redirect.html',
+                    scope: 'openid ' + applicationId,
+                    response_type: 'token id_token'
+                });
+            policyLogout(helloNetwork.adB2CSignIn, policies.signInPolicy);
+        }
     });
-angular.module('WebPortal').controller('ModalInstanceCtrl', function ($scope, $modalInstance, images, $http) {
 
-    $scope.selectItem = function (index) {
+angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $modalInstance, images, $http) {
+
+    $scope.selectImage = function (index) {
         for (var i = 0; i < $scope.images.length; i++) {
             if (index === i) {
                 //$scope.image_css[index] =
@@ -196,7 +246,9 @@ angular.module('WebPortal').controller('ModalInstanceCtrl', function ($scope, $m
     };
     $scope.images = images;
 
-
+    /**
+     * Function to Upload Image 
+     */
     $scope.ok = function () {
         var JSONobj = new Object();
         JSONobj.Id = localStorage.getItem("userId");
@@ -216,19 +268,19 @@ angular.module('WebPortal').controller('ModalInstanceCtrl', function ($scope, $m
             localStorage.setItem("Avatar", response);
             $modalInstance.close($scope.selected.image);
         })
-        .error(function (error) {
-            alert("Error : " + JSON.stringify(error));
-        });
+            .error(function (error) {
+                alert("Error : " + JSON.stringify(error));
+            });
 
 
-       
+
     };
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
 
-   
+
 
 
 

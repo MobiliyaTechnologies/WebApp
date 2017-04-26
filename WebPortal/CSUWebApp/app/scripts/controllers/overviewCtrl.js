@@ -775,7 +775,7 @@ angular.module('WebPortal')
                 method: 'Get',
             }).success(function (response) {
                 console.log("Get CurrentMonthConsumption [Info] ::", response);
-
+                console.log("METER LIST", $scope.meterList);
                 for (var i = 0; i < response.length; i++) {
                     if (response[i].DayWiseConsumption != undefined) {
                         $scope.currentMonth.series.push({
@@ -978,6 +978,7 @@ angular.module('WebPortal')
             }).success(function (response) {
                 console.log("Get Sensor list response [Info]::", response);
                 $scope.sensors = response;
+                $scope.selectedSensor = $scope.sensors[0];
 
             })
                 .error(function (error) {
@@ -1016,11 +1017,18 @@ angular.module('WebPortal')
                     "Content-Type": "application/json"
                 }
             }).success(function (response) {
-                console.log("Get Recommendation list [Info]::", response);
+                console.log("Get Insight list [Info]::", response);
                 $scope.insight = response;
-                $scope.insight.ConsumptionValue = Math.round($scope.insight.ConsumptionValue)/10;
-                $scope.insight.PredictedValue = Math.round($scope.insight.PredictedValue)/10;
-                $scope.insight.overused = response.ConsumptionValue - response.PredictedValue;
+                console.log($scope.insight);
+                $scope.insight.ConsumptionValue = Math.round($scope.insight.ConsumptionValue)/1000;
+                $scope.insight.PredictedValue = Math.round($scope.insight.PredictedValue)/1000;
+                $scope.insight.overused = response.ConsumptionValue - response.PredictedValue; 
+                if ($scope.insight.overused>0) {
+                    $scope.usage = "OVERUSED";
+                }                          
+                else {
+                    $scope.usage = "UNDERUSED";
+                }
               })
             .error(function (error) {
                     alert("Error : " + JSON.stringify(error));

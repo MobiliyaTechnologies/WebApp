@@ -8,17 +8,17 @@
                         <div class="recommendation-bar-content">
                             <div class="col-sm-4">
                                 <span class="glyphicon glyphicon-arrow-up arrow" aria-hidden="true"></span>
-                                <h2 style="">{{insight.ConsumptionValue}}K</h2>
+                                <h2 style="">{{insight.ConsumptionValue.toFixed(2)}}K</h2>
                                 <label>CONSUMED IN LAST MONTH</label>
                             </div>
                             <div class="col-sm-4">
                                 <span class="glyphicon glyphicon-arrow-down arrow" aria-hidden="true"></span>
-                                <h2 style="">{{insight.overused}}K</h2>
+                                <h2 style="">{{insight.overused.toFixed(2)}}K</h2>
                                 <label>OVERUSED</label>
                             </div>
                             <div class="col-sm-4">
                                 <span class="glyphicon glyphicon-arrow-up arrow" aria-hidden="true"></span>
-                                <h2 style="">{{insight.PredictedValue}}K</h2>
+                                <h2 style="">{{insight.PredictedValue.toFixed(2)}}K</h2>
                                 <label>EXPECTED</label>
                             </div>
                         </div>

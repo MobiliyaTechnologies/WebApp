@@ -21,14 +21,11 @@ angular
         'datatables',
         'ngDragDrop'
     ])
-
-
-    .config(function ($stateProvider, $urlRouterProvider) {
+    .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
         $urlRouterProvider.when('/dashboard', '/dashboard/overview');
         $urlRouterProvider.otherwise('/login');
 
         $stateProvider
-
             .state('login', {
                 url: '/login',
                 templateUrl: './app/views/login.html',
@@ -76,10 +73,41 @@ angular
                 templateUrl: './app/views/recommendation.html',
                 controller: 'recommendationCtrl'
             })
+            .state('piconf', {
+                url: '/piconf',
+                parent: 'dashboard',
+                templateUrl: './app/views/piconf.html',
+                controller: 'piconfCtrl'
+            })
+            .state('campusconf', {
+                url: '/campusconf',
+                parent: 'dashboard',
+                templateUrl: './app/views/campusconf.html',
+                controller: 'campusconfCtrl'
+            })
+            .state('dataconf', {
+                url: '/dataconf',
+                parent: 'dashboard',
+                templateUrl: './app/views/dataconf.html',
+                controller: 'dataconfCtrl'
+            })
+            .state('userconf', {
+                url: '/userconf',
+                parent: 'dashboard',
+                templateUrl: './app/views/userconf.html',
+                controller: 'userconfCtrl'
+            })
+            .state('redirect', {
+                url: '/redirect',
+                templateUrl: './app/views/userconf.html',
+                controller: 'redirectCtrl'
+            })
+        
+        
 
     })
     .constant('config', {
-        restServer: "http://powergridrestservice.azurewebsites.net/",
+        restServer: "https://powergridrestservice.azurewebsites.net/",
         //serverURL:"http://52.91.107.160:2000/",
     })
     .factory('Auth', function ($rootScope, $window) {
@@ -96,35 +124,16 @@ angular
             }
         };
     })
-    .run(function ($rootScope, Auth, $state) {
-        //$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-        //    console.log(toState);
-        //    console.log(toParams);
-        //    console.log(Auth.isLoggedIn());
-
-        //        if (toState.name != 'login' && !Auth.isLoggedIn()) {
-        //            $state.transitionTo('login');
-        //         }
-        //        else {
-
-        //        }
-
-
-
-
-        //});
-
-    })
     .factory('Token', function ($http) {
         var data = {
             accesstoken: ''
         };
         return {
-            data,
+            data: data,
             update: function (callback) {
                 $http({
-                    //url: "http://csuwebapp.azurewebsites.net/PowerBIService.asmx/GetAccessToken",
                     url: "http://localhost:65159/PowerBIService.asmx/GetAccessToken",
+                    //url: "https://cloud.csupoc.com/csu_preview/PowerBIService.asmx/GetAccessToken",
                     method: 'GET'
 
                 }).success(function (response) {
@@ -319,73 +328,25 @@ angular
             template: '<div><i class="wi {{ icon() }}"></i><div>'
         };
     })
-    // Directive for pie charts, pass in title and data only    
-    .directive('hcPieChart', function () {
+    .directive('header', function headerDirective() {
         return {
-            restrict: 'E',
-            template: '<div></div>',
+            bindToController: true,
+            controller: HeaderController,
+            controllerAs: 'vm',
+            restrict: 'EA',
             scope: {
-                title: '@',
-                data: '='
+                controller: '='
             },
-            link: function (scope, element) {
-                Highcharts.chart(element[0], {
-                    chart: {
-                        type: 'pie'
-                    },
-                    title: {
-                        text: scope.title
-                    },
-                    plotOptions: {
-                        pie: {
-                            allowPointSelect: true,
-                            cursor: 'pointer',
-                            dataLabels: {
-                                enabled: true,
-                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                            }
-                        }
-                    },
-                    series: [{
-                        data: scope.data
-                    }],
-                    colors: ['#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
-                });
-            }
+            templateUrl: 'app/views/Directive/header.html'
         };
-    })
-    .directive('hcChart', function () {
-        return {
-            restrict: 'E',
-            template: '<div></div>',
-            scope: {
-                options: '='
-            },
-            link: function (scope, element) {
-                Highcharts.chart(element[0], scope.options);
-            }
-        };
-    })
-    .directive('header', headerDirective)
-    .run(function ($state, $rootScope) {
-        $rootScope.$state = $state;
-    });
-function headerDirective() {
-    return {
-        bindToController: true,
-        controller: HeaderController,
-        controllerAs: 'vm',
-        restrict: 'EA',
-        scope: {
-            controller: '='
-        },
-        templateUrl: 'app/views/Directive/header.html'
-    };
 
-    function HeaderController($scope, $location, $rootScope) {
-        $rootScope.hideHeader = ($location.path() === '/login') ? true : false;
-        console.log($rootScope.hideHeader);
-    }
-}
+        function HeaderController($scope, $location, $rootScope, weatherServiceFactory) {
+            $rootScope.hideHeader = ($location.path() === '/login') ? true : false;
+            console.log($rootScope.hideHeader);
+            $scope.weather = weatherServiceFactory;
+            $scope.weather.search();
+            console.log("$scope.weather", $scope.weather);
+        }
+    });
 
     

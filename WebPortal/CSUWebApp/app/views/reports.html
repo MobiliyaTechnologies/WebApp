@@ -1,23 +1,8 @@
-<script>
-    $(function () {
-        //setIFrameSize();
-        $(window).resize(function () {
-
-            clearTimeout(resizeTimeout);
-            var resizeTimeout = setTimeout(function () {
-                angular.element(document.getElementById('iFrameEmbedReport')).scope().setIFrameSize();
-            }, 500);
-        });
-    });
-</script>
-<div style="color:white;">
-	<!--<a ui-sref="overview" class="pull-right btn btn-primary btn-outline" style="color:white;">Back to Dashboard</a>-->
-	<h4>REPORTS </h4>
-	
+<div>
+	<h4>REPORTS </h4>	
 	<div class="jumbotron">
-		<div class="container">
-			
-            <iframe ID="iFrameEmbedReport" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
+		<div class="container">			
+            <iframe id="genericReport" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
 		</div>
 	</div>
 </div>
