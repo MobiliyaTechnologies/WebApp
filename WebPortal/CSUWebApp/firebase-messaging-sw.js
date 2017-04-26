@@ -9,16 +9,17 @@ var config = {
 };
 firebase.initializeApp(config);
 const messaging = firebase.messaging();  
-self.addEventListener('notificationclick', function (event) {
-    event.notification.close();
-    event.waitUntil(self.clients.openWindow('http://localhost:65159/#/login?' + JSON.stringify(event)));
-})
+//self.addEventListener('notificationclick', function (event) {
+//    event.notification.close();
+//    event.waitUntil(self.clients.openWindow('http://localhost:65159/#/login?' + JSON.stringify(event)));
+//})
 messaging.setBackgroundMessageHandler(function (payload) {
     const title = 'CSU Notification';
     console.log('[firebase-messaging-sw.js] Received background message ', payload);
     const options = {
         body: payload.data.body,
-        icon: './Assets/logo.png',               
+        icon: './Assets/logo.png',     
+        sound:'default'          
     }
    
     return self.registration.showNotification(title, options);

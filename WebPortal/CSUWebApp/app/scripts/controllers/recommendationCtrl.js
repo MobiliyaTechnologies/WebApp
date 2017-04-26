@@ -29,9 +29,10 @@
             }).success(function (response) {
                 console.log("Get Recommendation list [Info]::", response);
                 $scope.insight = response;
-                $scope.insight.ConsumptionValue = Math.round($scope.insight.ConsumptionValue) / 10;
-                $scope.insight.PredictedValue = Math.round($scope.insight.PredictedValue) / 10;
+                $scope.insight.ConsumptionValue = Math.round($scope.insight.ConsumptionValue) / 1000;
+                $scope.insight.PredictedValue = Math.round($scope.insight.PredictedValue) / 1000;
                 $scope.insight.overused = response.ConsumptionValue - response.PredictedValue;
+               
             })
                 .error(function (error) {
                     alert("Error : " + JSON.stringify(error));

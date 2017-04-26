@@ -1,40 +1,22 @@
 ﻿<div>
-  
-    <a ui-sref="overview" class="pull-right btn btn-primary btn-outline" style="color:white;">Back to Dashboard</a>
-    <h4 style="color:white;">PROFILE</h4>
-  
+    <h4>PROFILE</h4>
     <div class="jumbotron">
         <div class="container">
-
-            <!--<p>Change Password</p>
-        <p>
-            <label>Old password</label><input class="form-control" id="inputlg" type="text" style="width:20%;margin-left:70px;" ng-model="oldpwd"></br>
-            <label>New password</label><input class="form-control" id="inputlg" type="text" style="width:20%;margin-left:60px;" ng-model="newpwd"></br>
-            <label>Confirm password</label><input class="form-control" id="inputlg" type="text" style="width:20%;margin-left:25px;" ng-model="confpwd"></br>
-
-            <a class="btn btn-primary btn-lg btn-outline btn-rounded" ng-click="changepwd()">Change Password</a>
-        </p>-->
-
-
             <div class="row">
-
-                <div class="col-lg-3 dash-unit" style="margin-top: 5vh;">
+                <div class="col-lg-3 dash-unit" >
                     <h5>Change Password</h5>
                     <input class="form-control" style="margin-top:20px;" placeholder="Old Password" type="text" ng-model="oldpwd" />
                     <input class="form-control" style="margin-top:20px;" placeholder="New Password" type="password" ng-model="newpwd" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Confirm Password" type="password" ng-model="confpwd" />
-                    <button class="btn" style="margin-top:20px;text-align:center;margin-left:15%;background-color:#31573e;color:white;" ng-click="changepwd()">Change Password</button>
+                    <button class="btn" style="margin-top:20px;text-align:center;margin-left:15%;background-color:#31573e;color:white;" ng-click="changePassword()">Change Password</button>
                 </div>
             </div>
-
-
-            
-
-
-
-
+            <div class="row">
+                <button class="btn" style="background-color:#31573e;color:white;" ng-click="resetSensor()">Reset Sensor</button>
+                <button class="btn" style="background-color:#31573e;color:white;" ng-click="resetFeedback()">Reset feedback</button>
             </div>
         </div>
+    </div>
 </div>
 
 

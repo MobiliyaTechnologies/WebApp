@@ -1,5 +1,42 @@
 ﻿<div ng-hide="{{$root.hideHeader}}" class="header-div">
-    <a href="https://mseastus.blob.core.windows.net/general/PowerMap_Dec_27_2016.xlsx" class="header-download-link">DOWNLOAD POWER MAP REPORT</a>
+    <!--<a href="https://mseastus.blob.core.windows.net/general/PowerMap_Dec_27_2016.xlsx" class="header-download-link">DOWNLOAD POWER MAP REPORT</a>-->
+    <div ng-show="weather.hasState == 'has-success'" style="float:right;color:white;margin-top:5px;">
+        <ul style="padding:0;">
+            <li ng-repeat="forecast in weather.forecast" style="display:inline-table;">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <weather-icon style="font-size:35px;" code="{{ forecast.code }}"></weather-icon>
+                            </div>
+                            <div class="col-sm-6">
+                                <label style="font-size:20px;">{{weather.temp}}&deg;{{weather.unit}}&nbsp;&nbsp;</label>
+                            </div>
+                        </div>
+                        
+                        </div>
+                    <div class="col-sm-6">
+                        <label>{{ forecast.date }} </label>
+                        <div class="row">
+                            <label>{{ forecast.text }}</label>
+                        </div>
+                        <!--<label> min: {{ forecast.low | temp:weather.unit }}</label>
+                        <label>max: {{ forecast.high | temp:weather.unit }}</label>-->
+                    </div>
+                    <!--<div class="col-sm-3">
+                        
+                    </div>-->
+
+                      
+                    </div>
+
+        </ul>
+
+    </div>
+    <div class="error" ng-show="weather.hasState == 'has-warning'">
+        <span ng-show="weather.message" class="alert"><span class="glyphicon glyphicon-arrow-left">&nbsp;</span>{{weather.message}}</span>
+    </div>
+    
     <div class="header-logo">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 988.5 125" enable-background="new 0 0 988.5 125">
         <defs>
@@ -50,5 +87,7 @@
     </svg>
         
     </div>
+
+    
     
 </div>
