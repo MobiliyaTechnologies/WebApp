@@ -1,9 +1,13 @@
 ﻿    <div class="login-page-container" >
+        <div id="loadingid" class="loading style-2 ng-scope" style="{{loading}}">
+            <div class="loading-wheel">
+            </div>
+        </div>
         <video autoplay="true" loop="true" class="video-container" muted="true">
             <source src="https://www.colostate.edu/wp-content/uploads/sites/2/2016/02/beauty_montage.mp4" type="video/mp4">
         </video>    
         
-        <div class="login-form">
+        <div ng-if="showLogin" class="login-form">
             <div class="row">
                 <div class="col-lg-3 col-md-offset-5" style="margin-top: 20vh;">
                     <div class="form-module">
@@ -36,7 +40,23 @@
               $('.api-response').html(JSON.stringify(s, true, 2));
           }
     </script>
-    <script class="pre">
-
-      
+    <script class="pre">      
     </script>
+    <script type="text/ng-template" id="configuration.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Configuration </h3>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-lg-offset-1 col-lg-10 dash-unit">
+                <input class="form-control" style="margin-top:20px;" placeholder="Rest Server" type="text" ng-model="configObj.restServer" />
+                <input class="form-control" style="margin-top:20px;" placeholder="DB Connection" type="text" ng-model="configObj.dbConnection" />
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="change()">Change</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

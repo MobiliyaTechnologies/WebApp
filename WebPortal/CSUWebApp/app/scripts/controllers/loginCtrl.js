@@ -8,19 +8,12 @@
  * Controller of the angulartestApp
  */
 angular.module('WebPortal')
-    .controller('loginCtrl', ['$scope', '$http', '$state', 'Auth', 'Token', 'config','$interval', function ($scope, $http,$state, Auth, Token, config, $interval ) {
+    .controller('loginCtrl', ['$scope', '$http', '$state', 'AuthService', 'Token', 'config', '$interval', 'Restservice', '$modal', 'aadService', function ($scope, $http, $state, AuthService, Token, config, $interval, Restservice, $modal, aadService) {
 
         console.log("Login Controller loaded :: [Info]");
-        $scope.toggleClass = "fa fa-times fa-pencil";
-        $scope.loading_wheel ="display:none;"        
-        $scope.color = {
-            name: 'blue'
-        };
 
-        updateAccessToken();          
 
-        
-       
+        updateAccessToken();                   
         /**
         * Function to update Access Token 
         */        
@@ -33,27 +26,7 @@ angular.module('WebPortal')
             }, 2000);
 
         }
-        /**
-         * Function to call Rest request  
-         */
-        function sendRestReq(type, url, reqdata, callback) {
-            $http({
-                url: config.restServer + url,
-                dataType: 'json',
-                method: 'POST',
-                data: reqdata,
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).success(function (response) {
-                callback(null, response);
-            })
-                .error(function (error) {
-                    callback(error, null);
-                });
-
-        }
-       
+              
 
 
         function log(s) {
@@ -104,86 +77,77 @@ angular.module('WebPortal')
             var currentTime = (new Date()).getTime() / 1000;
             return session && session.access_token && session.expires > currentTime;
         };
-        function policyLogin(network, displayType) {
-
-            if (!displayType) {
-                displayType = 'page';
-            }
-
-            var b2cSession = hello(network).getAuthResponse();
-            console.log(b2cSession);
-            //in case of silent renew, check if the session is still active otherwise ask the user to login again
-            if (!online(b2cSession) && displayType === loginDisplayType.None) {
-                bootbox.alert('Session expired... please login again', function () {
-                    policyLogin(network, loginDisplayType.Page);
-                });
-                return;
-            }
-            
-            hello(network).login({ display: displayType }, log).then(function (auth) {
-                console.log(Auth);
-                
-            }, function (e) {
-                if ('Iframe was blocked' in e.error.message) {
-                    policyLogin(network, loginDisplayType.Page);
-                    return;
-                }
-                bootbox.alert('Signin error: ' + e.error.message);
-            });
-        }
-
-        function policyLogout(network, policy) {
-             console.log("Logoutttt");
-            hello.logout(network, { force: true }).then(function (auth) {
-                //bootbox.alert('policy: ' + policy + ' You are logging out from AD B2C');
-                console.log("auth :", auth);
-            }, function (e) {
-                console.log("Erorrrrrrr :",e);
-            });
-        }
-        
-        $scope.signIn = function (state) {
-            hello.init({
-                adB2CSignIn: applicationId,
-                adB2CSignInSignUp: applicationId,
-                adB2CEditProfile: applicationId
-            }, {
-                    redirect_uri: '/redirect.html',
-                    scope: 'openid ' + applicationId,
-                    response_type: 'token id_token'
-                });
-            var b2cSession = hello(helloNetwork.adB2CSignIn).getAuthResponse();
-            console.log("b2cSession :: [info] ",b2cSession);
-            if (!online(b2cSession) && state=='click') {              
-                    policyLogin(helloNetwork.adB2CSignIn, loginDisplayType.Page);
-              
-            }
-            else if (online(b2cSession) && state == 'intial') {
-                //call get role api 
-                //
-                $state.go('dashboard');
-            }
-                     
-
-        }
-        $scope.signIn('intial');
-        $scope.signUp = function () {
-            hello.init({
-                adB2CSignIn: applicationId,
-                adB2CSignInSignUp: applicationId,
-                adB2CEditProfile: applicationId
-            }, {
-                    redirect_uri: '../redirect.html',
-                    scope: 'openid ' + applicationId,
-                    response_type: 'token id_token'
-                });
-                policyLogin(helloNetwork.adB2CSignInSignUp, loginDisplayType.Page);            
                
+        $scope.signIn = function (state) {
+            aadService.signIn(function (b2cSession) {
+                if (!online(b2cSession) && state == 'click') {
+                    aadService.policyLogin(helloNetwork.adB2CSignIn, loginDisplayType.Page);
+                }
+                else if (online(b2cSession) && state == 'intial') {
+                    getUserDetails();
+                }
+            });                                         
         }
+        $scope.showLogin = false;
+        $scope.$on('config-loaded', function () {
+            console.log("Here");
+            $scope.showLogin = true;
+            if (config.restServer == "" || config.restServer == undefined) {
+                console.log("Show Configuration Popup");
+                $scope.showLogin = false;
+                var modalInstance = $modal.open({
+                    templateUrl: 'configuration.html',
+                    controller: 'configurationCtrl',
+
+                }).result.then(function (result) {
+                    $scope.avatar = result.src;
+                });
+
+            }
+            else {
+                $scope.signIn('intial');
+                $scope.showLogin = true;
+            }
+        });
+        ///$scope.signIn('intial');
+        $scope.signUp = function () {           
+            aadService.signUp();                 
+        }
+
+
+        /*API*/
+        function getUserDetails() {
+            $scope.loading = "display:block;";
+            Restservice.get('api/GetCurrentUser', function (err, response) {
+                if (!err) {
+                    $scope.loading = "display:none;";
+                    AuthService.setData(response.UserId, response.FirstName, response.LastName, response.Email, null);
+                    $state.go('dashboard');
+                }
+                else {
+                    console.log(err);
+                }
+            });
+        }
+
 
        
         
     }]);
+angular.module('WebPortal').controller('configurationCtrl', function ($scope, $modalInstance, $http) {
+    $scope.var1 = "hii";
+    $scope.configObj = {
+        "restServer": "http://msqlserver12.cloudapp.net/CSU_RestService/",
+         "dbConnection": "Db"
+    }
+    $scope.change = function () {  
+        console.log($scope.configObj);       
+        
+    }
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+    
+});
 
-
-
+    

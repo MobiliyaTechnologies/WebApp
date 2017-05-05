@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Web;
 using System.Web.Services;
 using System.Web.Script.Services;
 using System.Web.Script.Serialization;
 using System.Configuration;
+using Newtonsoft.Json;
 
 namespace CSUWebApp
 {
@@ -15,6 +17,7 @@ namespace CSUWebApp
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
+    [ScriptService]
     // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
     // [System.Web.Script.Services.ScriptService]
     public class PowerBIService : System.Web.Services.WebService
@@ -52,5 +55,22 @@ namespace CSUWebApp
             this.Context.Response.Write(serializer.Serialize(new { urls = embedURL }));
         }
 
+
+
+        [WebMethod]
+        public string updateConfig()
+        {
+            var configs = LoadAllConfig();
+            var json = JsonConvert.SerializeObject(configs);
+            File.WriteAllText(HttpContext.Current.Server.MapPath("~\\config.json"), json);
+            return "Updated";
+        }
+
+        Dictionary<string, string> LoadAllConfig()
+        {
+            Dictionary<string, string> configs = new Dictionary<string, string>();
+            configs.Add("restServer", System.Configuration.ConfigurationManager.AppSettings["restServer"]);
+            return configs;
+        }
     }
 }

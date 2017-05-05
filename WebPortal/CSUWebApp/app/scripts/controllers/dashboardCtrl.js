@@ -254,24 +254,33 @@ angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $mo
         JSONobj.Id = localStorage.getItem("userId");
         JSONobj.Avatar = $scope.selected.image.src;
         console.log(JSONobj);
-        $http({
-            url: restServer + "api/changeavatar",
-            dataType: 'json',
-            method: 'POST',
-            data: JSONobj,
-            headers: {
-                "Content-Type": "application/json"
+        //$http({
+        //    url: restServer + "api/changeavatar",
+        //    dataType: 'json',
+        //    method: 'POST',
+        //    data: JSONobj,
+        //    headers: {
+        //        "Content-Type": "application/json"
 
+        //    }
+        //}).success(function (response) {
+        //    console.log("Change Avatar response [Info] ::", response);
+        //    localStorage.setItem("Avatar", response);
+        //    $modalInstance.close($scope.selected.image);
+        //})
+        //    .error(function (error) {
+        //        alert("Error : " + JSON.stringify(error));
+        //    });
+        Restservice.get('api/GetCurrentUser', function (err, response) {
+            if (!err) {
+                $scope.loading = "display:none;";
+                AuthService.setData(response.UserId, response.FirstName, response.LastName, response.Email, null);
+                $state.go('dashboard');
             }
-        }).success(function (response) {
-            console.log("Change Avatar response [Info] ::", response);
-            localStorage.setItem("Avatar", response);
-            $modalInstance.close($scope.selected.image);
-        })
-            .error(function (error) {
-                alert("Error : " + JSON.stringify(error));
-            });
-
+            else {
+                console.log(err);
+            }
+        });
 
 
     };
