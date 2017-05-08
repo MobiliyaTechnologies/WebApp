@@ -126,15 +126,17 @@ angular
     //    //serverURL:"http://52.91.107.160:2000/",
     //    restServer: "http://msqlserver12.cloudapp.net/CSU_RestService/"
     //})
-    .factory('config', function ($http, $rootScope) {
+    .factory('config', function ($http, $rootScope, $timeout) {
         var restServer;
         return {
             restServer: restServer,
             update: function (data) {
                 console.log(data)
                 this.restServer = data;
-                console.log("Here1");
-                $rootScope.$broadcast('config-loaded');
+                $timeout(function () {
+                    $rootScope.$broadcast('config-loaded');
+                },1000);
+               
             }
 
 
@@ -179,7 +181,7 @@ angular
 
         });
     })
-    .factory('Token', function ($http) {
+    .factory('Token', function ($http, $location) {
         var data = {
             accesstoken: ''
         };
@@ -187,7 +189,7 @@ angular
             data: data,
             update: function (callback) {
                 $http({
-                    url: "http://localhost:65159/PowerBIService.asmx/GetAccessToken",
+                    url: $location.protocol() + '://' + $location.host() + ':' + $location.port()+"/PowerBIService.asmx/GetAccessToken",
                     //url: "https://cloud.csupoc.com/csu_preview/PowerBIService.asmx/GetAccessToken",
                     method: 'GET'
 
