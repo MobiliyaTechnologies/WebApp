@@ -130,11 +130,11 @@ angular.module('WebPortal')
                     "Authorization": "key=AIzaSyBkgKls7ACvfll8pYuuicCr2e9r17_55Eg"
 
                 }
-            }).success(function (response) {
+            }).then(function (response) {
                 console.log("[Info] :: Successfully subscribed to topic 'Alerts'")
 
             })
-                .error(function (error) {
+                .catch(function (error) {
                     alert("Error : " + JSON.stringify(error));
                 });
         }

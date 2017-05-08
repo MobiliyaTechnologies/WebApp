@@ -8,7 +8,7 @@
  * Controller of the angulartestApp
  */
 angular.module('WebPortal')
-    .controller('loginCtrl', ['$scope', '$http', '$state', 'AuthService', 'Token', 'config', '$interval', 'Restservice', '$modal', 'aadService', function ($scope, $http, $state, AuthService, Token, config, $interval, Restservice, $modal, aadService) {
+    .controller('loginCtrl', ['$scope', '$http', '$state', 'AuthService', 'Token', 'config', '$interval', 'Restservice', '$modal', 'aadService', '$rootScope', function ($scope, $http, $state, AuthService, Token, config, $interval, Restservice, $modal, aadService, $rootScope) {
 
         console.log("Login Controller loaded :: [Info]");
 
@@ -89,7 +89,7 @@ angular.module('WebPortal')
             });                                         
         }
         $scope.showLogin = false;
-        $scope.$on('config-loaded', function () {
+        $rootScope.$on('config-loaded', function () {
             console.log("Here");
             $scope.showLogin = true;
             if (config.restServer == "" || config.restServer == undefined) {

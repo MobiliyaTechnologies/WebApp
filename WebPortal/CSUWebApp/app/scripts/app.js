@@ -23,6 +23,7 @@ angular
 
     ])
     .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+        $locationProvider.hashPrefix('');
         $urlRouterProvider.when('/dashboard', '/dashboard/overview');
         $urlRouterProvider.otherwise('/login');
 
@@ -558,8 +559,9 @@ angular
             console.log("$scope.weather", $scope.weather);
         }
     })
-    .run(function ($http, $rootScope, config) {
-        $http.post('http://localhost:65159/PowerBIService.asmx/updateConfig', null).then(function (data) {
+    .run(function ($http, $rootScope, config, $location) {
+        console.log();
+        $http.post($location.protocol() + '://' + $location.host() + ':' + $location.port()+'/PowerBIService.asmx/updateConfig', null).then(function (data) {
             $http.get('config.json')
                 .then(function (data, status, headers) {
                     //$rootScope.config = data;
