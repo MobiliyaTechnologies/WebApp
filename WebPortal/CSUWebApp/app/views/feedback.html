@@ -6,16 +6,18 @@
                 <div class="highchart-wrapper col-sm-9">
                     <div ng-if="loading" class="loader"></div>
                     <div class="panel panel-default">
-                        <div class="panel-body" style="height:70vh;">
-                            <highchart ng-if="feedbackChart" config="feedbackChart" style="height:60vh;"></highchart>
+                        <div class="panel-body" style="height:80vh;">
+                            <iframe id="feedback" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-3">
                     <div class="panel panel-default">
-                        <div class="panel-body" style="height:70vh;overflow:auto;">
+                        <div class="panel-body" style="height:80vh;overflow:auto;">
                             <div class="sensor-detail  col-sm-12">
-                                <label>Select Classroom &nbsp;</label><select ng-options="class.ClassId as class.ClassDescription for class in Classes" ng-change="getFeedbackCount()" ng-model="selectedClass" style="z-index:1;width:70px;"></select>   </label>    </br>
+                                <label>Select Campus &nbsp;</label><select ng-options="campus.CampusID as campus.CampusName for campus in Campuses" ng-change="getBuildingList()" ng-model="selectedCampus" style="z-index:1;width:70px;"></select>   </label>    </br>
+                                <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingDesc for building in Buildings" ng-change="getClassRoomList()" ng-model="selectedBuilding" style="z-index:1;width:70px;"></select>   </label>    </br>
+                                <label>Select Classroom &nbsp;</label><select ng-options="class.ClassId as class.ClassDescription for class in Classes" ng-change="getSensorList()" ng-model="selectedClass" style="z-index:1;width:70px;"></select>   </label>    </br>
                                 <h3>CLASS DETAILS </h3></br>
                                 <div ng-repeat="sensor in sensors">
                                     <h4>{{sensor.Sensor_Name}}</h4>

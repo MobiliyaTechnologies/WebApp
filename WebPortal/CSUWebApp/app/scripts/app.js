@@ -16,7 +16,6 @@ angular
         'ngTouch',
         'ui.router',
         'ui.bootstrap',
-        'highcharts-ng',
         'datatables',
         'ngDragDrop',
         'angularjs-dropdown-multiselect'
@@ -131,7 +130,6 @@ angular
         return {
             restServer: restServer,
             update: function (data) {
-                console.log(data)
                 this.restServer = data;
                 $timeout(function () {
                     $rootScope.$broadcast('config-loaded');
@@ -229,14 +227,37 @@ angular
                     console.log("Please login");
                 }
             },
-            post: function (urlpath, callback) {
+            post: function (urlpath,data, callback) {
                 var authResponse = hello('adB2CSignIn').getAuthResponse();
                 if (authResponse != null) {
                     hello('adB2CSignIn').api({
                         path: config.restServer + urlpath,
                         method: 'post',
+                        data:data,
                         headers: {
                             Authorization: authResponse.token_type + ' ' + authResponse.access_token
+                        }
+                    }).then(function (response) {
+                        callback(null, response);
+                    }, function (e) {
+                        callback(e, null);
+
+                    });
+                }
+                else {
+                    console.log("Please login");
+                }
+            },
+            put: function (urlpath,data, callback) {
+                var authResponse = hello('adB2CSignIn').getAuthResponse();
+                if (authResponse != null) {
+                    hello('adB2CSignIn').api({
+                        path: config.restServer + urlpath,
+                        method: 'put',
+                        data:data,
+                        headers: {
+                            Authorization: authResponse.token_type + ' ' + authResponse.access_token,
+                            ContentType:'application/json'
                         }
                     }).then(function (response) {
                         callback(null, response);
@@ -555,7 +576,6 @@ angular
 
         function HeaderController($scope, $location, $rootScope, weatherServiceFactory) {
             $rootScope.hideHeader = ($location.path() === '/login') ? true : false;
-            console.log($rootScope.hideHeader);
             $scope.weather = weatherServiceFactory;
             $scope.weather.search();
             console.log("$scope.weather", $scope.weather);
@@ -566,10 +586,7 @@ angular
         $http.post($location.protocol() + '://' + $location.host() + ':' + $location.port()+'/PowerBIService.asmx/updateConfig', null).then(function (data) {
             $http.get('config.json')
                 .then(function (data, status, headers) {
-                    //$rootScope.config = data;
-                    console.log("Data", data);
-                    config.update(data.data.restServer);
-                    
+                    config.update(data.data.restServer);                   
                     
                 })
                 .catch(function (data, status, headers) {

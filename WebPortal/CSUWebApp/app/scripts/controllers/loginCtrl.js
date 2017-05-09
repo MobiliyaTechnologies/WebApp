@@ -121,7 +121,8 @@ angular.module('WebPortal')
             Restservice.get('api/GetCurrentUser', function (err, response) {
                 if (!err) {
                     $scope.loading = "display:none;";
-                    AuthService.setData(response.UserId, response.FirstName, response.LastName, response.Email, null);
+                    console.log(response);
+                    AuthService.setData(response.UserId, response.FirstName, response.LastName, response.Email, response.Avatar);
                     $state.go('dashboard');
                 }
                 else {
