@@ -15,13 +15,15 @@ angular
         'ngSanitize',
         'ngTouch',
         'ui.router',
-        'kendo.directives',
         'ui.bootstrap',
         'highcharts-ng',
         'datatables',
-        'ngDragDrop'
+        'ngDragDrop',
+        'angularjs-dropdown-multiselect'
+
     ])
     .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+        $locationProvider.hashPrefix('');
         $urlRouterProvider.when('/dashboard', '/dashboard/overview');
         $urlRouterProvider.otherwise('/login');
 
@@ -29,88 +31,118 @@ angular
             .state('login', {
                 url: '/login',
                 templateUrl: './app/views/login.html',
-                controller: 'loginCtrl'
+                controller: 'loginCtrl',
+                authenticate: false
             })
             .state('dashboard', {
                 url: '/dashboard',
                 templateUrl: './app/views/dashboard.html',
-                controller: 'dashboardCtrl'
+                controller: 'dashboardCtrl',
+                authenticate: true
 
             })
             .state('overview', {
                 url: '/overview',
                 parent: 'dashboard',
                 templateUrl: './app/views/overview.html',
-                controller: 'overviewCtrl'
+                controller: 'overviewCtrl',
+                authenticate: true
             })
             .state('reports', {
                 url: '/reports',
                 parent: 'dashboard',
                 templateUrl: './app/views/reports.html',
-                controller: 'reportCtrl'
+                controller: 'reportCtrl',
+                authenticate: true
             })
             .state('profile', {
                 url: '/profile',
                 parent: 'dashboard',
                 templateUrl: './app/views/profile.html',
-                controller: 'profileCtrl'
+                controller: 'profileCtrl',
+                authenticate: true
             })
             .state('alerts', {
                 url: '/alerts',
                 parent: 'dashboard',
                 templateUrl: './app/views/alerts.html',
-                controller: 'alertsCtrl'
+                controller: 'alertsCtrl',
+                authenticate: true
             })
             .state('feedback', {
                 url: '/feedback',
                 parent: 'dashboard',
                 templateUrl: './app/views/feedback.html',
-                controller: 'feedbackCtrl'
+                controller: 'feedbackCtrl',
+                authenticate: true
             })
             .state('recommendation', {
                 url: '/recommendation',
                 parent: 'dashboard',
                 templateUrl: './app/views/recommendation.html',
-                controller: 'recommendationCtrl'
+                controller: 'recommendationCtrl',
+                authenticate: true
             })
             .state('piconf', {
                 url: '/piconf',
                 parent: 'dashboard',
                 templateUrl: './app/views/piconf.html',
-                controller: 'piconfCtrl'
+                controller: 'piconfCtrl',
+                authenticate: true
             })
             .state('campusconf', {
                 url: '/campusconf',
                 parent: 'dashboard',
                 templateUrl: './app/views/campusconf.html',
-                controller: 'campusconfCtrl'
+                controller: 'campusconfCtrl',
+                authenticate: true
             })
             .state('dataconf', {
                 url: '/dataconf',
                 parent: 'dashboard',
                 templateUrl: './app/views/dataconf.html',
-                controller: 'dataconfCtrl'
+                controller: 'dataconfCtrl',
+                authenticate: true
             })
             .state('userconf', {
                 url: '/userconf',
                 parent: 'dashboard',
                 templateUrl: './app/views/userconf.html',
-                controller: 'userconfCtrl'
+                controller: 'userconfCtrl',
+                authenticate: true
             })
             .state('redirect', {
                 url: '/redirect',
                 templateUrl: './app/views/userconf.html',
-                controller: 'redirectCtrl'
+                controller: 'redirectCtrl',
+                authenticate: true
             })
-        
-        
+
+
 
     })
-    .constant('config', {
-        restServer: "https://powergridrestservice.azurewebsites.net/",
-        //serverURL:"http://52.91.107.160:2000/",
+    //.constant('config', {
+    //    //restServer: "https://powergridrestservice.azurewebsites.net/",
+    //    //serverURL:"http://52.91.107.160:2000/",
+    //    restServer: "http://msqlserver12.cloudapp.net/CSU_RestService/"
+    //})
+    .factory('config', function ($http, $rootScope, $timeout) {
+        var restServer;
+        return {
+            restServer: restServer,
+            update: function (data) {
+                console.log(data)
+                this.restServer = data;
+                $timeout(function () {
+                    $rootScope.$broadcast('config-loaded');
+                },1000);
+               
+            }
+
+
+        };
     })
-    .factory('Auth', function ($rootScope, $window) {
+    .factory('AuthService', function ($rootScope, $window) {
         this.userIsLoggedIn;
         this.username;
         return {
@@ -121,10 +153,35 @@ angular
             isLoggedIn: function () {
                 this.userIsLoggedIn = localStorage.getItem('ARuserIsLoggedIn');
                 return (this.userIsLoggedIn === 'true') ? true : false;
+            },
+            setData: function (userId, UserName, LastName, Email, Avatar) {
+                localStorage.setItem("userId", userId);
+                localStorage.setItem("UserName", UserName);
+                localStorage.setItem("LastName", LastName);
+                localStorage.setItem("Email", Email);
+                localStorage.setItem("Avatar", Avatar);
+            },
+            getData: function () {
+                var data = {};
+
+                return
+            },
+            isAuthenticated: function () {
+                return true;
             }
         };
     })
-    .factory('Token', function ($http) {
+    .run(function ($rootScope, $state, AuthService) {
+        $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
+            if (toState.authenticate && !AuthService.isAuthenticated()) {
+                // User isn’t authenticated
+                $state.transitionTo("login");
+                event.preventDefault();
+            }
+
+        });
+    })
+    .factory('Token', function ($http, $location) {
         var data = {
             accesstoken: ''
         };
@@ -132,19 +189,175 @@ angular
             data: data,
             update: function (callback) {
                 $http({
-                    url: "http://localhost:65159/PowerBIService.asmx/GetAccessToken",
+                    url: $location.protocol() + '://' + $location.host() + ':' + $location.port()+"/PowerBIService.asmx/GetAccessToken",
                     //url: "https://cloud.csupoc.com/csu_preview/PowerBIService.asmx/GetAccessToken",
                     method: 'GET'
 
-                }).success(function (response) {
-                    data.accesstoken = response.tokens.AccessToken;
+                }).then(function (response) {
+                    data.accesstoken = response.data.tokens.AccessToken;
                     callback();
 
                 })
-                    .error(function (error) {
+                    .catch(function (error) {
                         console.log("Token Error :: " + JSON.stringify(error));
                     });
             }
+
+
+        };
+    })
+    .factory('Restservice', function ($http, AuthService, config) {
+
+        return {
+            get: function (urlpath, callback) {
+                var authResponse = hello('adB2CSignIn').getAuthResponse();
+                if (authResponse != null) {
+                    hello('adB2CSignIn').api({
+                        path: config.restServer + urlpath,
+                        method: 'get',
+                        headers: {
+                            Authorization: authResponse.token_type + ' ' + authResponse.access_token
+                        }
+                    }).then(function (response) {
+                        callback(null, response);
+                    }, function (e) {
+                        callback(e, null);
+
+                    });
+                }
+                else {
+                    console.log("Please login");
+                }
+            },
+            post: function (urlpath, callback) {
+                var authResponse = hello('adB2CSignIn').getAuthResponse();
+                if (authResponse != null) {
+                    hello('adB2CSignIn').api({
+                        path: config.restServer + urlpath,
+                        method: 'post',
+                        headers: {
+                            Authorization: authResponse.token_type + ' ' + authResponse.access_token
+                        }
+                    }).then(function (response) {
+                        callback(null, response);
+                    }, function (e) {
+                        callback(e, null);
+
+                    });
+                }
+                else {
+                    console.log("Please login");
+                }
+            }
+
+
+
+        };
+
+    })
+    .factory('aadService', function ($http) {
+        //applicaionID created in AD B2C portal
+        var applicationId = '3bdf8223-746c-42a2-ba5e-0322bfd9ff76';
+        var scope = 'openid ' + applicationId;
+        var responseType = 'token id_token';
+        var redirectURI = './redirect.html';
+
+        //update the policy names with the exact name from the AD B2C policies blade
+        var policies = {
+            signInPolicy: "B2C_1_b2cSignin",
+            editProfilePolicy: "B2C_1_b2cSiPe",
+            signInSignUpPolicy: "B2C_1_b2cSiUpIn"
+        };
+
+        var loginDisplayType = {
+            PopUp: 'popup',
+            None: 'none',
+            Page: 'page'
+
+        };
+
+        var helloNetwork = {
+            adB2CSignIn: 'adB2CSignIn',
+            adB2CSignInSignUp: 'adB2CSignInSignUp',
+            adB2CEditProfile: 'adB2CEditProfile'
+        };
+        return {
+            signIn: function (callback) {
+                hello.init({
+                    adB2CSignIn: applicationId,
+                    adB2CSignInSignUp: applicationId,
+                    adB2CEditProfile: applicationId
+                }, {
+                        redirect_uri: '/redirect.html',
+                        scope: 'openid ' + applicationId,
+                        response_type: 'token id_token'
+                    });
+                var b2cSession = hello(helloNetwork.adB2CSignIn).getAuthResponse();
+                callback(b2cSession);
+            },
+            signUp: function (callback) {
+                hello.init({
+                    adB2CSignIn: applicationId,
+                    adB2CSignInSignUp: applicationId,
+                    adB2CEditProfile: applicationId
+                }, {
+                        redirect_uri: '../redirect.html',
+                        scope: 'openid ' + applicationId,
+                        response_type: 'token id_token'
+                    });
+                this.policyLogin(helloNetwork.adB2CSignInSignUp, loginDisplayType.Page);
+            },
+            policyLogin:function (network, displayType) {
+
+                 if (!displayType) {
+                         displayType = 'page';
+                 }
+                 var b2cSession = hello(network).getAuthResponse();
+                 console.log(b2cSession);
+                //in case of silent renew, check if the session is still active otherwise ask the user to login again
+                if (!this.online(b2cSession) && displayType === loginDisplayType.None) {
+                     bootbox.alert('Session expired... please login again', function () {
+                        this.policyLogin(network, loginDisplayType.Page);
+                    });
+                    return;
+                }
+                hello(network).login({ display: displayType }, this.log).then(function (auth) {
+                     console.log(Auth);
+
+                }, function (e) {
+                      if ('Iframe was blocked' in e.error.message) {
+                          this.policyLogin(network, loginDisplayType.Page);
+                          return;
+                      }
+                        bootbox.alert('Signin error: ' + e.error.message);
+                });
+        },
+        policyLogout: function(network, policy) {
+            console.log("Logoutttt");
+            hello.logout(network, { force: true }).then(function (auth) {
+                console.log("auth :", auth);
+            }, function (e) {
+                console.log("Erorr :", e);
+            });
+         },
+        online:function (session) {
+            var currentTime = (new Date()).getTime() / 1000;
+            return session && session.access_token && session.expires > currentTime;
+        },
+        log: function(s) {
+
+            if (typeof s.error !== 'undefined' && s.error !== null) {
+                if (s.error.code === 'blocked') {   //silentrenew(display: none) in case of expired token returns X-frame Options as DENY error
+                    bootbox.alert("<p class='bg-danger'>there was an error in silent renewing the token. Please login again</p>");
+                    return;
+                }
+            }
+            else
+                document.body.querySelector('.response')
+                    .appendChild(document.createTextNode(JSON.stringify(s, true, 2)));
+        }
+
+
         };
     })
     .factory('weatherServiceFactory', function ($http, $templateCache) {
@@ -347,6 +560,26 @@ angular
             $scope.weather.search();
             console.log("$scope.weather", $scope.weather);
         }
+    })
+    .run(function ($http, $rootScope, config, $location) {
+        console.log();
+        $http.post($location.protocol() + '://' + $location.host() + ':' + $location.port()+'/PowerBIService.asmx/updateConfig', null).then(function (data) {
+            $http.get('config.json')
+                .then(function (data, status, headers) {
+                    //$rootScope.config = data;
+                    console.log("Data", data);
+                    config.update(data.data.restServer);
+                    
+                    
+                })
+                .catch(function (data, status, headers) {
+                    // log error
+                    alert('error');
+                });
+        }).catch(function (data) {
+            console.log(':(', data);
+        });
+       
     });
 
     

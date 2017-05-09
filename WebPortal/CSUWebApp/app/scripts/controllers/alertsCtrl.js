@@ -1,5 +1,5 @@
 ﻿angular.module('WebPortal')
-    .controller('alertsCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, DTOptionsBuilder) {
+    .controller('alertsCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, DTOptionsBuilder, Restservice ) {
         console.log("[Info] :: Alerts Controller");
         $scope.dtOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
@@ -10,23 +10,18 @@
         * Function to get all alerts generated  
         */
         $scope.getAllAlerts = function () {
-            $scope.datatable = { 'loader': true };
-            $http({
-                url: config.restServer + "api/getallalerts/" + localStorage.getItem("userId"),
-                dataType: 'json',
-                headers: {
-                    "Content-Type": "application/json"
+           $scope.datatable = { 'loader': true };
+            Restservice.get('api/GetAllAlerts', function (err, response) {
+                if (!err) {
+                    console.log("[Info]:: Get all alerts response ", response);
+                    $scope.datatable.loader = false;
+                    $scope.alerts = response;
+                    $scope.$apply();
                 }
-            }).success(function (response) {
-
-                console.log("[Info]:: Get all alerts response ", response);
-                $scope.datatable.loader = false;
-                $scope.alerts = response;
-
-            })
-                .error(function (error) {
-                    alert("Error : " + JSON.stringify(error));
-                });
+                else {
+                    console.log(err);
+                }
+            });        
         }
         $scope.getAllAlerts();
 
@@ -101,6 +96,7 @@
  * Controller for alert detail popup
  */
 angular.module('WebPortal').controller('alertModalCtrl', function ($scope, $modalInstance, alerts, $http, config) {
+    console.log("Alerts", alerts);
     $http({
         url: config.restServer + "api/getalertdetails/" + localStorage.getItem("userId") + "/" + alerts.Sensor_Log_Id,
         dataType: 'json',
@@ -155,7 +151,7 @@ angular.module('WebPortal').controller('alertModalCtrl', function ($scope, $moda
  * Controller for device alert popup
  */
 angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope, $modalInstance, alerts, $http, config) {
-
+    console.log("Alerts", alerts);
     /**
      * Function to get unmapped sensor associated with user 
      */
@@ -270,8 +266,8 @@ angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope,
 /**
  * Controller for anamoly alert popup
  */
-angular.module('WebPortal').controller('anomalyAlertModalCtrl', function ($scope, DTOptionsBuilder, $modalInstance, alerts, $http, config) {
-
+angular.module('WebPortal').controller('anomalyAlertModalCtrl', function ($scope, DTOptionsBuilder, $modalInstance, alerts, $http, config, Restservice ) {
+    console.log("Alerts", alerts);
     var time = new Date(alerts.Timestamp);
     var unixtime = time.getTime() / 1000;
     unixtime = unixtime.toFixed(0)
@@ -279,25 +275,21 @@ angular.module('WebPortal').controller('anomalyAlertModalCtrl', function ($scope
      * Function to get anamoly alet details  
      */
     function getAnomalyDetails() {
-        $http({
-            url: config.restServer + "/api/getAnomalyDetailsByDay/" + localStorage.getItem("userId") + "/" + unixtime,
-            dataType: 'json',
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).success(function (response) {
-            console.log("Get Anomaly Details response [Info]::", response);
-            $scope.anomaly = response;
-            $scope.dtOptions = DTOptionsBuilder.newOptions()
+        Restservice.get('api/GetAnomalyDetailsByDay/' + unixtime, function (err, response) {
+            if (!err) {
+                console.log("Get Anomaly Details response [Info]::", response);
+                $scope.anomaly = response;
+                $scope.dtOptions = DTOptionsBuilder.newOptions()
                 .withPaginationType('full_numbers')
                 .withDisplayLength(7);
-            var data = [];
-
-
-        })
-            .error(function (error) {
-                alert("Error : " + JSON.stringify(error));
-            });
+                var data = [];
+                $scope.$apply();
+            }
+            else {
+                console.log(err);
+            }
+        });   
+  
     }
     getAnomalyDetails();
 
