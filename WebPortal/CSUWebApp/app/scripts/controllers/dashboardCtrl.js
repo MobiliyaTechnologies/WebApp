@@ -114,7 +114,9 @@ angular.module('WebPortal')
 
             }).result.then(function (result) {
                 $scope.avatar = result.src;
-            });
+                },function () {
+                    // Cancel
+                });
         };
 
         /**
@@ -228,12 +230,11 @@ angular.module('WebPortal')
         }
     });
 
-angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $modalInstance, images, $http) {
+angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $modalInstance, images, $http, Restservice ) {
 
     $scope.selectImage = function (index) {
         for (var i = 0; i < $scope.images.length; i++) {
             if (index === i) {
-                //$scope.image_css[index] =
                 $scope.images[i].color = 'red';
 
             } else {
@@ -249,39 +250,19 @@ angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $mo
     /**
      * Function to Upload Image 
      */
-    $scope.ok = function () {
+    $scope.ok = function () {  
         var JSONobj = new Object();
-        JSONobj.Id = localStorage.getItem("userId");
         JSONobj.Avatar = $scope.selected.image.src;
-        console.log(JSONobj);
-        //$http({
-        //    url: restServer + "api/changeavatar",
-        //    dataType: 'json',
-        //    method: 'POST',
-        //    data: JSONobj,
-        //    headers: {
-        //        "Content-Type": "application/json"
-
-        //    }
-        //}).success(function (response) {
-        //    console.log("Change Avatar response [Info] ::", response);
-        //    localStorage.setItem("Avatar", response);
-        //    $modalInstance.close($scope.selected.image);
-        //})
-        //    .error(function (error) {
-        //        alert("Error : " + JSON.stringify(error));
-        //    });
-        Restservice.get('api/GetCurrentUser', function (err, response) {
+        Restservice.put('api/UpdateUser', JSONobj, function (err, response) {
             if (!err) {
-                $scope.loading = "display:none;";
-                AuthService.setData(response.UserId, response.FirstName, response.LastName, response.Email, null);
-                $state.go('dashboard');
+                console.log("Change Avatar response [Info] ::", response);
+                localStorage.setItem("Avatar", $scope.selected.image.src);
+                $modalInstance.close($scope.selected.image);
             }
             else {
                 console.log(err);
             }
         });
-
 
     };
 

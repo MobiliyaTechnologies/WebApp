@@ -56,13 +56,12 @@ angular.module('WebPortal')
             getCampusList();
         }
         /**
-        * Function to get all campus associated with login user 
+        * Function to get all Building associated with campus
         */
         function getBuildingList(campusId) {
-            console.log("Get Buliding .......");
             Restservice.get('api/GetBuildingsByCampus/' + campusId, function (err, response) {
                 if (!err) {
-                    console.log("Response ::::", response);
+                    console.log("Get BuildingsBy Campus :: [Info]", response);
                     createBasePushPin('building', response);
                 }
                 else {
@@ -77,7 +76,6 @@ angular.module('WebPortal')
             Restservice.get('api/GetAllCampus', function (err, response) {
                 if (!err) {
                     $scope.campusList = response;
-                    console.log("$scope.campusList11", $scope.campusList);
                     createBasePushPin('campus',$scope.campusList);
                     createColorPushPin('campus', $scope.campusList);
                     
