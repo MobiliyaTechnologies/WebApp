@@ -158,11 +158,6 @@
     <Content Include="PowerBIService.asmx" />
     <Content Include="Properties\PublishProfiles\CSUWebApp - Web Deploy.pubxml.user" />
     <Content Include="redirect.html" />
-    <Content Include="Scripts\angular-mocks.js" />
-    <Content Include="Scripts\angular-route.js" />
-    <Content Include="Scripts\angular-route.min.js" />
-    <Content Include="Scripts\angular.js" />
-    <Content Include="Scripts\angular.min.js" />
     <Content Include="Service References\Application Insights\ConnectedService.json" />
     <Content Include="bower.json" />
     <Content Include="app\styles\base.less" />
@@ -260,12 +255,11 @@
     <Content Include="app\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="app\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Properties\PublishProfiles\CSUMobiliya - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\csutempwebapp1 - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\CSUWebApp - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\CSUWebApp - Web Deploy %283%29.pubxml" />
     <None Include="Properties\PublishProfiles\CSUWebApp - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\CSUWebApp20170412122945 - Web Deploy.pubxml" />
-    <Content Include="Scripts\angular.min.js.map" />
-    <Content Include="Scripts\angular-route.min.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

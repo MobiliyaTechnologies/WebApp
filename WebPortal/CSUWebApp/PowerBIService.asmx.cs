@@ -70,6 +70,15 @@ namespace CSUWebApp
         {
             Dictionary<string, string> configs = new Dictionary<string, string>();
             configs.Add("restServer", System.Configuration.ConfigurationManager.AppSettings["restServer"]);
+            configs.Add("b2cApplicationId", System.Configuration.ConfigurationManager.AppSettings["b2cApplicationId"]);
+            configs.Add("tenantName", System.Configuration.ConfigurationManager.AppSettings["tenantName"]);
+            configs.Add("signInPolicyName", System.Configuration.ConfigurationManager.AppSettings["signInPolicyName"]);
+            configs.Add("signInSignUpPolicyName", System.Configuration.ConfigurationManager.AppSettings["signInSignUpPolicyName"]);
+            configs.Add("editProfilePolicyName", System.Configuration.ConfigurationManager.AppSettings["editProfilePolicyName"]);            
+            configs.Add("redirect_uri", System.Configuration.ConfigurationManager.AppSettings["redirect_uri"]);
+            configs.Add("adB2CSignIn", System.Configuration.ConfigurationManager.AppSettings["adB2CSignIn"]);
+            configs.Add("adB2CSignInSignUp", System.Configuration.ConfigurationManager.AppSettings["adB2CSignInSignUp"]);
+            
             return configs;
         }
     }
