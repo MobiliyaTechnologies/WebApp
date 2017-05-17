@@ -1,4 +1,4 @@
-# Project Title
+# Energy Management Web App
 
 ## Getting Started
 
