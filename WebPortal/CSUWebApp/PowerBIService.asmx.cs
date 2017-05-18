@@ -8,6 +8,7 @@ using System.Web.Script.Services;
 using System.Web.Script.Serialization;
 using System.Configuration;
 using Newtonsoft.Json;
+using CSUWebApp.Models;
 
 namespace CSUWebApp
 {
@@ -70,7 +71,44 @@ namespace CSUWebApp
         {
             Dictionary<string, string> configs = new Dictionary<string, string>();
             configs.Add("restServer", System.Configuration.ConfigurationManager.AppSettings["restServer"]);
+            configs.Add("b2cApplicationId", System.Configuration.ConfigurationManager.AppSettings["b2cApplicationId"]);
+            configs.Add("tenantName", System.Configuration.ConfigurationManager.AppSettings["tenantName"]);
+            configs.Add("signInPolicyName", System.Configuration.ConfigurationManager.AppSettings["signInPolicyName"]);
+            configs.Add("signInSignUpPolicyName", System.Configuration.ConfigurationManager.AppSettings["signInSignUpPolicyName"]);
+            configs.Add("editProfilePolicyName", System.Configuration.ConfigurationManager.AppSettings["editProfilePolicyName"]);            
+            configs.Add("redirect_uri", System.Configuration.ConfigurationManager.AppSettings["redirect_uri"]);
+            configs.Add("adB2CSignIn", System.Configuration.ConfigurationManager.AppSettings["adB2CSignIn"]);
+            configs.Add("adB2CSignInSignUp", System.Configuration.ConfigurationManager.AppSettings["adB2CSignInSignUp"]);
+            
             return configs;
+        }
+
+        [WebMethod]
+        public string SaveUrl(RequestUrlModel requestParams)
+        {
+            var fileData = GetData();
+            ResponseUrlModel response = new ResponseUrlModel(null,null,null);
+            switch (requestParams.Type)
+            {
+                case "university":
+                    response = new ResponseUrlModel(requestParams.Values, fileData.campus, fileData.building);
+                    break;
+                case "campus":
+                    response = new ResponseUrlModel(fileData.university, requestParams.Values, fileData.building);
+                    break;
+                case "building":
+                    response = new ResponseUrlModel(fileData.university, fileData.campus, requestParams.Values);
+                    break;
+            }
+            string json = JsonConvert.SerializeObject(response);
+            File.WriteAllText(HttpContext.Current.Server.MapPath("~\\powerBI.json"), json);
+            return "success";
+        }
+
+        public ResponseUrlModel GetData()
+        {
+            var data = File.ReadAllText(HttpContext.Current.Server.MapPath("~\\powerBI.json"));
+            return JsonConvert.DeserializeObject<ResponseUrlModel>(data);
         }
     }
 }

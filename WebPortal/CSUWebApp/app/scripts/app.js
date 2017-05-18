@@ -126,11 +126,27 @@ angular
     //    restServer: "http://msqlserver12.cloudapp.net/CSU_RestService/"
     //})
     .factory('config', function ($http, $rootScope, $timeout) {
-        var restServer;
+        var restServer,b2cApplicationId,adB2CSignIn,adB2CSignInSignUp;
         return {
             restServer: restServer,
             update: function (data) {
-                this.restServer = data;
+                console.log("Data",data);
+                this.restServer = data.restServer;
+                this.b2cApplicationId = data.b2cApplicationId;
+                this.tenantName = data.tenantName;
+                this.signInPolicyName = data.signInPolicyName;
+                this.signInSignUpPolicyName = data.signInSignUpPolicyName;        
+                this.editProfilePolicyName = data.editProfilePolicyName;
+                this.redirect_uri = data.redirect_uri;
+
+                localStorage.setItem("restServer", this.restServer );
+                localStorage.setItem("b2cApplicationId", this.b2cApplicationId);
+                localStorage.setItem("tenantName", this.tenantName);
+                localStorage.setItem("signInPolicyName", this.signInPolicyName);
+                localStorage.setItem("signInSignUpPolicyName", this.signInSignUpPolicyName);
+                localStorage.setItem("editProfilePolicyName", this.editProfilePolicyName);
+                localStorage.setItem("redirect_uri", this.redirect_uri);
+
                 $timeout(function () {
                     $rootScope.$broadcast('config-loaded');
                 },1000);
@@ -276,19 +292,14 @@ angular
         };
 
     })
-    .factory('aadService', function ($http) {
+    .factory('aadService', function ($http,config) {
         //applicaionID created in AD B2C portal
         var applicationId = '3bdf8223-746c-42a2-ba5e-0322bfd9ff76';
         var scope = 'openid ' + applicationId;
         var responseType = 'token id_token';
         var redirectURI = './redirect.html';
 
-        //update the policy names with the exact name from the AD B2C policies blade
-        var policies = {
-            signInPolicy: "B2C_1_b2cSignin",
-            editProfilePolicy: "B2C_1_b2cSiPe",
-            signInSignUpPolicy: "B2C_1_b2cSiUpIn"
-        };
+    
 
         var loginDisplayType = {
             PopUp: 'popup',
@@ -303,7 +314,7 @@ angular
             adB2CEditProfile: 'adB2CEditProfile'
         };
         return {
-            signIn: function (callback) {
+            signIn: function (callback) {             
                 hello.init({
                     adB2CSignIn: applicationId,
                     adB2CSignInSignUp: applicationId,
@@ -317,6 +328,10 @@ angular
                 callback(b2cSession);
             },
             signUp: function (callback) {
+                helloNetwork.adB2CSignIn=config.adB2CSignIn;
+                helloNetwork.adB2CSignInSignUp=config.adB2CSignInSignUp;
+                applicationId=config.applicationId;
+                scope = 'openid ' + applicationId;
                 hello.init({
                     adB2CSignIn: applicationId,
                     adB2CSignInSignUp: applicationId,
@@ -329,10 +344,11 @@ angular
                 this.policyLogin(helloNetwork.adB2CSignInSignUp, loginDisplayType.Page);
             },
             policyLogin:function (network, displayType) {
-
+                  
                  if (!displayType) {
                          displayType = 'page';
                  }
+                 console.log(network);
                  var b2cSession = hello(network).getAuthResponse();
                  console.log(b2cSession);
                 //in case of silent renew, check if the session is still active otherwise ask the user to login again
@@ -586,7 +602,7 @@ angular
         $http.post($location.protocol() + '://' + $location.host() + ':' + $location.port()+'/PowerBIService.asmx/updateConfig', null).then(function (data) {
             $http.get('config.json')
                 .then(function (data, status, headers) {
-                    config.update(data.data.restServer);                   
+                    config.update(data.data);                   
                     
                 })
                 .catch(function (data, status, headers) {

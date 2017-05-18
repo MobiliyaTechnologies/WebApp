@@ -40,22 +40,7 @@ angular.module('WebPortal')
             else
                 document.body.querySelector('.response')
                     .appendChild(document.createTextNode(JSON.stringify(s, true, 2)));
-        }
-
-
-
-        //applicaionID created in AD B2C portal
-        var applicationId = '3bdf8223-746c-42a2-ba5e-0322bfd9ff76';
-        var scope = 'openid ' + applicationId;
-        var responseType = 'token id_token';
-        var redirectURI = './redirect.html';
-
-        //update the policy names with the exact name from the AD B2C policies blade
-        var policies = {
-            signInPolicy: "B2C_1_b2cSignin",
-            editProfilePolicy: "B2C_1_b2cSiPe",
-            signInSignUpPolicy: "B2C_1_b2cSiUpIn"
-        };
+        }       
 
         var loginDisplayType = {
             PopUp: 'popup',
@@ -105,6 +90,10 @@ angular.module('WebPortal')
 
             }
             else {
+                var script = document.createElement('script');
+                script.setAttribute('type', 'text/javascript');
+                script.setAttribute('src', './app/scripts/aadb2c.js');
+                document.head.appendChild(script);
                 $scope.signIn('intial');
                 $scope.showLogin = true;
             }

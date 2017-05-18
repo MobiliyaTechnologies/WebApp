@@ -1,10 +1,12 @@
 //These values need to be updated with the specific tenant and its policies.
-var tenantName = "CSUB2C.onmicrosoft.com";
-var signInPolicyName = "B2C_1_b2cSignin";
-var signInSignUpPolicyName = "B2C_1_b2cSignup";
-var editProfilePolicyName = "B2C_1_b2cSiPe";
-var redirect_uri = "http://localhost:65159/#/dashboard";
+var tenantName = localStorage.getItem("tenantName");
+var signInPolicyName = localStorage.getItem("signInPolicyName");
+var signInSignUpPolicyName = localStorage.getItem("signInSignUpPolicyName");
+var editProfilePolicyName = localStorage.getItem("editProfilePolicyName");
+var redirect_uri = localStorage.getItem("redirect_uri");
 //No need to modify the below values
+
+
 var helloJsSignPolicy = "adB2CSignIn";
 var helloJsSignInSignUpPolicy = "adB2CSignInSignUp";
 var helloJsEditProfilePolicy = "adB2CEditProfile";
