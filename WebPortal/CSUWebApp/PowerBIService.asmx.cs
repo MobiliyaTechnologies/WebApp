@@ -87,18 +87,22 @@ namespace CSUWebApp
         public string SaveUrl(RequestUrlModel requestParams)
         {
             var fileData = GetData();
-            ResponseUrlModel response = new ResponseUrlModel(null,null,null);
+            ResponseUrlModel response = new ResponseUrlModel(null,null,null,null);
             switch (requestParams.Type)
             {
                 case "university":
-                    response = new ResponseUrlModel(requestParams.Values, fileData.campus, fileData.building);
+                    response = new ResponseUrlModel(requestParams.Values, fileData.campus, fileData.building,fileData.feedback);
                     break;
                 case "campus":
-                    response = new ResponseUrlModel(fileData.university, requestParams.Values, fileData.building);
+                    response = new ResponseUrlModel(fileData.university, requestParams.Values, fileData.building, fileData.feedback);
                     break;
                 case "building":
-                    response = new ResponseUrlModel(fileData.university, fileData.campus, requestParams.Values);
+                    response = new ResponseUrlModel(fileData.university, fileData.campus, requestParams.Values, fileData.feedback);
                     break;
+                case "feedback":
+                    response = new ResponseUrlModel(fileData.university, fileData.campus, fileData.building, requestParams.Values);
+                    break;
+
             }
             string json = JsonConvert.SerializeObject(response);
             File.WriteAllText(HttpContext.Current.Server.MapPath("~\\powerBI.json"), json);

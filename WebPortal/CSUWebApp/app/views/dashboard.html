@@ -41,17 +41,17 @@
                                 <input type="radio" name="accordion-1" id="section-2" value="toggle" />
                                 <label for="section-2"> <span>REPORTS</span></label>
                             </div>
-                            <div class="section" >
+                            <div class="section" ng-click="changeState('piconf')" >
                                 <input type="radio" name="accordion-1" id="section-3" value="toggle" />
                                 <label for="section-3"> <span>CONFIGURATION</span></label>
-                                <div class="content">
+                                <!--<div class="content">
                                     <ul>
-                                        <!--<li ng-click="changeState('piconf')"><i class="fa fa-cog"></i><span>Pi Conf</span></li>-->
-                                        <li ng-click="changeState('campusconf')"><i class="fa fa-university"></i><span>Campus Conf</span></ling-click="changeState('profile')">
+                                        <li ng-click="changeState('piconf')"><i class="fa fa-cog"></i><span>Pi Conf</span></li>
+                                        <li ng-click="changeState('campusconf')"><i class="fa fa-university"></i><span>Campus Conf</span></ling-click="changeState('profile')">-->
                                         <!--<li ng-click="changeState('dataconf')"><i class="fa fa-database"></i><span>Data Conf</span></li>-->
-                                        <li ng-click="changeState('userconf')"><i class="fa fa-group"></i><span>User Conf</span></li>
+                                        <!--<li ng-click="changeState('userconf')"><i class="fa fa-group"></i><span>User Conf</span></li>
                                     </ul>
-                                </div>
+                                </div>-->
                             </div>
                             <!--<div class="section" ng-click="changeState('profile')">
                                 <input type="radio" name="accordion-1" id="section-4" value="toggle" />
@@ -94,6 +94,46 @@
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="ok()">Change</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+<script type="text/ng-template" id="configuration.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Configuration </h3>
+    </div>
+    <div class="modal-body">
+        <div class="row" style="color:black;">
+            <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:150px;">
+                <h3>PI Server Configuration</h3>
+                <input class="form-control" style="margin-top:20px;" placeholder="PI Server Name" type="text" ng-model="Piserver.piservername" />
+                <input class="form-control" style="margin-top:20px;" placeholder="DB Connection String" type="text" ng-model="Piserver.dbConnectionstring" />
+            </div>
+            <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:310px;">
+                <h3>Power BI Url Configuration For Campus</h3>               
+                <input class="form-control" style="margin-top:20px;" placeholder="Generic report" type="text" ng-model="campusPowerBiConfig.generic" />
+                <input class="form-control" style="margin-top:20px;" placeholder="Monthly Consumption" type="text" ng-model="campusPowerBiConfig.monthly_consumption" />
+                <input class="form-control" style="margin-top:20px;" placeholder="Weekly Consumption" type="text" ng-model="campusPowerBiConfig.weekly_consumption" />
+                <input class="form-control" style="margin-top:20px;" placeholder="Day Wise Current Month" type="text" ng-model="campusPowerBiConfig.day_wise_current_month" />
+                <input class="form-control" style="margin-top:20px;" placeholder="Current Month Prediction" type="text" ng-model="campusPowerBiConfig.current_month_prediction" />
+            </div>
+            <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:310px;">
+                <h3>Power BI Url Configuration For Building</h3>
+                <input class="form-control" style="margin-top:20px;" placeholder="Generic report" type="text" ng-model="buildingPowerBiConfig.generic" />
+                <input class="form-control" style="margin-top:20px;" placeholder="Monthly Consumption" type="text" ng-model="buildingPowerBiConfig.monthly_consumption" />
+                <input class="form-control" style="margin-top:20px;" placeholder="Weekly Consumption" type="text" ng-model="buildingPowerBiConfig.weekly_consumption" />
+                <input class="form-control" style="margin-top:20px;" placeholder="Day Wise Current Month" type="text" ng-model="buildingPowerBiConfig.day_wise_current_month" />
+                <input class="form-control" style="margin-top:20px;" placeholder="Current Month Prediction" type="text" ng-model="buildingPowerBiConfig.current_month_prediction" />
+            </div>
+            <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:150px;">
+                <h3>Azure ML Configuration</h3>
+                <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml App Url" type="text" ng-model="azureml.azuremlappurl" />
+                <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml App key" type="text" ng-model="azureml.azuremlappkey" />
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="update()">Change</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>

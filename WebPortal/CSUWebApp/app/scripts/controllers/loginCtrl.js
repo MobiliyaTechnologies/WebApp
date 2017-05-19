@@ -23,7 +23,7 @@ angular.module('WebPortal')
                 Token.update(function () { });
             $interval(function () {
                 Token.update(function () { });
-            }, 2000);
+            }, 4000);
 
         }
               

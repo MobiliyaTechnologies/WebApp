@@ -1,6 +1,16 @@
 ﻿angular.module('WebPortal')
     .controller('feedbackCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, Restservice ) {
         console.log("[Info] :: Feedback Controller loaded");
+        function getPowerBiUrls() {
+            $http.get('powerBI.json')
+                .then(function (data, status, headers) {
+                    $scope.powerBiUrls = data.data;
+                })
+                .catch(function (data, status, headers) {
+                    console.log('error');
+                });
+        }
+        getPowerBiUrls();
         
         /**
          * Function to get all campus  
@@ -65,7 +75,6 @@
         * Function to get sensor list based on selected class 
         */
         $scope.getSensorList = function () {
-            console.log($scope.selectedClass);
             var result = null;
             var campus = $scope.Campuses.filter(function (obj) {
                 return obj.CampusID === $scope.selectedCampus;
@@ -77,8 +86,9 @@
             var classes = $scope.Classes.filter(function (obj) {
                 return obj.ClassId === $scope.selectedClass;
             })[0];     
-            
-            embedReport("https://app.powerbi.com/reportEmbed?reportId=d794e930-b85f-4270-8c23-de2e64fd98d0&$filter=BridgeClassroomBuilding/CampusBuildingClass eq '" + campus.CampusName + building.BuildingName + classes.ClassName+"'", 'feedback');
+            if ($scope.powerBiUrls.feedback.summary){
+                embedReport($scope.powerBiUrls.feedback.summary + "&$filter=BridgeClassroomBuilding/CampusBuildingClass eq '" + campus.CampusName + building.BuildingName + classes.ClassName + "'", 'feedback');
+            }
             Restservice.get('api/GetAllSensorsForClass/' + $scope.selectedClass, function (err, response) {
                 if (!err) {
                     $scope.sensors = response;
