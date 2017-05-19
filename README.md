@@ -5,7 +5,16 @@
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 ### Prerequisites
 
-What things you need to install the software and how to install them
+1.Bower component need to be install which are specified in bower.json 
+  ex - bower install
+2. ARM template should add following configuration in app.settings
+   -restServer
+   -b2cApplicationId
+   -tenantName
+   -signInPolicyName
+   -signInSignUpPolicyName
+   -editProfilePolicyName
+   -redirect_uri    
 
 ```
 Give examples
@@ -13,21 +22,20 @@ Give examples
 
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
+Once webApp is ready need to configure following to see Data as well reports :
 
-Say what the step will be
+1.Need to create campus or else you cant assoicate PI server 
+2.Assoicate campus with pi server.
+3.Add university level power BI report urls to see reports in REPORTS section on dasboard.
+4.Add campus level powerBI report urls to see reports on dashboard.
+5.Add building  level powerBI report urls to see reports on dashboard drill down view.
+6.Add feedback  powerBI report url to see reports on feedback page.
+7.Add azureML subscribtion detials to see prediction reports.
 
-```
-Give the example
-```
 
-And repeat
 
-```
-until finished
-```
 
-End with an example of getting some data out of the system or using it for a little demo
+
 
 ## Running the tests
 
