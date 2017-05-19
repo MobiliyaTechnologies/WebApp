@@ -220,7 +220,7 @@ angular
 
         };
     })
-    .factory('Restservice', function ($http, AuthService, config) {
+    .factory('Restservice', function ($http, AuthService, config,$state) {
 
         return {
             get: function (urlpath, callback) {
@@ -241,24 +241,44 @@ angular
                 }
                 else {
                     console.log("Please login");
+                   // $state.go('login');
                 }
             },
             post: function (urlpath,data, callback) {
                 var authResponse = hello('adB2CSignIn').getAuthResponse();
                 if (authResponse != null) {
-                    hello('adB2CSignIn').api({
-                        path: config.restServer + urlpath,
-                        method: 'post',
-                        data:data,
+                    //hello('adB2CSignIn').api({
+                    //    path: config.restServer + urlpath,
+                    //    method: 'post',
+                    //    data: data,                        
+                    //    headers: {
+                    //        Authorization: authResponse.token_type + ' ' + authResponse.access_token,                            
+                    //        contentType: 'application/json'
+                    //    }
+                    //}).then(function (response) {
+                    //    callback(null, response);
+                    //}, function (e) {
+                    //    callback(e, null);
+
+                    //    });
+
+
+                    $http({
+                        url: config.restServer + urlpath,
+                        dataType: 'json',
+                        method: 'POST',
+                        data: data,
                         headers: {
-                            Authorization: authResponse.token_type + ' ' + authResponse.access_token
+                            "Content-Type": "application/json",
+                            "Authorization": authResponse.token_type + ' ' + authResponse.access_token,
                         }
                     }).then(function (response) {
                         callback(null, response);
-                    }, function (e) {
-                        callback(e, null);
 
-                    });
+                    })
+                        .catch(function (error) {
+                            callback(error, null);
+                        });
                 }
                 else {
                     console.log("Please login");
@@ -267,20 +287,36 @@ angular
             put: function (urlpath,data, callback) {
                 var authResponse = hello('adB2CSignIn').getAuthResponse();
                 if (authResponse != null) {
-                    hello('adB2CSignIn').api({
-                        path: config.restServer + urlpath,
-                        method: 'put',
-                        data:data,
+                    //hello('adB2CSignIn').api({
+                    //    path: config.restServer + urlpath,
+                    //    method: 'put',
+                    //    data:data,
+                    //    headers: {
+                    //        Authorization: authResponse.token_type + ' ' + authResponse.access_token,
+                    //        contentType: 'application/json'
+                    //    }
+                    //}).then(function (response) {
+                    //    callback(null, response);
+                    //}, function (e) {
+                    //    callback(e, null);
+
+                    //});
+                    $http({
+                        url: config.restServer + urlpath,
+                        dataType: 'json',
+                        method: 'PUT',
+                        data: data,
                         headers: {
-                            Authorization: authResponse.token_type + ' ' + authResponse.access_token,
-                            ContentType:'application/json'
+                            "Content-Type": "application/json",
+                            "Authorization": authResponse.token_type + ' ' + authResponse.access_token,
                         }
                     }).then(function (response) {
                         callback(null, response);
-                    }, function (e) {
-                        callback(e, null);
 
-                    });
+                    })
+                        .catch(function (error) {
+                            callback(error, null);
+                        });
                 }
                 else {
                     console.log("Please login");

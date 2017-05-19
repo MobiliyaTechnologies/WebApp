@@ -14,6 +14,7 @@
                         <th>Campus Desc</th>
                         <th>Monthly Consumption</th>
                         <th>Edit</th>
+                        <th>Add Building</th>
                         </thead>
                         <tbody>
                             <tr ng-repeat="campus in campusList">                               
@@ -22,6 +23,7 @@
                                 <td>{{campus.CampusDesc | date}}</td>
                                 <td>{{campus.MonthlyConsumption}}</td>
                                 <td><a ng-click="openPopup(campus)" title="View Details"><i class="fa fa-edit"></i></a></td>
+                                <td><a ng-click="addBuilding(campus)" title="View Details"><i class="fa fa-plus"></i></a></td>
                             </tr>
                         </tbody>
                     </table>

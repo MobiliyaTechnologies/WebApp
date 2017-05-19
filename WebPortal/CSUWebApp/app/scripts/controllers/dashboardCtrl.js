@@ -1,6 +1,6 @@
 ﻿var restServer = "http://powergridrestservice.azurewebsites.net/";
 angular.module('WebPortal')
-    .controller('dashboardCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal) {
+    .controller('dashboardCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, $rootScope, aadService ) {
         $scope.weather = weatherServiceFactory;
         $scope.weather.search();
         $scope.username = localStorage.getItem("UserName");
@@ -12,7 +12,13 @@ angular.module('WebPortal')
         $scope.li_css[2] = 'background-color: white;color:#192c1f;';
         $scope.li_css[3] = 'background-color: white;color:#192c1f;';
         $scope.li_css[4] = 'background-color: white;color:#192c1f;';
+        aadService.signIn(function (b2cSession) {
 
+        });
+        //$rootScope.$on('config-loaded', function () {
+        //    console.log("Dashboard Config");
+            
+        //});
         if (localStorage.getItem("Avatar") == "null") {
             console.log("$scope.avatar", $scope.avatar);
             $scope.avatar = "Avatar_1.png";
@@ -136,9 +142,9 @@ angular.module('WebPortal')
                 console.log("[Info] :: Successfully subscribed to topic 'Alerts'")
 
             })
-                .catch(function (error) {
-                    alert("Error : " + JSON.stringify(error));
-                });
+            .catch(function (error) {
+                    console.log("Error : " + JSON.stringify(error));
+            });
         }
         /**
         * Firebase Credentials
@@ -228,6 +234,29 @@ angular.module('WebPortal')
                 });
             policyLogout(helloNetwork.adB2CSignIn, policies.signInPolicy);
         }
+
+        //function configure() {
+        //    $http.get('config.json')
+        //        .then(function (data, status, headers) {
+        //            console.log("Config ::",data);
+        //            var modalInstance = $modal.open({
+        //                templateUrl: 'configuration.html',
+        //                controller: 'configurationCtrl',
+                       
+
+        //            }).result.then(function (result) {
+        //                $scope.avatar = result.src;
+        //            }, function () {
+        //                // Cancel
+        //            });
+
+        //        })
+        //        .catch(function (data, status, headers) {
+        //            alert('error');
+        //        });
+        //}
+        //configure();
+       
     });
 
 angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $modalInstance, images, $http, Restservice ) {
@@ -269,6 +298,85 @@ angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $mo
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
+
+
+
+
+
+});
+angular.module('WebPortal').controller('configurationCtrl', function ($scope, $modalInstance, $http, Restservice) {
+    
+    $scope.configObj = {};
+
+    $scope.localconfig = {};
+    //"ConfigurationType": "", "ConfigKey": "", "ConfigValue": ""
+    $scope.configList = [];
+    $scope.campusPowerBiConfig = {};
+    $scope.buildingPowerBiConfig = {};
+    $scope.azureml = {};
+    $scope.Piserver = {}
+    $scope.update = function () {
+
+        updateConfigOnserver();
+        updateConfigOnLocal();
+        
+
+
+    } 
+    function updateConfigOnLocal(){
+        var campus = {
+            campusPowerBiConfig: $scope.campusPowerBiConfig
+        };
+        var building = {
+            buildingPowerBiConfig: $scope.buildingPowerBiConfig
+        };
+        jsonConcat($scope.localconfig, $scope.azureml);
+        jsonConcat($scope.localconfig, campus);
+        jsonConcat($scope.localconfig, building);
+
+        //console.log("$scope.localconfig", $scope.localconfig);
+        //console.log("campusPowerBiConfig", $scope.campusPowerBiConfig);
+        //console.log("buildingPowerBiConfig", $scope.buildingPowerBiConfig);
+        //console.log("azureml", $scope.azureml);
+        //console.log("Piserver", $scope.Piserver);
+        //console.log("Piserver", $scope.b2cConfig);
+        
+    }
+
+
+    function updateConfigOnserver() {
+        var configArr = [];
+        var b2cCount = Object.keys($scope.b2cConfig).length;
+        
+
+        for (key in $scope.b2cConfig) {
+            var obj = { "ConfigurationType": 0, "ConfigKey": key, "ConfigValue": $scope.b2cConfig[key] };
+            $scope.configList.push(obj);
+        }    
+        for (key in $scope.Piserver) {
+            var obj = { "ConfigurationType": 1, "ConfigKey": key, "ConfigValue": $scope.Piserver[key] };
+            $scope.configList.push(obj);
+        } 
+        for (key in $scope.campusPowerBiConfig) {
+            var obj = { "ConfigurationType": 2, "ConfigKey": key, "ConfigValue": $scope.campusPowerBiConfig[key] };
+            $scope.configList.push(obj);
+        } 
+        for (key in $scope.buildingPowerBiConfig) {
+            var obj = { "ConfigurationType": 2, "ConfigKey": key, "ConfigValue": $scope.buildingPowerBiConfig[key] };
+            $scope.configList.push(obj);
+        } 
+        console.log("$scope.configList", $scope.configList);
+    }
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    function jsonConcat(o1, o2) {
+        for (var key in o2) {
+            o1[key] = o2[key];
+        }
+        return o1;
+    }
 
 
 

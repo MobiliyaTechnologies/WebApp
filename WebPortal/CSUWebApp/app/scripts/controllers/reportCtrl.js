@@ -4,40 +4,52 @@ angular.module('WebPortal')
         console.log("[Info] :: Report Controller Loaded")
         //Check for token if available display report or else get the token
         if (Token.data.accesstoken != '') {
-            displayReport();
         }
         else {
-            Token.update(displayReport);
+            Token.update(function () { });
         }    
-        function displayReport() {
-            if ("" === reportURL) {
+        function getPowerBiUrls() {
+            console.log("Get");
+            $http.get('powerBI.json')
+                .then(function (data, status, headers) {
+                    $scope.powerBiUrls = data.data;
+                    if ($scope.powerBiUrls.feedback) {   
+                        embedReport($scope.powerBiUrls.university.summary, 'summary');
+                        embedReport($scope.powerBiUrls.university.summarydetails, 'summarydetails');
+                    }
+                })
+                .catch(function (data, status, headers) {
+                    console.log('error',data);
+                });
+        }
+        getPowerBiUrls();
+
+
+
+        function embedReport(reportURL, iframeId) {
+            console.log(reportURL);
+            var embedUrl = reportURL;
+            if ("" === embedUrl) {
                 console.log("No embed URL found");
                 return;
             }
-            iframe = document.getElementById('genericReport');
-            iframe.src = reportURL;
-            iframe.onload = $scope.setIFrameSize;
-        };      
+            iframe = document.getElementById(iframeId);
+            iframe.src = embedUrl;
+            iframe.onload = function () {
+                postActionLoadReport(iframeId)
+            };
+        }
 
-        $scope.setIFrameSize = function () {
-            var ogWidth = 700;
-            var ogHeight = 600;
-            var ogRatio = ogWidth / ogHeight;
-            var windowWidth = $(window).width();
-            var parentDivWidth = $(".iframe-class").parent().width();
-            var newHeight = (parentDivWidth / ogRatio);
-            $(".iframe-class").addClass("iframe-class-resize");
-            $(".iframe-class-resize").css("width", parentDivWidth);
-            $(".iframe-class-resize").css("height", newHeight);
-            var accessToken = Token.data.accesstoken;
+        function postActionLoadReport(iframeId) {
+            var accessToken = Token.data.accesstoken
             if ("" === accessToken) {
-                console.log("[Error] :: Access token not found");
+                console.log("Access token not found");
                 return;
-            }     
-            var m = { action: "loadReport", accessToken: accessToken, height: newHeight, width: parentDivWidth  };
-            message = JSON.stringify(m);
-            iframe = document.getElementById('genericReport');
-            iframe.contentWindow.postMessage(message, "*");
+            }
+            var m = { action: "loadReport", accessToken: accessToken };
+            var message = JSON.stringify(m);
+            iframe = document.getElementById(iframeId);
+            iframe.contentWindow.postMessage(message, "*");;
         }
 
     });
