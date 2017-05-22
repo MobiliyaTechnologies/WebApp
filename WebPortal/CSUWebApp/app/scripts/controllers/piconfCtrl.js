@@ -125,7 +125,6 @@
                     else {
                         $scope.checkCampus = '#f29898';
                     }
-                    $scope.$apply();
                 }
                 else {
                     console.log(err);
@@ -140,10 +139,8 @@
             Restservice.get('api/GetAllUsers', function (err, response) {
                 if (!err) {
                     $scope.userList = response;
-                    console.log("Get User List [Info]", response);
-                  
+                    console.log("Get User List [Info]", response);                 
 
-                    $scope.$apply();
                 }
                 else {
                     console.log(err);
@@ -164,7 +161,6 @@
                     else {
                         $scope.checkPIserver = '#f29898';
                     }
-                    $scope.$apply();
                 }
                 else {
                     console.log(err);
@@ -484,42 +480,110 @@ angular.module('WebPortal').controller('addBuildingCtrl', function ($scope, $mod
 
 });
 
-angular.module('WebPortal').controller('changeRoleCtrl', function ($scope, $modalInstance, $http, Restservice, user) {
-    var userObj = {
-        UserId: user.UserId,
-        RoleId: ''
+angular.module('WebPortal').controller('changeRoleCtrl', function ($scope, $modalInstance, $http, Restservice, user, $modal) {
+    console.log("User", user);
+    function getAllRoles() {
+    Restservice.get('api/GetAllRoles', function (err, response) {
+        if (!err) {
+            console.log(response);
+            $scope.roles = response;
+            $scope.selectedRole = {
+                selected: response[0]
+            }
+        }
+        else {
+            console.log(err);
+        }
+    });
     }
-    $scope.roles = [{ 'name': 'Super Admin', 'value': 0 }
-        , { 'name': 'Campus Admin', 'value': 1 },
-        { 'name': 'Student', 'value': 2 },
-     ];
-
-    $scope.selectedRole = {
-        selected: $scope.roles[user.RoleId]
-    }
+    getAllRoles();
     $scope.userName = user.FirstName +' '+ user.LastName;
     
     /**
      * Function to Upload Image 
      */
     $scope.ok = function () {
-        userObj.RoleId = $scope.selectedRole.selected.value;
-        console.log("Jsononj",userObj);
-        Restservice.put('api/UpdateUser', userObj, function (err, response) {
+        Restservice.put('api/AssignRoleToUser/' + user.UserId + '/' + $scope.selectedRole.selected.Id, null, function (err, response) {
             if (!err) {
-                console.log("Response", response)
+                console.log("Response", response);
                 $modalInstance.dismiss('cancel');
             }
             else {
                 console.log(err);
             }
         });
-
-
     };
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
+    $scope.addRole = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'addRole.html',
+            controller: 'addRoleCtrl',
+           
 
+        }).result.then(function (result) {
+            getAllRoles();
+        }, function () {
+            // Cancel
+            getAllRoles();
+        });
+    }
+
+});
+
+angular.module('WebPortal').controller('addRoleCtrl', function ($scope, $modalInstance, $http, Restservice, $modal) {
+  
+    $scope.names = ["Emil", "Tobias", "Linus"];
+    $scope.cars = [{ id: 1, label: 'Audi' }, { id: 2, label: 'BMW' }, { id: 3, label: 'Honda' }];
+    $scope.selectedCar = [];
+    $scope.role = {
+        'RoleName': '',
+        'Description': '',
+        'CampusIds':[]
+    };
+    $scope.CategoriesSelected = [];
+    $scope.Categories = [];
+    $scope.dropdownSetting = {
+        scrollable: true,
+        scrollableHeight: '200px'
+    }
+    Restservice.get('api/GetAllCampus', function (err, response) {
+        if (!err) {
+            $scope.campus= response;
+            $scope.campus.forEach(function (campus) {
+                campus.id = campus.CampusID;
+                 campus.label = campus.CampusName;
+            });
+
+        }
+        else {
+            console.log(err);
+        }
+    });
+    
+
+    
+    $scope.ok = function () {
+        if ($scope.CategoriesSelected.length > 0) {       
+            $scope.CategoriesSelected.forEach(function (category) {
+                $scope.role.CampusIds.push(category.id);
+            });
+            console.log($scope.role);
+            Restservice.post('api/AddRole', $scope.role, function (err, response) {
+                if (!err) {
+                    console.log("Response", response)
+                    $modalInstance.dismiss('cancel');
+                }
+                else {
+                    console.log(err);
+                }
+            });
+        }
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
 });

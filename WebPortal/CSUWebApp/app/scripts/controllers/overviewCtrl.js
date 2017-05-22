@@ -226,7 +226,6 @@ angular.module('WebPortal')
                 else {
                     console.log(err);
                 }
-                $scope.$apply();
 
             });
         }
@@ -241,7 +240,6 @@ angular.module('WebPortal')
                 else {
                     console.log(err);
                 }
-                $scope.$apply();
 
             });
         }

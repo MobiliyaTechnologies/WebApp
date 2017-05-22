@@ -241,10 +241,11 @@
                             </div>
                         </div>
                     </div>
-
+                    
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
@@ -311,12 +312,31 @@
     <div>
         <div class="col-lg-offset-1 col-lg-10 ">
             User Name   :&nbsp;<label  style="margin-top:20px;">{{userName}}</label></br> 
-            Select Role :&nbsp;<select ng-model="selectedRole.selected" ng-change="roleChange()" ng-options="role.name for role in roles"></select>    
+            Select Role :&nbsp;<select ng-model="selectedRole.selected" ng-change="roleChange()" ng-options="role.RoleName for role in roles"></select>&nbsp;&nbsp;<a  ng-click="addRole()">Add New Role</a>  
         </div>
 
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="ok()">Change</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+<script type="text/ng-template" id="addRole.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Role</h3>
+    </div>
+    <div>
+        <div class="col-lg-offset-1 col-lg-10 ">
+            <input class="form-control" style="margin-top:20px;" placeholder="Role Name" type="text" ng-model="role.RoleName" />
+            <input class="form-control" style="margin-top:20px;" placeholder="Description" type="text" ng-model="role.Description" />
+            Select Campus :<div ng-dropdown-multiselect="" extra-settings="dropdownSetting"
+                 options="campus" selected-model="CategoriesSelected" checkboxes="true" style="margin-top:20px;"></div>
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">Add</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>

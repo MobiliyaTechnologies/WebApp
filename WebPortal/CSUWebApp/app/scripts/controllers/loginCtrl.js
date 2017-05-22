@@ -8,29 +8,10 @@
  * Controller of the angulartestApp
  */
 angular.module('WebPortal')
-    .controller('loginCtrl', ['$scope', '$http', '$state', 'AuthService', 'Token', 'config', '$interval', 'Restservice', '$modal', 'aadService', '$rootScope', function ($scope, $http, $state, AuthService, Token, config, $interval, Restservice, $modal, aadService, $rootScope) {
+    .controller('loginCtrl', ['$scope', '$http', '$state', 'AuthService', 'Token', 'config', '$interval', 'Restservice', '$modal', 'aadService', '$rootScope', 'AclService', function ($scope, $http, $state, AuthService, Token, config, $interval, Restservice, $modal, aadService, $rootScope, AclService) {
 
-        console.log("Login Controller loaded :: [Info]");
-
-
-        updateAccessToken();                   
-        /**
-        * Function to update Access Token 
-        */        
-        function updateAccessToken() {
-            //update token if not available 
-            if (Token.data.accesstoken == '')
-                Token.update(function () { });
-            $interval(function () {
-                Token.update(function () { });
-            }, 4000);
-
-        }
-              
-
-
+        console.log("[Info] :: Login Controller loaded");    
         function log(s) {
-
             if (typeof s.error !== 'undefined' && s.error !== null) {
                 if (s.error.code === 'blocked') {   //silentrenew(display: none) in case of expired token returns X-frame Options as DENY error
                     bootbox.alert("<p class='bg-danger'>there was an error in silent renewing the token. Please login again</p>");
@@ -75,7 +56,6 @@ angular.module('WebPortal')
         }
         $scope.showLogin = false;
         $rootScope.$on('config-loaded', function () {
-            console.log("Here");
             $scope.showLogin = true;
             if (config.restServer == "" || config.restServer == undefined) {
                 console.log("Show Configuration Popup");
@@ -98,7 +78,6 @@ angular.module('WebPortal')
                 $scope.showLogin = true;
             }
         });
-        ///$scope.signIn('intial');
         $scope.signUp = function () {           
             aadService.signUp();                 
         }
@@ -110,9 +89,20 @@ angular.module('WebPortal')
             Restservice.get('api/GetCurrentUser', function (err, response) {
                 if (!err) {
                     $scope.loading = "display:none;";
-                    console.log(response);
-                    AuthService.setData(response.UserId, response.FirstName, response.LastName, response.Email, response.Avatar);
-                    $state.go('dashboard');
+                    console.log("[Info] :: Get Current User Details ",response);
+                    AuthService.setData(response);
+                    if (response.RoleId == 1) {
+                        AclService.attachRole('admin');
+                        $state.go('overview');
+                    }
+                    else if (response.RoleId == 2) {
+                        AclService.attachRole('student');
+                        $state.go('feedback');
+                    }
+                    else {
+                        AclService.attachRole('campus_admin');
+                        $state.go('overview');
+                    }
                 }
                 else {
                     console.log(err);
