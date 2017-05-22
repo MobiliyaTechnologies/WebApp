@@ -1,6 +1,7 @@
-﻿var restServer = "http://powergridrestservice.azurewebsites.net/";
+﻿var roles=[]
 angular.module('WebPortal')
-    .controller('dashboardCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, $rootScope, aadService ) {
+    .controller('dashboardCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, $rootScope, aadService, AclService ) {
+        $scope.can = AclService.can;
         $scope.weather = weatherServiceFactory;
         $scope.weather.search();
         $scope.username = localStorage.getItem("UserName");
@@ -15,43 +16,14 @@ angular.module('WebPortal')
         aadService.signIn(function (b2cSession) {
 
         });
-        //$rootScope.$on('config-loaded', function () {
-        //    console.log("Dashboard Config");
-            
-        //});
+        
         if (localStorage.getItem("Avatar") == "null") {
-            console.log("$scope.avatar", $scope.avatar);
             $scope.avatar = "Avatar_1.png";
         }
         else {
             $scope.avatar = localStorage.getItem("Avatar");
         }
-
-        /**
-        * Function to call logout api  
-        */
-        $scope.logout = function () {
-            console.log("logout [info] ::");
-            var JSONobj = new Object();
-            JSONobj.Email = localStorage.getItem("Email");
-
-            $http({
-                url: restServer + "api/signout",
-                dataType: 'json',
-                method: 'POST',
-                data: JSONobj,
-                headers: {
-                    "Content-Type": "application/json"
-
-                }
-            }).success(function (response) {
-                $state.go('login');
-
-            })
-                .error(function (error) {
-                    alert("Error : " + JSON.stringify(error));
-                });
-        };
+        
 
         $scope.makeActive = function (index) {
             if (index == 0) {
