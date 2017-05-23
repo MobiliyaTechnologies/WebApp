@@ -183,7 +183,6 @@ angular.module('WebPortal')
         }
 
         function embedReport(reportURL,iframeId) {          
-            console.log(reportURL);           
             var embedUrl = reportURL;
             if ("" === embedUrl) {
                 console.log("No embed URL found");
@@ -282,73 +281,32 @@ angular.module('WebPortal')
          */
         function onPushpinMouseOut(args) {
             infobox.setOptions({ visible: false });
-        }
-
-        if (Token.data.accesstoken != '') {
-            displayGraph();
-        }
-        else {
-            Token.update(displayGraph);
-        }
-        function displayGraph() {
-           
-        }
-
-
-        $scope.setIFrameSize = function () {
-            var ogWidth = 1200;
-            var ogHeight = 900;
-            var ogRatio = ogWidth / ogHeight;
-            var windowWidth = $(window).width();
-            //if (windowWidth < 480) {
-            var parentDivWidth = $(".iframe-class-overview-page").parent().width();
-            var newHeight = (parentDivWidth / ogRatio);
-            $(".iframe-class-overview-page").addClass("iframe-class-resize");
-            $(".iframe-class-resize").css("width", parentDivWidth);
-            $(".iframe-class-resize").css("height", newHeight);
-            var accessToken = Token.data.accesstoken;
-            var m = { action: "loadTile", accessToken: accessToken, height: newHeight, width: parentDivWidth };
-            var message = JSON.stringify(m);
-
-            // push the message.
-            iframe = document.getElementById('iFrameEmbedTile');
-            iframe.contentWindow.postMessage(message, "*");;
-
-
-
-            var m = { action: "loadTile", accessToken: accessToken, height: newHeight, width: parentDivWidth };
-            var message = JSON.stringify(m);
-
-            // push the message.
-            iframe = document.getElementById('weatherIFrame');
-            iframe.contentWindow.postMessage(message, "*");;
-
-
-        }
-
-        $scope.country = '';
-
-        $scope.meterSelection = function (e) {
-           
-            //map.center = center;
-            map.setView({
-                center: new Microsoft.Maps.Location(e.dataItem.Latitude, e.dataItem.Longitude),
-                zoom: 18,
-                animate: true,
-                mapTypeId: Microsoft.Maps.MapTypeId.road
-                   
-
-            });
-
-            
-        }
-        function changeLayout(meterName) {
-            console.log("MeterName ::", meterName);
-        }
+        }  
         
 
         $scope.flip = function () {
             $('.card').toggleClass('flipped');
+        }
+
+        function getSensorList() {         
+
+            Restservice.get('api/GetAllMapSensors', function (err, response) {
+                if (!err) {
+                    console.log("Get Sensor list response [Info]::", response);
+                    $scope.sensors = response;
+                    $scope.selectedSensor = $scope.sensors[0];
+
+                }
+                else {
+                    console.log(err);
+                }
+            });
+
+        }
+        getSensorList();
+        $scope.showSensorDetails = function (sensor) {
+            console.log("Sensor ::", sensor);
+            $scope.selectedSensor = sensor;
         }
 
     });

@@ -4,7 +4,7 @@
         $scope.campusPowerBiConfig = {};
         $scope.buildingPowerBiConfig = {};
         $scope.feebackPowerBi = {};
-
+        $scope.powerBicredentials = {};
         /**
          * Function to get all Config  
          */
@@ -81,6 +81,12 @@
                         }
                     }
                     $scope.checkUser = '#c3f7d0';
+                    if (Token.data.accesstoken == "") {
+                        $scope.checkPowerBiCredentials = '#f29898';
+                    }
+                    else {
+                        $scope.checkPowerBiCredentials = '#c3f7d0';
+                    }
                 }
                 else {
                     console.log(err);
@@ -230,6 +236,13 @@
                 // Cancel
             });
         };
+        $scope.addPowerBiCredntials=function () {
+            $http.post($location.protocol() + '://' + $location.host() + ':' + $location.port() + '/PowerBIService.asmx/updatePowerBiCredentials', $scope.powerBicredentials).then(function (data) {
+                console.log("Credentials Updated", data);
+            }).catch(function (data) {
+                console.log(':(', data);
+            });
+        }
         $scope.addUniPowerBiUrl = function () {
             var sampleConfig = {
                 "ApplicationConfigurationType": "UniversityPowerBI",
@@ -421,13 +434,6 @@ angular.module('WebPortal').controller('addCampusCtrl', function ($scope, $modal
      * Function to Upload Image 
      */
     $scope.ok = function () {
-        //var JSONobj = new Object();
-        //JSONobj.CampusName = $scope.campusName;
-        //JSONobj.CampusDesc = $scope.campusDesc;
-        //JSONobj.Latitude = $scope.latitude;
-        //JSONobj.Longitude = $scope.longitude;
-        //JSONobj.UniversityID = 4;
-        console.log("Jsononj", $scope.campus);
         Restservice.post('api/AddCampus', $scope.campus, function (err, response) {
             if (!err) {
                 console.log("Response", response)
