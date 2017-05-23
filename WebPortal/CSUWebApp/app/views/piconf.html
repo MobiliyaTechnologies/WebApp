@@ -92,6 +92,25 @@
         </div>
     </div>
     <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseTwo" style="cursor:pointer;background-color:{{checkPowerBiCredentials}}">
+            <h4 class="panel-title">
+                <label>
+                    Power BI Credentials
+                </label>
+            </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
+                    <input class="form-control" style="margin-top:20px;" placeholder="Client Id" type="text" ng-model="powerBicredentials.ClientId" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Client Secret" type="text" ng-model="powerBicredentials.ClientSecret" />
+                    <button class="btn" style="margin-top:20px;text-align:center;margin-left:45%;background-color:#31573e;color:white;" ng-click="addPowerBiCredntials()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
         <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseTwo" style="cursor:pointer;background-color:{{checkUniversityPowerBI}}">
             <h4 class="panel-title">
                 <label >

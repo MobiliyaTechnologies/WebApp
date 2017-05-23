@@ -1,6 +1,6 @@
 ﻿var roles=[]
 angular.module('WebPortal')
-    .controller('dashboardCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, $rootScope, aadService, AclService ) {
+    .controller('dashboardCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, $rootScope, aadService, AclService, aadService ) {
         $scope.can = AclService.can;
         $scope.weather = weatherServiceFactory;
         $scope.weather.search();
@@ -14,9 +14,10 @@ angular.module('WebPortal')
         $scope.li_css[3] = 'background-color: white;color:#192c1f;';
         $scope.li_css[4] = 'background-color: white;color:#192c1f;';
         aadService.signIn(function (b2cSession) {
-
         });
-        
+
+
+        //if avatar is not loaded set default avatar
         if (localStorage.getItem("Avatar") == "null") {
             $scope.avatar = "Avatar_1.png";
         }
@@ -78,6 +79,10 @@ angular.module('WebPortal')
         { src: "Avatar_7.png", color: 'black' }, { src: "Avatar_8.png", color: 'black' }
 
         ];
+
+        /**
+         * Function to open Change avatar popup
+         */
         $scope.openPopup = function (size) {
 
             var modalInstance = $modal.open({
@@ -157,77 +162,10 @@ angular.module('WebPortal')
             $state.go(state);
         }
 
-
-        //applicaionID created in AD B2C portal
-        var applicationId = '3bdf8223-746c-42a2-ba5e-0322bfd9ff76';
-        var scope = 'openid ' + applicationId;
-        var responseType = 'token id_token';
-        var redirectURI = './redirect.html';
-
-        //update the policy names with the exact name from the AD B2C policies blade
-        var policies = {
-            signInPolicy: "B2C_1_b2cSignin",
-            editProfilePolicy: "B2C_1_b2cSiPe",
-            signInSignUpPolicy: "B2C_1_b2cSiUpIn"
-        };
-
-        var loginDisplayType = {
-            PopUp: 'popup',
-            None: 'none',
-            Page: 'page' //default is popup, if we use page option, webpage gets redirected to b2c login page then to redirect html.
-
-        };
-
-        var helloNetwork = {
-            adB2CSignIn: 'adB2CSignIn',
-            adB2CSignInSignUp: 'adB2CSignInSignUp',
-            adB2CEditProfile: 'adB2CEditProfile'
-        };       
-        
-
-        function policyLogout(network, policy) {
-            
-            console.log("Logoutttt");
-            hello.logout(network, { force: true }).then(function (auth) {
-                bootbox.alert('policy: ' + policy + ' You are logging out from AD B2C');
-            }, function (e) {
-                bootbox.alert('Logout error: ' + e.error.message);
-            });
-        }
-        $scope.logoutb2c = function () {
-            hello.init({
-                adB2CSignIn: applicationId,
-                adB2CSignInSignUp: applicationId,
-                adB2CEditProfile: applicationId
-            }, {
-                    redirect_uri: '/redirect.html',
-                    scope: 'openid ' + applicationId,
-                    response_type: 'token id_token'
-                });
-            policyLogout(helloNetwork.adB2CSignIn, policies.signInPolicy);
-        }
-
-        //function configure() {
-        //    $http.get('config.json')
-        //        .then(function (data, status, headers) {
-        //            console.log("Config ::",data);
-        //            var modalInstance = $modal.open({
-        //                templateUrl: 'configuration.html',
-        //                controller: 'configurationCtrl',
-                       
-
-        //            }).result.then(function (result) {
-        //                $scope.avatar = result.src;
-        //            }, function () {
-        //                // Cancel
-        //            });
-
-        //        })
-        //        .catch(function (data, status, headers) {
-        //            alert('error');
-        //        });
-        //}
-        //configure();
+         
+        $scope.logoutb2c = function () {           
+            aadService.logout();
+        }        
        
     });
 
@@ -276,82 +214,8 @@ angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $mo
 
 
 });
+ /**
+  * Controller for configuration Popup
+  */
 angular.module('WebPortal').controller('configurationCtrl', function ($scope, $modalInstance, $http, Restservice) {
-    
-    $scope.configObj = {};
-
-    $scope.localconfig = {};
-    //"ConfigurationType": "", "ConfigKey": "", "ConfigValue": ""
-    $scope.configList = [];
-    $scope.campusPowerBiConfig = {};
-    $scope.buildingPowerBiConfig = {};
-    $scope.azureml = {};
-    $scope.Piserver = {}
-    $scope.update = function () {
-
-        updateConfigOnserver();
-        updateConfigOnLocal();
-        
-
-
-    } 
-    function updateConfigOnLocal(){
-        var campus = {
-            campusPowerBiConfig: $scope.campusPowerBiConfig
-        };
-        var building = {
-            buildingPowerBiConfig: $scope.buildingPowerBiConfig
-        };
-        jsonConcat($scope.localconfig, $scope.azureml);
-        jsonConcat($scope.localconfig, campus);
-        jsonConcat($scope.localconfig, building);
-
-        //console.log("$scope.localconfig", $scope.localconfig);
-        //console.log("campusPowerBiConfig", $scope.campusPowerBiConfig);
-        //console.log("buildingPowerBiConfig", $scope.buildingPowerBiConfig);
-        //console.log("azureml", $scope.azureml);
-        //console.log("Piserver", $scope.Piserver);
-        //console.log("Piserver", $scope.b2cConfig);
-        
-    }
-
-
-    function updateConfigOnserver() {
-        var configArr = [];
-        var b2cCount = Object.keys($scope.b2cConfig).length;
-        
-
-        for (key in $scope.b2cConfig) {
-            var obj = { "ConfigurationType": 0, "ConfigKey": key, "ConfigValue": $scope.b2cConfig[key] };
-            $scope.configList.push(obj);
-        }    
-        for (key in $scope.Piserver) {
-            var obj = { "ConfigurationType": 1, "ConfigKey": key, "ConfigValue": $scope.Piserver[key] };
-            $scope.configList.push(obj);
-        } 
-        for (key in $scope.campusPowerBiConfig) {
-            var obj = { "ConfigurationType": 2, "ConfigKey": key, "ConfigValue": $scope.campusPowerBiConfig[key] };
-            $scope.configList.push(obj);
-        } 
-        for (key in $scope.buildingPowerBiConfig) {
-            var obj = { "ConfigurationType": 2, "ConfigKey": key, "ConfigValue": $scope.buildingPowerBiConfig[key] };
-            $scope.configList.push(obj);
-        } 
-        console.log("$scope.configList", $scope.configList);
-    }
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-    };
-
-    function jsonConcat(o1, o2) {
-        for (var key in o2) {
-            o1[key] = o2[key];
-        }
-        return o1;
-    }
-
-
-
-
-
 });

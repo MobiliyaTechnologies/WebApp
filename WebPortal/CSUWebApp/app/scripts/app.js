@@ -254,7 +254,6 @@ angular
                 return (this.userIsLoggedIn === 'true') ? true : false;
             },
             setData: function (data) {
-                console.log("DATAAAA", data);
                 localStorage.setItem("userId", data.UserId);
                 localStorage.setItem("UserName", data.FirstName);
                 localStorage.setItem("LastName", data.LastName);
@@ -281,7 +280,6 @@ angular
             update: function (callback) {
                 $http({
                     url: $location.protocol() + '://' + $location.host() + ':' + $location.port() + "/PowerBIService.asmx/GetAccessToken",
-                    //url: "https://cloud.csupoc.com/csu_preview/PowerBIService.asmx/GetAccessToken",
                     method: 'GET'
 
                 }).then(function (response) {
@@ -290,7 +288,7 @@ angular
 
                 })
                     .catch(function (error) {
-                        console.log("Token Error :: " + JSON.stringify(error));
+                        console.log("Token Error :: " + error);
                     });
             }
 
@@ -298,7 +296,6 @@ angular
         };
     })
     .factory('Restservice', function ($http, AuthService, config, $state) {
-
         return {
             get: function (urlpath, callback) {
                 var authResponse = hello('adB2CSignIn').getAuthResponse();
@@ -310,7 +307,7 @@ angular
                         headers: {
                             "Content-Type": "application/json",
                             "Authorization": authResponse.token_type + ' ' + authResponse.access_token,
-                            "Access-Control-Allow-Origin":"*"
+                            "Access-Control-Allow-Origin": "*"
                         }
                     }).then(function (response) {
                         callback(null, response.data);
@@ -322,28 +319,11 @@ angular
                 }
                 else {
                     console.log("Please login");
-                    // $state.go('login');
                 }
             },
             post: function (urlpath, data, callback) {
                 var authResponse = hello('adB2CSignIn').getAuthResponse();
                 if (authResponse != null) {
-                    //hello('adB2CSignIn').api({
-                    //    path: config.restServer + urlpath,
-                    //    method: 'post',
-                    //    data: data,                        
-                    //    headers: {
-                    //        Authorization: authResponse.token_type + ' ' + authResponse.access_token,                            
-                    //        contentType: 'application/json'
-                    //    }
-                    //}).then(function (response) {
-                    //    callback(null, response);
-                    //}, function (e) {
-                    //    callback(e, null);
-
-                    //    });
-
-
                     $http({
                         url: config.restServer + urlpath,
                         dataType: 'json',
@@ -368,20 +348,6 @@ angular
             put: function (urlpath, data, callback) {
                 var authResponse = hello('adB2CSignIn').getAuthResponse();
                 if (authResponse != null) {
-                    //hello('adB2CSignIn').api({
-                    //    path: config.restServer + urlpath,
-                    //    method: 'put',
-                    //    data:data,
-                    //    headers: {
-                    //        Authorization: authResponse.token_type + ' ' + authResponse.access_token,
-                    //        contentType: 'application/json'
-                    //    }
-                    //}).then(function (response) {
-                    //    callback(null, response);
-                    //}, function (e) {
-                    //    callback(e, null);
-
-                    //});
                     $http({
                         url: config.restServer + urlpath,
                         dataType: 'json',
@@ -410,14 +376,8 @@ angular
 
     })
     .factory('aadService', function ($http, config) {
-        //applicaionID created in AD B2C portal
-        var applicationId = '3bdf8223-746c-42a2-ba5e-0322bfd9ff76';
-        var scope = 'openid ' + applicationId;
         var responseType = 'token id_token';
         var redirectURI = './redirect.html';
-
-
-
         var loginDisplayType = {
             PopUp: 'popup',
             None: 'none',
@@ -433,22 +393,19 @@ angular
         return {
             signIn: function (callback) {
                 hello.init({
-                    adB2CSignIn: applicationId,
-                    adB2CSignInSignUp: applicationId,
-                    adB2CEditProfile: applicationId
+                    adB2CSignIn: config.b2cApplicationId,
+                    adB2CSignInSignUp: config.b2cApplicationId,
+                    adB2CEditProfile: config.b2cApplicationId
                 }, {
                         redirect_uri: '/redirect.html',
-                        scope: 'openid ' + applicationId,
+                        scope: 'openid ' + config.b2cApplicationId,
                         response_type: 'token id_token'
                     });
                 var b2cSession = hello(helloNetwork.adB2CSignIn).getAuthResponse();
                 callback(b2cSession);
             },
             signUp: function (callback) {
-                helloNetwork.adB2CSignIn = config.adB2CSignIn;
-                helloNetwork.adB2CSignInSignUp = config.adB2CSignInSignUp;
-                applicationId = config.applicationId;
-                scope = 'openid ' + applicationId;
+                var applicationId = config.b2cApplicationId;
                 hello.init({
                     adB2CSignIn: applicationId,
                     adB2CSignInSignUp: applicationId,
@@ -459,6 +416,19 @@ angular
                         response_type: 'token id_token'
                     });
                 this.policyLogin(helloNetwork.adB2CSignInSignUp, loginDisplayType.Page);
+            },
+            logout: function () {
+                var applicationId = config.b2cApplicationId;
+                hello.init({
+                    adB2CSignIn: applicationId,
+                    adB2CSignInSignUp: applicationId,
+                    adB2CEditProfile: applicationId
+                }, {
+                        redirect_uri: '/redirect.html',
+                        scope: 'openid ' + applicationId,
+                        response_type: 'token id_token'
+                    });
+                this.policyLogout(helloNetwork.adB2CSignIn, config.signInPolicyName);
             },
             policyLogin: function (network, displayType) {
 
@@ -487,7 +457,6 @@ angular
                 });
             },
             policyLogout: function (network, policy) {
-                console.log("Logoutttt");
                 hello.logout(network, { force: true }).then(function (auth) {
                     console.log("auth :", auth);
                 }, function (e) {
@@ -739,7 +708,7 @@ angular
                 Token.update(function () { });
             $interval(function () {
                 Token.update(function () { });
-            }, 4000);
+            }, 2400000);
 
         }
 
@@ -752,14 +721,13 @@ angular
         };
         AclServiceProvider.config(myConfig);
     }])
-    .run(['AclService', function (AclService) {        
+    .run(['AclService', function (AclService) {
         var aclData = {
             admin: ['dashboard', 'overview', 'reports', 'configuration', 'alerts', 'feedback', 'recommendation'],
             campus_admin: ['dashboard', 'overview', 'reports', 'alerts', 'feedback', 'recommendation'],
             student: ['dashboard', 'feedback']
         }
         AclService.setAbilities(aclData);
-       
 
 
     }])
@@ -771,6 +739,5 @@ angular
             }
         })
     }]);
-   
 
-    
+

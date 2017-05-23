@@ -16,7 +16,6 @@
                     console.log("[Info]:: Get all alerts response ", response);
                     $scope.datatable.loader = false;
                     $scope.alerts = response;
-                    $scope.$apply();
                 }
                 else {
                     console.log(err);
@@ -150,27 +149,20 @@ angular.module('WebPortal').controller('alertModalCtrl', function ($scope, $moda
 /**
  * Controller for device alert popup
  */
-angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope, $modalInstance, alerts, $http, config) {
-    console.log("Alerts", alerts);
+angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope, $modalInstance, alerts, $http, config, Restservice) {
     /**
      * Function to get unmapped sensor associated with user 
      */
     function getUnmappedSensorList() {
-        $http({
-            url: config.restServer + "api/getallsensors/" + localStorage.getItem("userId"),
-            dataType: 'json',
-            headers: {
-                "Content-Type": "application/json"
+        Restservice.get('api/GetAllUnMapSensors' , function (err, response) {
+            if (!err) {
+                console.log("[Info]:: Get Unmapped Sensor list response ", response);
+                $scope.sensors = response;
             }
-        }).success(function (response) {
-            console.log("[Info]:: Get Unmapped Sensor list response ", response);
-            $scope.sensors = response;
-
-        })
-            .error(function (error) {
-                alert("Error : " + JSON.stringify(error));
-            });
-
+            else {
+                console.log(err);
+            }
+        }); 
     }
     getUnmappedSensorList();
     
@@ -178,29 +170,25 @@ angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope,
      * Function to get classroom list  
      */
     function getClassRoomList() {
-        $http({
-            url: config.restServer + "api/getclassrooms/" + localStorage.getItem("userId"),
-            dataType: 'json',
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).success(function (response) {
+         Restservice.get('api/GetAllClassrooms', function (err, response) {
+            if (!err) {
+                console.log("[Info]:: Get Classroom Details response ", response);
+                $scope.classrooms = response;
+                var tablePos = $("#class-table").offset();
+                var top = tablePos.top + 40;
+                var left = tablePos.left;
+                for (var i = 0; i < $scope.classrooms.length; i++) {
+                    $scope.classrooms[i].top = top;
+                    $scope.classrooms[i].left = left;
+                    top = top + 40;
+                }
 
-            console.log("[Info]:: Get Classroom Details response ", response);
-            $scope.classrooms = response;
-            var tablePos = $("#class-table").offset();
-            var top = tablePos.top + 40;
-            var left = tablePos.left;
-            for (var i = 0; i < $scope.classrooms.length; i++) {
-                $scope.classrooms[i].top = top;
-                $scope.classrooms[i].left = left;
-                top = top + 40;
             }
+            else {
+                console.log(err);
+            }
+        }); 
 
-        })
-            .error(function (error) {
-                alert("Error : " + JSON.stringify(error));
-            });
     }
     getClassRoomList();
     var mapping = [];
@@ -234,25 +222,17 @@ angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope,
      */
     $scope.associateSensor = function () {
 
-        for (var i = 0; i < mapping.length; i++) {
-
-            $http({
-                url: config.restServer + "api/mapsensortoclass/" + localStorage.getItem("userId"),
-                dataType: 'json',
-                method: 'POST',
-                data: mapping[i],
-                headers: {
-                    "Content-Type": "application/json"
+        for (var i = 0; i < mapping.length; i++) {  
+            Restservice.put('api/MapSensor/' + mapping[i].Sensor_Id + '/' + mapping[i].Class_Id,null, function (err, response) {
+                if (!err) {
+                    console.log("[Info]:: Assign Sensor  response ", response);
+                    $modalInstance.close();
                 }
-            }).success(function (response) {
-                console.log("[Info]:: Assign Sendor  response ", response);
+                else {
+                    console.log(err);
+                }
+            }); 
 
-                $modalInstance.close();
-            })
-                .error(function (error) {
-                    $scope.loading = "display:none;"
-                    //alert("Error : " + JSON.stringify(error));
-                });
         }
     }
     $scope.ok = function () {
@@ -283,7 +263,6 @@ angular.module('WebPortal').controller('anomalyAlertModalCtrl', function ($scope
                 .withPaginationType('full_numbers')
                 .withDisplayLength(7);
                 var data = [];
-                $scope.$apply();
             }
             else {
                 console.log(err);

@@ -10,21 +10,37 @@ namespace CSUWebApp
 {
     public class Security
     {
-        public static void AuthenticateUser()
+        public static bool AuthenticateUser()
         {
-            string authorityUri = "https://login.windows.net/common/oauth2/authorize/";
-            TokenCache TC = new TokenCache();
+            try
+            {
+                string authorityUri = "https://login.windows.net/common/oauth2/authorize/";
+                TokenCache TC = new TokenCache();
 
-            AuthenticationContext authenticationContext = new AuthenticationContext(authorityUri, TC);
-            ClientCredential clientCredential = new ClientCredential
-                (ConfigurationSettings.AppSettings["ClientId"],
-                ConfigurationSettings.AppSettings["ClientSecret"]);
+                AuthenticationContext authenticationContext = new AuthenticationContext(authorityUri, TC);
+                ClientCredential clientCredential = new ClientCredential
+                    (ConfigurationSettings.AppSettings["ClientId"],
+                    ConfigurationSettings.AppSettings["ClientSecret"]);
 
-            AuthenticationResult authenticationResult = authenticationContext.AcquireTokenByRefreshToken(ConfigurationSettings.AppSettings["Refresh_Token"], clientCredential);
+                AuthenticationResult authenticationResult = authenticationContext.AcquireTokenByRefreshToken(ConfigurationSettings.AppSettings["Refresh_Token"], clientCredential);
 
-            //Set Session "authResult" index string to the AuthenticationResult
-            ConfigurationSettings.AppSettings["Access_Token"] = authenticationResult.AccessToken;
-            ConfigurationSettings.AppSettings["Refresh_Token"] = authenticationResult.RefreshToken;
+                #region Update config
+                Configuration objConfig = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
+                AppSettingsSection objAppsettings = (AppSettingsSection)objConfig.GetSection("appSettings");
+                if (objAppsettings != null)
+                {
+                    objAppsettings.Settings["Access_Token"].Value = authenticationResult.AccessToken;
+                    objAppsettings.Settings["Refresh_Token"].Value = authenticationResult.RefreshToken;
+                    objConfig.Save();
+                } 
+                #endregion
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
 
             //saveTokensToConstants(authenticationResult.AccessToken, authenticationResult.RefreshToken, filePath);
         }

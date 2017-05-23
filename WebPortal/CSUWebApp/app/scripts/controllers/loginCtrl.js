@@ -11,25 +11,13 @@ angular.module('WebPortal')
     .controller('loginCtrl', ['$scope', '$http', '$state', 'AuthService', 'Token', 'config', '$interval', 'Restservice', '$modal', 'aadService', '$rootScope', 'AclService', function ($scope, $http, $state, AuthService, Token, config, $interval, Restservice, $modal, aadService, $rootScope, AclService) {
 
         console.log("[Info] :: Login Controller loaded");    
-        function log(s) {
-            if (typeof s.error !== 'undefined' && s.error !== null) {
-                if (s.error.code === 'blocked') {   //silentrenew(display: none) in case of expired token returns X-frame Options as DENY error
-                    bootbox.alert("<p class='bg-danger'>there was an error in silent renewing the token. Please login again</p>");
-                    return;
-                }
-            }
-            else
-                document.body.querySelector('.response')
-                    .appendChild(document.createTextNode(JSON.stringify(s, true, 2)));
-        }       
-
+        //Azure B2c Config
         var loginDisplayType = {
             PopUp: 'popup',
             None: 'none',
             Page: 'page' 
 
         };
-
         var helloNetwork = {
             adB2CSignIn: 'adB2CSignIn',
             adB2CSignInSignUp: 'adB2CSignInSignUp',
@@ -43,7 +31,9 @@ angular.module('WebPortal')
             var currentTime = (new Date()).getTime() / 1000;
             return session && session.access_token && session.expires > currentTime;
         };
-               
+        /**
+         * Function to sign in Azure B2C
+         */    
         $scope.signIn = function (state) {
             aadService.signIn(function (b2cSession) {
                 if (!online(b2cSession) && state == 'click') {
@@ -55,10 +45,11 @@ angular.module('WebPortal')
             });                                         
         }
         $scope.showLogin = false;
+
+        //Once configuration is loaded it will broadcast an event 'config-loaded' which wil load rest server url
         $rootScope.$on('config-loaded', function () {
             $scope.showLogin = true;
             if (config.restServer == "" || config.restServer == undefined) {
-                console.log("Show Configuration Popup");
                 $scope.showLogin = false;
                 var modalInstance = $modal.open({
                     templateUrl: 'configuration.html',
@@ -78,10 +69,9 @@ angular.module('WebPortal')
                 $scope.showLogin = true;
             }
         });
-        $scope.signUp = function () {           
-            aadService.signUp();                 
-        }
-
+        $scope.signUp = function () {
+            aadService.signUp();
+        }   
 
         /*API*/
         function getUserDetails() {
@@ -89,7 +79,7 @@ angular.module('WebPortal')
             Restservice.get('api/GetCurrentUser', function (err, response) {
                 if (!err) {
                     $scope.loading = "display:none;";
-                    console.log("[Info] :: Get Current User Details ",response);
+                    console.log("[Info] :: Get Current User Details ", response);
                     AuthService.setData(response);
                     if (response.RoleId == 1) {
                         AclService.attachRole('admin');
@@ -109,25 +99,8 @@ angular.module('WebPortal')
                 }
             });
         }
-
-
-       
         
     }]);
-angular.module('WebPortal').controller('configurationCtrl', function ($scope, $modalInstance, $http) {
-    $scope.var1 = "hii";
-    $scope.configObj = {
-        "restServer": "http://msqlserver12.cloudapp.net/CSU_RestService/",
-         "dbConnection": "Db"
-    }
-    $scope.change = function () {  
-        console.log($scope.configObj);       
-        
-    }
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-    };
-    
-});
+   
 
     

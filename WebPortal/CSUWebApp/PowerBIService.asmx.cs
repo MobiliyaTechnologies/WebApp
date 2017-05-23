@@ -29,18 +29,33 @@ namespace CSUWebApp
         public void GetAccessToken()
         {
             HttpContext.Current.Response.AddHeader("Access-Control-Allow-Origin", "*");
-            Security.AuthenticateUser();
-            PowerBIToken token = new PowerBIToken()
+            var isSuccess = Security.AuthenticateUser();
+            if (!isSuccess)
             {
-                AccessToken = ConfigurationSettings.AppSettings["Access_Token"],
-                RefreshToken = ConfigurationSettings.AppSettings["Refresh_Token"]
-            };
+                System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+                this.Context.Response.ContentType = "application/json; charset=utf-8";
+                this.Context.Response.Write(serializer.Serialize(new { tokens = "" }));
+            }
 
-            System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            if (string.IsNullOrEmpty(ConfigurationSettings.AppSettings["Access_Token"]) || string.IsNullOrEmpty(ConfigurationSettings.AppSettings["Refresh_Token"]))
+            {
+                System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+                this.Context.Response.ContentType = "application/json; charset=utf-8";
+                this.Context.Response.Write(serializer.Serialize(new { tokens = "" }));
+            }
+            else
+            {
+                PowerBIToken token = new PowerBIToken()
+                {
+                    AccessToken = ConfigurationSettings.AppSettings["Access_Token"],
+                    RefreshToken = ConfigurationSettings.AppSettings["Refresh_Token"]
+                };
 
-            this.Context.Response.ContentType = "application/json; charset=utf-8";
-            this.Context.Response.Write(serializer.Serialize(new { tokens = token }));
+                System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
 
+                this.Context.Response.ContentType = "application/json; charset=utf-8";
+                this.Context.Response.Write(serializer.Serialize(new { tokens = token }));
+            }
             //return new JavaScriptSerializer().Serialize(token);
         }
 
@@ -65,6 +80,24 @@ namespace CSUWebApp
             var json = JsonConvert.SerializeObject(configs);
             File.WriteAllText(HttpContext.Current.Server.MapPath("~\\config.json"), json);
             return "Updated";
+        }
+
+        [WebMethod]
+        public string updatePowerBiCredentials(String ClientId, String ClientSecret)
+        {
+            Configuration objConfig = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
+            AppSettingsSection objAppsettings = (AppSettingsSection)objConfig.GetSection("appSettings");
+            if (objAppsettings != null)
+            {
+                objAppsettings.Settings["ClientId"].Value = ClientId;
+                objAppsettings.Settings["ClientSecret"].Value = ClientSecret;
+                objConfig.Save();
+            }
+            
+            //System.Configuration.ConfigurationManager.AppSettings["ClientId"] = ClientId;
+            //System.Configuration.ConfigurationManager.AppSettings["ClientSecret"] = ClientSecret;
+
+            return "updated";
         }
 
         Dictionary<string, string> LoadAllConfig()
