@@ -123,37 +123,60 @@ angular.module('WebPortal')
                     console.log("Error : " + JSON.stringify(error));
             });
         }
+
+        
         /**
         * Firebase Credentials
         */
-        var config = {
-            apiKey: "AIzaSyDOmoRglupPYwYYIr3lihNYKXUsEOVpezw",
-            authDomain: "csu-android-app.firebaseapp.com",
-            databaseURL: "https://csu-android-app.firebaseio.com",
-            storageBucket: "csu-android-app.appspot.com",
-            messagingSenderId: "107379564375"
-        };
-        firebase.initializeApp(config);
-        /**
-        * Function to get permission of firebase from user
-        */
-        const messaging = firebase.messaging();
-        messaging.requestPermission()
-            .then(function () {
-                console.log("[Info] :: User Granted Permission");
-                return messaging.getToken();
+        
+        $http.get('firebaseConfig.json')
+            .then(function (data, status, headers) {
+                if (data.data.ApiKey) {
+                    localforage.setItem('ApiKey', data.data.ApiKey);
+                    localforage.setItem('AuthDomain', data.data.AuthDomain);
+                    localforage.setItem('DatabaseURL', data.data.DatabaseURL);
+                    localforage.setItem('StorageBucket', data.data.StorageBucket);
+                    localforage.setItem('NotificationSender', data.data.NotificationSender);                   
+                    
+                    var config = {
+                        apiKey: data.data.ApiKey,
+                        authDomain: data.data.AuthDomain,
+                        databaseURL: data.data.DatabaseURL,
+                        storageBucket: data.data.StorageBucket,
+                        messagingSenderId: data.data.NotificationSender
+                    };
+                    iniateFirebase(config);
+                }
             })
-            .then(function (token) {
-                console.log("[Info] ::  Registration token ", token);
-                subscribeTopic(token);
-            })
-            .catch(function (err) {
-                console.log("[Info] :: User not Granted Permission [Error]", err);
-            })
+            .catch(function (data, status, headers) {
+                // log error
+                alert('error');
+         });
+        function iniateFirebase(config) {
+            firebase.initializeApp(config);
+            /**
+            * Function to get permission of firebase from user
+            */
+            const messaging = firebase.messaging();
+            messaging.requestPermission()
+                .then(function () {
+                    console.log("[Info] :: User Granted Permission");
+                    return messaging.getToken();
+                })
+                .then(function (token) {
+                    console.log("[Info] ::  Registration token ", token);
+                    subscribeTopic(token);
+                })
+                .catch(function (err) {
+                    console.log("[Info] :: User not Granted Permission [Error]", err);
+                })
+
+            messaging.onMessage(function (payload) {
+                $scope.alertCount++;
+            });
+        }
         $scope.alertCount = 0;
-        messaging.onMessage(function (payload) {
-            $scope.alertCount++;
-        });
+       
         $scope.showAlerts = function () {
             $state.go('alerts');
         }
