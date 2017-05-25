@@ -1250,6 +1250,11 @@ body {
 .color-green {
     color: rgba(38, 166, 91, 1);
 }
+.configuration-error {
+    position: absolute;
+    margin-top: 20%;
+    color:black;
+}
 
 /*DASHBOARD*/
 .alertCount {

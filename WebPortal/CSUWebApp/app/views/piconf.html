@@ -83,6 +83,7 @@
                             <input class="form-control" style="margin-top:20px;" placeholder="Pi Server Name" type="text" ng-model="PiServerName" />
                             <input class="form-control" style="margin-top:20px;" placeholder="Connection String" type="text" ng-model="connectionstring" />
                             <input class="form-control" style="margin-top:20px;" placeholder="Description" type="text" ng-model="piserverdesc" />
+                            <input id="class_schedulefile" type="file" />
                             <button class="btn" style="margin-top:20px;text-align:center;margin-left:35%;background-color:#31573e;color:white;" ng-click="addPiServer()">Add</button>
                         </div>
                     </div>
@@ -204,7 +205,7 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default">
+    <!--<div class="panel panel-default">
         <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseSix" style="cursor:pointer;background-color:{{checkBlobStrorage}}">
             <h4 class="panel-title">
                 <label >
@@ -215,6 +216,30 @@
         <div id="collapseSix" class="panel-collapse collapse out">
             <div class="panel-body">
 
+            </div>
+        </div>
+    </div>-->
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseSix" style="cursor:pointer;background-color:{{checkFirebase}}">
+            <h4 class="panel-title">
+                <label>
+                    Firebase Configuration
+                </label>
+            </h4>
+        </div>
+        <div id="collapseSix" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:420px;">
+                    <h3>Firebase Configuration</h3>
+                    <input class="form-control" style="margin-top:20px;" placeholder="Api Key" type="text" ng-model="firebase.ApiKey" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Auth Domain" type="text" ng-model="firebase.AuthDomain" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Database Url" type="text" ng-model="firebase.DatabaseURL" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Storage Bucket" type="text" ng-model="firebase.StorageBucket" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Authorisation Key" type="text" ng-model="firebase.NotificationAuthorizationKey" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Messaging Sender Id" type="text" ng-model="firebase.NotificationSender" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Messaging Receiver Id" type="text" ng-model="firebase.NotificationReceiver" />
+                    <button class="btn" style="margin-top:20px;text-align:center;margin-left:45%;background-color:#31573e;color:white;" ng-click="addFirebaseConfig()">Add</button>
+                </div>
             </div>
         </div>
     </div>
@@ -266,6 +291,7 @@
         </div>
 
     </div>
+    
 </div>
 
 

@@ -1,9 +1,9 @@
 'use strict';
 /**
  * @ngdoc overview
- * @name angulartestApp
+ * @name Energy Management Web App
  * @description
- * # angulartestApp
+ * # CSUWebApp
  *
  * Main module of the application.
  */
@@ -724,7 +724,7 @@ angular
     .run(['AclService', function (AclService) {
         var aclData = {
             admin: ['dashboard', 'overview', 'reports', 'configuration', 'alerts', 'feedback', 'recommendation'],
-            campus_admin: ['dashboard', 'overview', 'reports', 'alerts', 'feedback', 'recommendation'],
+            campus_admin: ['dashboard', 'overview', 'alerts', 'feedback', 'recommendation'],
             student: ['dashboard', 'feedback']
         }
         AclService.setAbilities(aclData);

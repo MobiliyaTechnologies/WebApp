@@ -5,6 +5,7 @@
         $scope.buildingPowerBiConfig = {};
         $scope.feebackPowerBi = {};
         $scope.powerBicredentials = {};
+        $scope.firebase = {};
         /**
          * Function to get all Config  
          */
@@ -76,7 +77,20 @@
                                 else {
                                     $scope.checkFeedbackPowerBI = '#f29898';
                                 }
-                            break;
+                                break;
+
+                            case "Firebase":
+                                if (response[i].ApplicationConfigurationEntries.length > 0) {
+                                    $scope.checkFirebase = '#c3f7d0';
+                                    for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
+                                        $scope.firebase[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
+                                        localforage.setItem(response[i].ApplicationConfigurationEntries[j].ConfigurationKey, response[i].ApplicationConfigurationEntries[j].ConfigurationValue);
+                                    }
+                                }
+                                else {
+                                    $scope.checkFirebase = '#f29898';
+                                }
+                                break;
 
                         }
                     }
@@ -102,16 +116,36 @@
             jsonobj.PiServerName = $scope.PiServerName;
             jsonobj.PiServerURL = $scope.connectionstring;
             jsonobj.PiServerDesc = $scope.piserverdesc;
+            jsonobj.file = document.getElementById('class_schedulefile').files[0];         
+            var authResponse = hello('adB2CSignIn').getAuthResponse();
+            if (authResponse != null) {
+                $http({
+                    method: 'POST',
+                    url: config.restServer + 'api/AddPiServer',
+                    headers: {
+                        'Content-Type': undefined,
+                        "Authorization": authResponse.token_type + ' ' + authResponse.access_token
+                    },
+                    data: jsonobj,
+                    transformRequest: function (data, headersGetter) {
+                        var formData = new FormData();
+                        angular.forEach(data, function (value, key) {
+                            formData.append(key, value);
+                        });
 
-            console.log(jsonobj);
-            Restservice.post('api/AddPiServer', jsonobj, function (err, response) {
-                if (!err) {
-                    console.log("Response", response)
-                }
-                else {
-                    console.log(err);
-                }
-            });
+                        var headers = headersGetter();
+                        delete headers['Content-Type'];
+
+                        return formData;
+                    }
+                })
+                    .then(function (response) {
+                        console.log("Response", response)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
         }
 
 
@@ -337,7 +371,7 @@
                 sampleConfig.ApplicationConfigurationEntries.push(obj);
             }
             console.log(sampleConfig);
-            //sendConfigOnServer(sampleConfig);
+            sendConfigOnServer(sampleConfig);
         }
         $scope.addBlobStorageConfig = function () {
             var sampleConfig = {
@@ -353,6 +387,21 @@
             console.log(sampleConfig);
             //sendConfigOnServer(sampleConfig);
         }
+        $scope.addFirebaseConfig = function () {
+            var sampleConfig = {
+                "ApplicationConfigurationType": "Firebase",
+                "ApplicationConfigurationEntries": [
+
+                ]
+            }
+            for (key in $scope.firebase) {
+                var obj = { "ConfigKey": key, "ConfigValue": $scope.firebase[key] };
+                sampleConfig.ApplicationConfigurationEntries.push(obj);
+            }
+            sendConfigOnServer(sampleConfig);
+            updateFirebaseOnLocal($scope.firebase);
+
+        }
         function sendConfigOnServer(sampleConfig) {
             Restservice.post('api/AddApplicationConfiguration', sampleConfig, function (err, response) {
                 if (!err) {
@@ -364,13 +413,7 @@
             });
         }
         function updateConfigOnLocal(config) {
-            //$http.post($location.protocol() + '://' + $location.host() + ':' + $location.port() + '/PowerBIService.asmx/updateConfig', null).then(function (data) {
-            //    console.log(data);
-            //}).catch(function (data) {
-            //    console.log(':(', data);
-            //    });
-            console.log(config);
-            $http({
+             $http({
                 url: $location.protocol() + '://' + $location.host() + ':' + $location.port() +'/PowerBIService.asmx/SaveUrl',
                 dataType: 'json',
                 method: 'POST',
@@ -385,6 +428,26 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+        }
+        function updateFirebaseOnLocal(config) {
+            var obj = {
+                'config':config
+            }
+            $http({
+                url: $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/PowerBIService.asmx/updateFirebaseConfig',
+                dataType: 'json',
+                method: 'POST',
+                data: obj,
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            }).then(function (response) {
+                console.log(response);
+
+            })
+            .catch(function (error) {
+                    console.log(error);
+            });
         }
     });
 

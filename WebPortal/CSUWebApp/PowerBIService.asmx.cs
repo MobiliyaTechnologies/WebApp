@@ -83,6 +83,14 @@ namespace CSUWebApp
         }
 
         [WebMethod]
+        public string updateFirebaseConfig(FirebaseConfig config)
+        {
+            var json = JsonConvert.SerializeObject(config);
+            File.WriteAllText(HttpContext.Current.Server.MapPath("~\\firebaseConfig.json"), json);
+            return "Updated";
+        }
+
+        [WebMethod]
         public string updatePowerBiCredentials(String ClientId, String ClientSecret)
         {
             Configuration objConfig = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");

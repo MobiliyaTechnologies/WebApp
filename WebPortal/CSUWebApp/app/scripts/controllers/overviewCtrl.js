@@ -79,8 +79,13 @@ angular.module('WebPortal')
             $http.get('powerBI.json')
                 .then(function (data, status, headers) {
                     $scope.powerBIUrls = data.data;
-                    embedReport($scope.powerBIUrls.campus.summary , 'summary');
-                    embedReport($scope.powerBIUrls.campus.summarydetails, 'summarydetails');
+                    if ($scope.powerBIUrls.campus) {
+                        embedReport($scope.powerBIUrls.campus.summary, 'summary');
+                        embedReport($scope.powerBIUrls.campus.summarydetails, 'summarydetails');
+                    }
+                    else {
+                        $scope.configurationError = "Please Check Configuration";
+                    }
                 })
                 .catch(function (data, status, headers) {
                     console.log('error');
