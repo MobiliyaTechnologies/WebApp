@@ -2,19 +2,19 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>CSU</title>
-   
-    <meta name="description" content="">
+    <title>Energy Management</title>   
     <meta name="viewport" content="width=device-width">       
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <link href="./bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">    
     <link href="./bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="./app/css/jquery.dataTables.min.css" rel="stylesheet" />
     <link href="./app/css/weather-icons.min.css" rel="stylesheet" />
-    <link href="./app/css/Style.css" rel="stylesheet">    
+    <link href="./app/css/style.css" rel="stylesheet">
+    <!--<link href="./app/css/Style.css" rel="stylesheet">-->    
     <link href="./app/css/Main.css" rel="stylesheet">
+   
 </head>
-<body ng-app="WebPortal">   
+<body ng-app="WebPortal">  
     
      <div>
         <div ui-view></div>
@@ -51,16 +51,9 @@
     <script src="https://www.gstatic.com/firebasejs/3.6.8/firebase.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.5.0/localforage.js"></script>    
     <script src="./bower_components/angular-acl/angular-acl.js"></script>
-    <!-- Datatable -->
-    <!--<script src="./app/scripts/jquery.dataTables.js"></script>-->
     <script src="./bower_components/datatables/media/js/jquery.dataTables.js"></script>
     <script src="./app/scripts/angular-datatables.js"></script>
-    <script src="./app/scripts/hello.all.js"></script> 
-    <!--<script src="./app/scripts/aadb2c.js"></script>-->
-   
-
-    
-
+    <script src="./app/scripts/hello.all.js"></script>  
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
@@ -70,14 +63,21 @@
     <script src="./app/scripts/controllers/loginCtrl.js"></script>
     <script src="./app/scripts/controllers/dashboardCtrl.js"></script>
     <script src="./app/scripts/controllers/overviewCtrl.js"></script>
-    <script src="./app/scripts/controllers/profileCtrl.js"></script>
     <script src="./app/scripts/controllers/reportCtrl.js"></script>
     <script src="./app/scripts/controllers/alertsCtrl.js"></script>
     <script src="./app/scripts/controllers/feedbackCtrl.js"></script>
     <script src="./app/scripts/controllers/recommendationCtrl.js"></script>
     <script src="./app/scripts/controllers/piconfCtrl.js"></script>
-    <script src="./app/scripts/controllers/dataconfCtrl.js"></script>
-    <script src="./app/scripts/controllers/userconfCtrl.js"></script>
-    <script src="./app/scripts/controllers/campusconfCtrl.js"></script>
+ 
+
+    <!--Services-->
+    <script src="./app/scripts/services/AclServiceProvider.js"></script>
+    <script src="./app/scripts/services/AadService.js"></script>
+    <script src="./app/scripts/services/WeatherService.js"></script>
+    <script src="./app/scripts/services/ConfigService.js"></script>
+    <script src="app/scripts/services/RestService.js"></script>
+
+    <!--Directives-->
+    <script src="./app/scripts/directives/header.js"></script>
 </body>
 </html>

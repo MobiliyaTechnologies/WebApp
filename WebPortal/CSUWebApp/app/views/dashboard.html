@@ -14,21 +14,7 @@
                         <img src="./app/images/{{avatar}}" class="user-avatar" ng-click="openPopup()" style="border:solid #192c1f;border-radius: 50%;" />
                         <h4>{{username}}&nbsp;{{lastname}}</h4>
                         <button class="btn" style="background-color:#c6d82e;color:white;" ng-click="logoutb2c()">Logout</button>
-                    </div>
-                    <!--
-                    <ul class="nav nav-sidebar side-menu">
-                        <li ng-click="makeActive(0)" class="side-menu-li" ng-class="{active: $state.includes('overview')}"><a ui-sref="overview" style="{{li_css[0]}}background-color: white;color:#192c1f;border-bottom:solid 1px grey;">DASHBOARD <span class="sr-only">(current)</span></a></li>
-                        <li ng-click="makeActive(1)" class="side-menu-li" ng-class="{active: $state.includes('reports')}"><a ui-sref="reports" style="{{li_css[1]}}background-color: white;color:#192c1f;border-bottom:solid 1px grey;">REPORTS</a></li>
-                        <li ng-click="makeActive(2)" class="side-menu-li" ng-class="{active: $state.includes('profile')}"><a ui-sref="profile" style="{{li_css[2]}}background-color: white;color:#192c1f;border-bottom:solid 1px grey;">PROFILE</a></li>
-                        <li ng-click="makeActive(3)" class="side-menu-li" ng-class="{active: $state.includes('alerts')}"><a ui-sref="alerts" style="{{li_css[3]}}background-color: white;color:#192c1f;border-bottom:solid 1px grey;">ALERTS<label ng-if="alertCount!==0" class="alertCount" style="float:right;">{{alertCount}}</labelng-if=></a></li>
-                        <li ng-click="makeActive(4)" class="side-menu-li" ng-class="{active: $state.includes('feedback')}"><a ui-sref="feedback" style="{{li_css[4]}}background-color: white;color:#192c1f;border-bottom:solid 1px grey;">FEEDBACK</a></li>
-                        <li ng-click="makeActive(4)" class="side-menu-li" ng-class="{active: $state.includes('feedback')}">
-                            <a ui-sref="feedback" style="{{li_css[4]}}background-color: white;color:#192c1f;border-bottom:solid 1px grey;">FEEDBACK</a>
-                        </li>
-
-
-
-                    </ul>-->
+                    </div>                   
                     <div class="left-menu">
 
                         <div class="accordion">
@@ -44,24 +30,11 @@
                             <div ng-if="can('configuration')" class="section" ng-click="changeState('piconf')" >
                                 <input type="radio" name="accordion-1" id="section-3" value="toggle" />
                                 <label for="section-3"> <span>CONFIGURATION</span></label>
-                                <!--<div class="content">
-                                    <ul>
-                                        <li ng-click="changeState('piconf')"><i class="fa fa-cog"></i><span>Pi Conf</span></li>
-                                        <li ng-click="changeState('campusconf')"><i class="fa fa-university"></i><span>Campus Conf</span></ling-click="changeState('profile')">-->
-                                        <!--<li ng-click="changeState('dataconf')"><i class="fa fa-database"></i><span>Data Conf</span></li>-->
-                                        <!--<li ng-click="changeState('userconf')"><i class="fa fa-group"></i><span>User Conf</span></li>
-                                    </ul>
-                                </div>-->
-                            </div>
-                            <!--<div class="section" ng-click="changeState('profile')">
-                                <input type="radio" name="accordion-1" id="section-4" value="toggle" />
-                                <label for="section-4"> <span>PROFILE</span></label>
-                            </div>-->
+                            </div>                         
                             <div ng-if="can('alerts')" class="section" ng-click="changeState('alerts')">
                                 <input type="radio" name="accordion-1" id="section-5" value="toggle" />
                                 <label for="section-5"> <span>ALERTS</span></label>
                             </div>
-
                             <div ng-if="can('feedback')" class="section" ng-click="changeState('feedback')">
                                 <input type="radio" name="accordion-1" id="section-6" value="toggle" />
                                 <label for="section-6">

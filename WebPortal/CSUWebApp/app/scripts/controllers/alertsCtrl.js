@@ -1,4 +1,12 @@
-﻿angular.module('WebPortal')
+﻿/**
+ * @ngdoc Controller
+ * @name controller:alertsCtrl
+ * @author Jayesh Lunkad
+ * @description 
+ * # alertsCtrl
+ * 
+ */
+angular.module('WebPortal')
     .controller('alertsCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, DTOptionsBuilder, Restservice ) {
         console.log("[Info] :: Alerts Controller");
         $scope.dtOptions = DTOptionsBuilder.newOptions()
@@ -18,7 +26,7 @@
                     $scope.alerts = response;
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error]:: Get all alerts response", err);
                 }
             });        
         }
@@ -109,7 +117,8 @@ angular.module('WebPortal').controller('alertModalCtrl', function ($scope, $moda
         })
         .error(function (error) {
             $scope.loading = "display:none;"
-            alert("Error : " + JSON.stringify(error));
+            
+            console.log("[Error]:: Get alert Details response", error);
         });
     /**
      * Function to update acknowledge sattus of alert 
@@ -129,12 +138,13 @@ angular.module('WebPortal').controller('alertModalCtrl', function ($scope, $moda
                     "Content-Type": "application/json"
                 }
             }).success(function (response) {
-                console.log("Get alert acknolwedgement response [Info]::", response);
+                console.log("[Info]:: Get alert acknolwedgement response ", response);
 
             })
                 .error(function (error) {
-                    $scope.loading = "display:none;"
-                    alert("Error : " + JSON.stringify(error));
+                    $scope.loading = "display:none;";
+                    console.log("[Error]:: Get alert acknolwedgement response ", error);
+
                 });
         }
     }
@@ -160,7 +170,7 @@ angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope,
                 $scope.sensors = response;
             }
             else {
-                console.log(err);
+                console.log("[Error]:: Get Unmapped Sensor list response ", err);
             }
         }); 
     }
@@ -185,7 +195,7 @@ angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope,
 
             }
             else {
-                console.log(err);
+                console.log("[Error]:: Get Classroom Details response ", err);
             }
         }); 
 
@@ -229,7 +239,7 @@ angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope,
                     $modalInstance.close();
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error]:: Assign Sensor  response ", err);
                 }
             }); 
 
@@ -257,7 +267,7 @@ angular.module('WebPortal').controller('anomalyAlertModalCtrl', function ($scope
     function getAnomalyDetails() {
         Restservice.get('api/GetAnomalyDetailsByDay/' + unixtime, function (err, response) {
             if (!err) {
-                console.log("Get Anomaly Details response [Info]::", response);
+                console.log("[Info]:: Get Anomaly Details response ", response);
                 $scope.anomaly = response;
                 $scope.dtOptions = DTOptionsBuilder.newOptions()
                 .withPaginationType('full_numbers')
@@ -265,7 +275,7 @@ angular.module('WebPortal').controller('anomalyAlertModalCtrl', function ($scope
                 var data = [];
             }
             else {
-                console.log(err);
+                console.log("[Error]:: Get Anomaly Details response ", err);
             }
         });   
   

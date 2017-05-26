@@ -1,4 +1,12 @@
-﻿angular.module('WebPortal')
+﻿/**
+ * @ngdoc Controller
+ * @name controller:reportCtrl
+ * @author Jayesh Lunkad
+ * @description 
+ * # reportCtrl
+ * 
+ */
+angular.module('WebPortal')
     .controller('reportCtrl', function ($scope, $http, $location, $state, config, Token) {
         console.log("[Info] :: Report Controller Loaded")
         //Check for token if available display report or else get the token
