@@ -1,11 +1,12 @@
 'use strict';
 
 /**
- * @ngdoc function
- * @name angulartestApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the angulartestApp
+ * @ngdoc Controller
+ * @name controller:loginCtrl
+ * @author Jayesh Lunkad
+ * @description 
+ * # loginCtrl
+ * 
  */
 angular.module('WebPortal')
     .controller('loginCtrl', ['$scope', '$http', '$state', 'AuthService', 'Token', 'config', '$interval', 'Restservice', '$modal', 'aadService', '$rootScope', 'AclService', function ($scope, $http, $state, AuthService, Token, config, $interval, Restservice, $modal, aadService, $rootScope, AclService) {
@@ -16,7 +17,6 @@ angular.module('WebPortal')
             PopUp: 'popup',
             None: 'none',
             Page: 'page' 
-
         };
         var helloNetwork = {
             adB2CSignIn: 'adB2CSignIn',
@@ -46,7 +46,7 @@ angular.module('WebPortal')
         }
         $scope.showLogin = false;
 
-        //Once configuration is loaded it will broadcast an event 'config-loaded' which wil load rest server url
+        //Once configuration is loaded it will broadcast an event 'config-loaded' which will load rest server url
         $rootScope.$on('config-loaded', function () {
             $scope.showLogin = true;
             if (config.restServer == "" || config.restServer == undefined) {
@@ -72,8 +72,9 @@ angular.module('WebPortal')
         $scope.signUp = function () {
             aadService.signUp();
         }   
-
-        /*API*/
+        /**
+         * Function to get current user details 
+         */
         function getUserDetails() {
             $scope.loading = "display:block;";
             Restservice.get('api/GetCurrentUser', function (err, response) {
@@ -95,7 +96,7 @@ angular.module('WebPortal')
                     }
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error]:: Get Current User Details", err);
                 }
             });
         }

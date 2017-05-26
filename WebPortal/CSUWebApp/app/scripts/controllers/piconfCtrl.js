@@ -1,4 +1,12 @@
-﻿angular.module('WebPortal')
+﻿/**
+ * @ngdoc Controller
+ * @name controller:piconfCtrl
+ * @author Jayesh Lunkad
+ * @description 
+ * # piconfCtrl
+ * 
+ */
+angular.module('WebPortal')
     .controller('piconfCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, Restservice,$location ) {
         $scope.universityPowerBiConfig = {};
         $scope.campusPowerBiConfig = {};
@@ -12,7 +20,7 @@
         function getConfigList() {
             Restservice.get('api/GetAllApplicationConfiguration', function (err, response) {
                 if (!err) {
-                    console.log("Get Configuration List [Info]", response);
+                    console.log("[Info] :: Get Configuration List", response);
                     for (var i = 0; i < response.length; i++) {
                         switch (response[i].ApplicationConfigurationType) {
                             case "CampusPowerBI":
@@ -103,7 +111,7 @@
                     }
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error]:: Get Configuration Lis", err);
                 }
             });
         }
@@ -140,10 +148,10 @@
                     }
                 })
                     .then(function (response) {
-                        console.log("Response", response)
+                        console.log("[Info] :: Add Pi Server", response);
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        console.log("[Error] :: Add Pi Server", error);
                     });
             }
         }
@@ -156,7 +164,7 @@
             Restservice.get('api/GetAllCampus', function (err, response) {
                 if (!err) {
                     $scope.campusList = response;
-                    console.log("Get Campus List [Info]", response);
+                    console.log("[Info] :: Get Campus List ", response);
                     $scope.Campuses = response;
                     $scope.selectedCampus = $scope.Campuses[0].CampusID;
                     if ($scope.Campuses.length > 0) {
@@ -167,7 +175,7 @@
                     }
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error]:: Get Campus List", err);
                 }
             });
         }
@@ -179,11 +187,11 @@
             Restservice.get('api/GetAllUsers', function (err, response) {
                 if (!err) {
                     $scope.userList = response;
-                    console.log("Get User List [Info]", response);                 
+                    console.log("[Info] :: Get User List ", response);                 
 
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error]:: Get User List", err);
                 }
             });
         }
@@ -203,7 +211,7 @@
                     }
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error]:: Get All Pi server", err);
                 }
             });
         }
@@ -272,9 +280,9 @@
         };
         $scope.addPowerBiCredntials=function () {
             $http.post($location.protocol() + '://' + $location.host() + ':' + $location.port() + '/PowerBIService.asmx/updatePowerBiCredentials', $scope.powerBicredentials).then(function (data) {
-                console.log("Credentials Updated", data);
+                console.log("[Info] :: Credentials Updated", data);
             }).catch(function (data) {
-                console.log(':(', data);
+                console.log('[Error] ::', data);
             });
         }
         $scope.addUniPowerBiUrl = function () {
@@ -289,7 +297,6 @@
                 var obj = {  "ConfigurationKey": key, "ConfigurationValue": $scope.universityPowerBiConfig[key] };
                 sampleConfig.ApplicationConfigurationEntries.push(obj);
             }
-            console.log(sampleConfig);
             sendConfigOnServer(sampleConfig);
             updateConfigOnLocal({
                 "requestParams": {
@@ -309,7 +316,6 @@
                 var obj = { "ConfigurationKey": key, "ConfigurationValue": $scope.campusPowerBiConfig[key] };
                 sampleConfig.ApplicationConfigurationEntries.push(obj);
             }
-            console.log(sampleConfig);
             sendConfigOnServer(sampleConfig);
             updateConfigOnLocal({
                 "requestParams": {
@@ -330,7 +336,6 @@
                 var obj = {  "ConfigurationKey": key, "ConfigurationValue": $scope.buildingPowerBiConfig[key] };
                 sampleConfig.ApplicationConfigurationEntries.push(obj);
             }
-            console.log(sampleConfig);
             sendConfigOnServer(sampleConfig);
             updateConfigOnLocal({
                 "requestParams": {
@@ -350,7 +355,6 @@
                 var obj = { "ConfigurationKey": key, "ConfigurationValue": $scope.feebackPowerBi[key] };
                 sampleConfig.ApplicationConfigurationEntries.push(obj);
             }
-            console.log(sampleConfig);
             sendConfigOnServer(sampleConfig);
             updateConfigOnLocal({
                 "requestParams": {
@@ -370,7 +374,6 @@
                 var obj = { "ConfigurationKey": key, "ConfigurationValue": $scope.azureml[key] };
                 sampleConfig.ApplicationConfigurationEntries.push(obj);
             }
-            console.log(sampleConfig);
             sendConfigOnServer(sampleConfig);
         }
         $scope.addBlobStorageConfig = function () {
@@ -384,7 +387,6 @@
                 var obj = { "ConfigKey": key, "ConfigValue": $scope.azureml[key] };
                 sampleConfig.ApplicationConfigurationEntries.push(obj);
             }
-            console.log(sampleConfig);
             //sendConfigOnServer(sampleConfig);
         }
         $scope.addFirebaseConfig = function () {
@@ -405,10 +407,10 @@
         function sendConfigOnServer(sampleConfig) {
             Restservice.post('api/AddApplicationConfiguration', sampleConfig, function (err, response) {
                 if (!err) {
-                    console.log("Response", response)
+                    console.log("[Info] :: Add Application Config ", response);
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error] :: Add Application Config ", err);
                 }
             });
         }
@@ -422,11 +424,11 @@
                     "Content-Type": "application/json",
                 }
             }).then(function (response) {
-                console.log(response);
+                console.log("[Info] :: Config Updated in Local ", response);
 
             })
                 .catch(function (error) {
-                    console.log(error);
+                    console.log("[Error] ::  Config Not Updated in Local ", err);
                 });
         }
         function updateFirebaseOnLocal(config) {
@@ -442,17 +444,16 @@
                     "Content-Type": "application/json",
                 }
             }).then(function (response) {
-                console.log(response);
+                console.log("[Info] :: Config Updated in Local ", response);
 
             })
             .catch(function (error) {
-                    console.log(error);
+                console.log("[Error] ::  Config Not Updated in Local ", err);
             });
         }
     });
 
 angular.module('WebPortal').controller('editCampusCtrl', function ($scope, $modalInstance, $http, campus, Restservice) {
-    console.log("Campus", campus);
     $scope.campus = campus;
 
 
@@ -461,14 +462,13 @@ angular.module('WebPortal').controller('editCampusCtrl', function ($scope, $moda
      */
     $scope.ok = function () {
 
-        console.log($scope.campus);
         Restservice.put('api/UpdateCampus', $scope.campus, function (err, response) {
             if (!err) {
-                console.log("Response", response);
+                console.log("[Info] :: Campus Updated", response);
                 $modalInstance.dismiss('cancel');
             }
             else {
-                console.log(err);
+                console.log("[Error] ::  Campus Not Updated  ", err);
             }
         });
 
@@ -499,11 +499,11 @@ angular.module('WebPortal').controller('addCampusCtrl', function ($scope, $modal
     $scope.ok = function () {
         Restservice.post('api/AddCampus', $scope.campus, function (err, response) {
             if (!err) {
-                console.log("Response", response)
+                console.log("[Info] :: Campus Added", response);
                 $modalInstance.dismiss('cancel');
             }
             else {
-                console.log(err);
+                console.log("[Error] ::  Campus Not Added  ", err);
             }
         });
 
@@ -529,14 +529,13 @@ angular.module('WebPortal').controller('addBuildingCtrl', function ($scope, $mod
      * Function to Upload Image 
      */
     $scope.ok = function () {        
-        console.log("Jsononj", $scope.building);
         Restservice.post('api/AddBuilding' , $scope.building, function (err, response) {
             if (!err) {
-                console.log("Response", response)
+                console.log("[Info] :: Building Added", response);
                 $modalInstance.dismiss('cancel');
             }
             else {
-                console.log(err);
+                console.log("[Error] ::  Building Not Added  ", err);
             }
         });
 
@@ -550,18 +549,17 @@ angular.module('WebPortal').controller('addBuildingCtrl', function ($scope, $mod
 });
 
 angular.module('WebPortal').controller('changeRoleCtrl', function ($scope, $modalInstance, $http, Restservice, user, $modal) {
-    console.log("User", user);
     function getAllRoles() {
     Restservice.get('api/GetAllRoles', function (err, response) {
         if (!err) {
-            console.log(response);
+            console.log("[Info] :: Get all roles ", response);
             $scope.roles = response;
             $scope.selectedRole = {
                 selected: response[0]
             }
         }
         else {
-            console.log(err);
+            console.log("[Error] ::  Get all roles  ", err);
         }
     });
     }
@@ -574,11 +572,11 @@ angular.module('WebPortal').controller('changeRoleCtrl', function ($scope, $moda
     $scope.ok = function () {
         Restservice.put('api/AssignRoleToUser/' + user.UserId + '/' + $scope.selectedRole.selected.Id, null, function (err, response) {
             if (!err) {
-                console.log("Response", response);
+                console.log("[Info] :: Assign Role to user  ", response);
                 $modalInstance.dismiss('cancel');
             }
             else {
-                console.log(err);
+                console.log("[Error] ::  Assign Role to user   ", err);
             }
         });
     };
@@ -628,7 +626,7 @@ angular.module('WebPortal').controller('addRoleCtrl', function ($scope, $modalIn
 
         }
         else {
-            console.log(err);
+            console.log("[Error] ::  Get Campus List    ", err);
         }
     });
     
@@ -639,14 +637,12 @@ angular.module('WebPortal').controller('addRoleCtrl', function ($scope, $modalIn
             $scope.CategoriesSelected.forEach(function (category) {
                 $scope.role.CampusIds.push(category.id);
             });
-            console.log($scope.role);
             Restservice.post('api/AddRole', $scope.role, function (err, response) {
                 if (!err) {
-                    console.log("Response", response)
                     $modalInstance.dismiss('cancel');
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error] :: Add role  ", err);
                 }
             });
         }

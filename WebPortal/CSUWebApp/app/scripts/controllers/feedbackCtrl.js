@@ -1,4 +1,12 @@
-﻿angular.module('WebPortal')
+﻿/**
+ * @ngdoc Controller
+ * @name controller:feedbackCtrl
+ * @author Jayesh Lunkad
+ * @description 
+ * # feedbackCtrl
+ * 
+ */
+angular.module('WebPortal')
     .controller('feedbackCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, Restservice ) {
         console.log("[Info] :: Feedback Controller loaded");
         function getPowerBiUrls() {
@@ -18,14 +26,13 @@
         function getCampusList() {          
             Restservice.get('api/GetAllCampus', function (err, response) {
                 if (!err) {
-                    console.log("Get Campus List [Info]", response);
+                    console.log("[Info] ::Get Campus List ", response);
                     $scope.Campuses = response;
                     $scope.selectedCampus = $scope.Campuses[0].CampusID;  
                     $scope.getBuildingList();
-                    $scope.$apply();
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error] :: Get Campus List", err);
                 }
             });
         }
@@ -38,14 +45,14 @@
         $scope.getBuildingList = function () {
             Restservice.get('api/GetBuildingsByCampus/' + $scope.selectedCampus, function (err, response) {
                 if (!err) {
-                    console.log("Get BuildingsBy Campus :: [Info]", response);
+                    console.log("[Info] :: Get BuildingsBy Campus ", response);
                     $scope.Buildings = response;
                     $scope.selectedBuilding = $scope.Buildings[0].BuildingID;
                     $scope.getClassRoomList();
                     $scope.$apply();
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error] :: Get BuildingsBy Campus", err);
                 }
             });
         }
@@ -56,7 +63,7 @@
         $scope.getClassRoomList = function() {
             Restservice.get('api/GetClassroomByBuilding/' + $scope.selectedBuilding, function (err, response) {
                 if (!err) {
-                    console.log("Get Classroom for Building :: [Info]", response);
+                    console.log("[Info] :: Get Classroom for Building ", response);
                     $scope.Classes = response;
                     $scope.selectedClass = $scope.Classes[0].ClassId;
                     $scope.getSensorList();
@@ -64,7 +71,7 @@
                     $scope.$apply();
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error]:: Get Classroom for Building", err);
                 }
             });
 
@@ -92,11 +99,10 @@
             Restservice.get('api/GetAllSensorsForClass/' + $scope.selectedClass, function (err, response) {
                 if (!err) {
                     $scope.sensors = response;
-                    console.log("[Info] ::Get Sensor List Details ", response);
-                    $scope.$apply();
+                    console.log("[Info] :: Get Sensor List Details ", response);
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error]:: Get Sensor List Details", err);
                 }
             });
         }

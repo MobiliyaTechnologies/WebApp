@@ -1,10 +1,11 @@
 ﻿'use strict';
 /**
- * @ngdoc function
- * @name angulartestApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the angulartestApp
+ * @ngdoc Controller
+ * @name controller:overviewCtrl
+ * @author Jayesh Lunkad
+ * @description 
+ * # overviewCtrl
+ * 
  */
 var map,buldingMap;
 var count = 0;
@@ -12,8 +13,7 @@ var meterList;
 var infobox;
 var iframe;
 var colors = ['rgba(60,162,224, 0.7)', 'rgba(138, 212, 235, 0.7)', 'rgba(254, 150, 102, 0.7)', 'rgba(95, 107, 109, 0.7)','rgba(253, 98, 94, 0.7)']
-var powerBIUrls = {
-}
+
 angular.module('WebPortal')
     .controller('overviewCtrl', function ($scope, $http, $location, Token, config, $timeout, Restservice ) {
         $scope.userId = localStorage.getItem("userId");
@@ -44,11 +44,11 @@ angular.module('WebPortal')
         function getBuildingList(campusId) {
             Restservice.get('api/GetBuildingsByCampus/' + campusId, function (err, response) {
                 if (!err) {
-                    console.log("Get BuildingsBy Campus :: [Info]", response);
+                    console.log("[Info]  :: Get BuildingsBy Campus ", response);
                     createBasePushPin('building', response);
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error]  :: Get BuildingsBy Campus ", err);
                 }
             });
         }
@@ -61,10 +61,12 @@ angular.module('WebPortal')
                     $scope.campusList = response;
                     createBasePushPin('campus',$scope.campusList);
                     createColorPushPin('campus', $scope.campusList);
+                    console.log("[Info]  :: Get All Campus ", response);
                     
                 }
                 else {
-                    console.log(err);
+                   
+                    console.log("[Error]  :: Get all Campus ", err);
                 }
             });
         }
@@ -88,7 +90,7 @@ angular.module('WebPortal')
                     }
                 })
                 .catch(function (data, status, headers) {
-                    console.log('error');
+                    console.log("[Error]  :: Get Power Bi Urls ", err);
                 });
         }
         getPowerBiUrls();
@@ -165,6 +167,7 @@ angular.module('WebPortal')
             //$("#scrolldiv").animate({
             //    scrollTop: $("#srollreports").offset().top
             //});
+            infobox.setOptions({ visible: false });
             if (args.target.Type == 'campus') {
                 map.entities.clear();
                 $scope.back_button = true;
@@ -190,7 +193,7 @@ angular.module('WebPortal')
         function embedReport(reportURL,iframeId) {          
             var embedUrl = reportURL;
             if ("" === embedUrl) {
-                console.log("No embed URL found");
+                console.log("[Error]  :: No embed URL found ", err);
                 return;
             }
             iframe = document.getElementById(iframeId);
@@ -203,7 +206,7 @@ angular.module('WebPortal')
         function postActionLoadReport(iframeId) {
             var accessToken = Token.data.accesstoken
             if ("" === accessToken) {
-                console.log("Access token not found");
+                console.log("[Error]  :: Access token not found ");
                 return;
             }
             var m = { action: "loadReport", accessToken: accessToken };
@@ -216,6 +219,7 @@ angular.module('WebPortal')
         function getInsight() {
             Restservice.get('api/GetInsightData', function (err, response) {
                 if (!err) {
+                    console.log("[Info] :: Get Insight Data ", response);
                     $scope.insight = response;
                     $scope.insight.ConsumptionValue = Math.round($scope.insight.ConsumptionValue)/1000;
                     $scope.insight.PredictedValue = Math.round($scope.insight.PredictedValue)/1000;
@@ -228,7 +232,8 @@ angular.module('WebPortal')
                     }
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error]  :: Get Insight Data ", err);
+
                 }
 
             });
@@ -240,41 +245,23 @@ angular.module('WebPortal')
             Restservice.get('api/getrecommendations/', function (err, response) {
                 if (!err) {
                     $scope.recommendations = response;
+                    console.log("[Info]  :: Get recommendation ", response);
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error]  :: Get recommendation ", err);
                 }
 
             });
         }
         getRecommendation();
       
-
-        
-        function onSeriesClicked(meter) {
-            
-            var index = $scope.urls.findIndex(function (item, i) {
-                return item.Name == meter;
-            });
-            $scope.MeterName = meter.Name;
-            if (index > 0) {
-                if ($scope.urls[index].Report != undefined) {
-                    embedReport($scope.urls[index].Report);
-                    $scope.$apply();
-                    $("#scrolldiv").animate({
-                        scrollTop: $("#layout").offset().top+400
-                    });
-                }
-            }
-
-        }
         /**
          * 
          * @param args
          */
         function onPushpinMouseOver(args) {
             infobox = new Microsoft.Maps.Infobox(args.target.getLocation(), {
-                title: args.target.MeterName,
+                title: args.target.Name,
                 visible: true,
                 offset: new Microsoft.Maps.Point(5, 0)
             });
@@ -297,20 +284,19 @@ angular.module('WebPortal')
 
             Restservice.get('api/GetAllMapSensors', function (err, response) {
                 if (!err) {
-                    console.log("Get Sensor list response [Info]::", response);
+                    console.log("[Info] :: Get Sensor list response ", response);
                     $scope.sensors = response;
                     $scope.selectedSensor = $scope.sensors[0];
 
                 }
                 else {
-                    console.log(err);
+                    console.log("[Error]:: Get Sensor list response ", err);
                 }
             });
 
         }
         getSensorList();
         $scope.showSensorDetails = function (sensor) {
-            console.log("Sensor ::", sensor);
             $scope.selectedSensor = sensor;
         }
 

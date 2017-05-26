@@ -1,4 +1,12 @@
-﻿angular.module('WebPortal')
+﻿/**
+ * @ngdoc Controller
+ * @name controller:recommendationCtrl
+ * @author Jayesh Lunkad
+ * @description 
+ * # recommendationCtrl
+ * 
+ */
+angular.module('WebPortal')
     .controller('recommendationCtrl', function (Restservice,$scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config) {
         console.log("Recommendation Controller [Info]");
         $scope.userId = localStorage.getItem("userId");

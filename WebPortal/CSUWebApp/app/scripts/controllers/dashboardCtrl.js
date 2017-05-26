@@ -1,18 +1,21 @@
-﻿var roles=[]
+﻿ /**
+ * @ngdoc Controller
+ * @name controller:dashboardCtrl
+ * @author Jayesh Lunkad
+ * @description 
+ * # dashboardCtrl
+ * 
+ */
+var roles = []
 angular.module('WebPortal')
     .controller('dashboardCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, $rootScope, aadService, AclService, aadService ) {
+        console.log("[Info] :: Login Controller loaded");  
         $scope.can = AclService.can;
         $scope.weather = weatherServiceFactory;
         $scope.weather.search();
         $scope.username = localStorage.getItem("UserName");
         $scope.lastname = localStorage.getItem("LastName");
-        $scope.li_css = ['background-color: #192c1f;color:#ffd600;', 'side-menu-li-inactive', 'side-menu-li-inactive'];
-        $scope.li_color = ['white', 'white', 'red'];
-        $scope.li_css[0] = 'border-left:solid 5px #c6d82e;';
-        $scope.li_css[1] = 'background-color: white;color:#192c1f;';
-        $scope.li_css[2] = 'background-color: white;color:#192c1f;';
-        $scope.li_css[3] = 'background-color: white;color:#192c1f;';
-        $scope.li_css[4] = 'background-color: white;color:#192c1f;';
+       
         aadService.signIn(function (b2cSession) {
         });
 
@@ -23,56 +26,8 @@ angular.module('WebPortal')
         }
         else {
             $scope.avatar = localStorage.getItem("Avatar");
-        }
-        
-
-        $scope.makeActive = function (index) {
-            if (index == 0) {
-                $scope.li_css[0] = 'border-left:solid 5px #c6d82e;';
-                $scope.li_css[1] = 'border-left:solid 1px;';
-                $scope.li_css[2] = 'border-left:solid 1px;';
-                $scope.li_css[3] = 'border-left:solid 1px;';
-                $scope.li_css[4] = 'border-left:solid 1px;';
-            }
-            else if (index == 1) {
-                $scope.li_css[0] = 'border-left:solid 1px;';
-                $scope.li_css[1] = 'border-left:solid 5px #c6d82e;';
-                $scope.li_css[2] = 'border-left:solid 1px;';
-                $scope.li_css[3] = 'border-left:solid 1px;';
-                $scope.li_css[4] = 'border-left:solid 1px;';
-            }
-            else if (index == 2) {
-
-                $scope.li_css[0] = 'border-left:solid 1px;';
-                $scope.li_css[1] = 'border-left:solid 1px;';
-                $scope.li_css[2] = 'border-left:solid 5px #c6d82e;';
-                $scope.li_css[3] = 'border-left:solid 1px;';
-                $scope.li_css[4] = 'border-left:solid 1px;';
-            }
-            else if (index == 3) {
-
-                $scope.li_css[0] = 'border-left:solid 1px;';
-                $scope.li_css[1] = 'border-left:solid 1px;';
-                $scope.li_css[2] = 'border-left:solid 1px;';
-                $scope.li_css[3] = 'border-left:solid 5px #c6d82e;';
-                $scope.li_css[4] = 'border-left:solid 1px;';
-                $scope.alertCount = 0;
-            }
-            else if (index == 4) {
-
-                $scope.li_css[0] = 'border-left:solid 1px;';
-                $scope.li_css[1] = 'border-left:solid 1px;';
-                $scope.li_css[2] = 'border-left:solid 1px;';
-                $scope.li_css[3] = 'border-left:solid 1px;';
-                $scope.li_css[4] = 'border-left:solid 5px #c6d82e;';
-            }
-
-        }
-
-
-
-
-        $scope.items = ['item1', 'item2', 'item3'];
+        }      
+                
         $scope.images = [{ src: "Avatar_1.png", color: 'black' }, { src: "Avatar_2.png", color: 'black' },
         { src: "Avatar_3.png", color: 'black' }, { src: "Avatar_4.png", color: 'black' },
         { src: "Avatar_5.png", color: 'black' }, { src: "Avatar_6.png", color: 'black' },
@@ -105,22 +60,22 @@ angular.module('WebPortal')
         /**
         * Function to subscribe topic for firebase  
         */
-        function subscribeTopic(token) {
+        function subscribeTopic(apikey,token, topic) {
             $http({
-                url: "https://iid.googleapis.com/iid/v1/" + token + "/rel/topics/Alerts",
+                url: "https://iid.googleapis.com/iid/v1/" + token + "/rel"+topic,
                 dataType: 'json',
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "key=AIzaSyBkgKls7ACvfll8pYuuicCr2e9r17_55Eg"
+                    "Authorization": "key=" + apikey
 
                 }
             }).then(function (response) {
-                console.log("[Info] :: Successfully subscribed to topic 'Alerts'")
+                console.log("[Info] :: Successfully subscribed to topic '" + topic + "'");
 
             })
             .catch(function (error) {
-                    console.log("Error : " + JSON.stringify(error));
+                console.log("[Error]:: Subscribe Firebase Topic", error);
             });
         }
 
@@ -136,7 +91,8 @@ angular.module('WebPortal')
                     localforage.setItem('AuthDomain', data.data.AuthDomain);
                     localforage.setItem('DatabaseURL', data.data.DatabaseURL);
                     localforage.setItem('StorageBucket', data.data.StorageBucket);
-                    localforage.setItem('NotificationSender', data.data.NotificationSender);                   
+                    localforage.setItem('NotificationSender', data.data.NotificationSender); 
+                    localforage.setItem('NotificationReceiver', data.data.NotificationReceiver);               
                     
                     var config = {
                         apiKey: data.data.ApiKey,
@@ -145,14 +101,14 @@ angular.module('WebPortal')
                         storageBucket: data.data.StorageBucket,
                         messagingSenderId: data.data.NotificationSender
                     };
-                    iniateFirebase(config);
+                    iniateFirebase(data.data.ApiKey,config, data.data.NotificationReceiver);
                 }
             })
             .catch(function (data, status, headers) {
                 // log error
                 alert('error');
          });
-        function iniateFirebase(config) {
+        function iniateFirebase(apikey,config,topic) {
             firebase.initializeApp(config);
             /**
             * Function to get permission of firebase from user
@@ -165,10 +121,10 @@ angular.module('WebPortal')
                 })
                 .then(function (token) {
                     console.log("[Info] ::  Registration token ", token);
-                    subscribeTopic(token);
+                    subscribeTopic(apikey,token,topic);
                 })
                 .catch(function (err) {
-                    console.log("[Info] :: User not Granted Permission [Error]", err);
+                    console.log("[Error] :: User not Granted Permission", err);
                 })
 
             messaging.onMessage(function (payload) {
@@ -191,7 +147,9 @@ angular.module('WebPortal')
         }        
        
     });
-
+ /**
+  * Controller for Change Avatar Popup
+  */
 angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $modalInstance, images, $http, Restservice ) {
 
     $scope.selectImage = function (index) {
@@ -217,12 +175,13 @@ angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $mo
         JSONobj.Avatar = $scope.selected.image.src;
         Restservice.put('api/UpdateUser', JSONobj, function (err, response) {
             if (!err) {
-                console.log("Change Avatar response [Info] ::", response);
+                console.log("[Info] :: Change Avatar response ", response);
                 localStorage.setItem("Avatar", $scope.selected.image.src);
                 $modalInstance.close($scope.selected.image);
             }
             else {
-                console.log(err);
+                
+                console.log("[Error]:: Get Current User Details", err);
             }
         });
 
@@ -231,10 +190,6 @@ angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $mo
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
-
-
-
-
 
 });
  /**
