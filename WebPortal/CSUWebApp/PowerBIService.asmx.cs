@@ -131,17 +131,17 @@ namespace CSUWebApp
             ResponseUrlModel response = new ResponseUrlModel(null,null,null,null);
             switch (requestParams.Type)
             {
-                case "university":
-                    response = new ResponseUrlModel(requestParams.Values, fileData.campus, fileData.building,fileData.feedback);
+                case "organization":
+                    response = new ResponseUrlModel(requestParams.Values, fileData.premise, fileData.building,fileData.feedback);
                     break;
-                case "campus":
-                    response = new ResponseUrlModel(fileData.university, requestParams.Values, fileData.building, fileData.feedback);
+                case "premise":
+                    response = new ResponseUrlModel(fileData.organization, requestParams.Values, fileData.building, fileData.feedback);
                     break;
                 case "building":
-                    response = new ResponseUrlModel(fileData.university, fileData.campus, requestParams.Values, fileData.feedback);
+                    response = new ResponseUrlModel(fileData.organization, fileData.premise, requestParams.Values, fileData.feedback);
                     break;
                 case "feedback":
-                    response = new ResponseUrlModel(fileData.university, fileData.campus, fileData.building, requestParams.Values);
+                    response = new ResponseUrlModel(fileData.organization, fileData.premise, fileData.building, requestParams.Values);
                     break;
 
             }

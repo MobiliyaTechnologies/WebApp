@@ -21,38 +21,38 @@ angular.module('WebPortal')
         getPowerBiUrls();
         
         /**
-         * Function to get all campus  
+         * Function to get all Premises  
          */
-        function getCampusList() {          
-            Restservice.get('api/GetAllCampus', function (err, response) {
+        function getPremisesList() {          
+            Restservice.get('api/GetAllPremise', function (err, response) {
                 if (!err) {
-                    console.log("[Info] ::Get Campus List ", response);
-                    $scope.Campuses = response;
-                    $scope.selectedCampus = $scope.Campuses[0].CampusID;  
+                    console.log("[Info] ::Get Premises List ", response);
+                    $scope.Premises = response;
+                    $scope.selectedPremise = $scope.Premises[0].PremiseID;  
                     $scope.getBuildingList();
                 }
                 else {
-                    console.log("[Error] :: Get Campus List", err);
+                    console.log("[Error] :: Get Premises List", err);
                 }
             });
         }
-        getCampusList();
+        getPremisesList();
              
 
         /**
          * Function to get all classrooms  
          */
         $scope.getBuildingList = function () {
-            Restservice.get('api/GetBuildingsByCampus/' + $scope.selectedCampus, function (err, response) {
+            Restservice.get('api/GetBuildingsByPremise/' + $scope.selectedPremise, function (err, response) {
                 if (!err) {
-                    console.log("[Info] :: Get BuildingsBy Campus ", response);
+                    console.log("[Info] :: Get BuildingsBy Premise ", response);
                     $scope.Buildings = response;
                     $scope.selectedBuilding = $scope.Buildings[0].BuildingID;
                     $scope.getClassRoomList();
                     $scope.$apply();
                 }
                 else {
-                    console.log("[Error] :: Get BuildingsBy Campus", err);
+                    console.log("[Error] :: Get BuildingsBy Premise", err);
                 }
             });
         }
@@ -83,8 +83,8 @@ angular.module('WebPortal')
         */
         $scope.getSensorList = function () {
             var result = null;
-            var campus = $scope.Campuses.filter(function (obj) {
-                return obj.CampusID === $scope.selectedCampus;
+            var premise = $scope.Premises.filter(function (obj) {
+                return obj.PremiseID === $scope.selectedPremise;
             })[0];
             var building = $scope.Buildings.filter(function (obj) {
                 return obj.BuildingID === $scope.selectedBuilding;
@@ -94,7 +94,7 @@ angular.module('WebPortal')
                 return obj.ClassId === $scope.selectedClass;
             })[0];     
             if ($scope.powerBiUrls.feedback.summary){
-                embedReport($scope.powerBiUrls.feedback.summary + "&$filter=BridgeClassroomBuilding/CampusBuildingClass eq '" + campus.CampusName + building.BuildingName + classes.ClassName + "'", 'feedback');
+                embedReport($scope.powerBiUrls.feedback.summary + "&$filter=BridgeClassroomBuilding/premiseBuildingClass eq '" + premise.PremiseName + building.BuildingName + classes.ClassName + "'", 'feedback');
             }
             Restservice.get('api/GetAllSensorsForClass/' + $scope.selectedClass, function (err, response) {
                 if (!err) {

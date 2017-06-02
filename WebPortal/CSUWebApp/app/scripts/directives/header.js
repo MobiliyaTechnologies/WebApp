@@ -19,9 +19,25 @@ angular.module('WebPortal')
         templateUrl: 'app/views/Directive/header.html'
     };
 
-    function HeaderController($scope, $location, $rootScope, weatherServiceFactory) {
+    function HeaderController($scope, $location, $rootScope, weatherServiceFactory, Restservice ) {
         $rootScope.hideHeader = ($location.path() === '/login') ? true : false;
         $scope.weather = weatherServiceFactory;
         $scope.weather.search();
+
+        $scope.organization = {};
+        $scope.organization.logo = "./app/images/bullet_green.svg";
+
+        
+        Restservice.get('api/GetOrganization', function (err, response) {
+            if (!err) {
+                $scope.organization = response;
+                console.log("[Info] :: GetOrganization ", response);
+
+            }
+            else {
+                console.log("[Error]:: GetOrganization", err);
+            }
+        });
+
     }
 })

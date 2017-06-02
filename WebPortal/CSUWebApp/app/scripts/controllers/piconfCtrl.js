@@ -9,11 +9,13 @@
 angular.module('WebPortal')
     .controller('piconfCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, Restservice,$location ) {
         $scope.universityPowerBiConfig = {};
-        $scope.campusPowerBiConfig = {};
+        $scope.premisePowerBiConfig = {};
         $scope.buildingPowerBiConfig = {};
         $scope.feebackPowerBi = {};
         $scope.powerBicredentials = {};
         $scope.firebase = {};
+        $scope.organization = {};
+        $scope.loading = "display:block;"
         /**
          * Function to get all Config  
          */
@@ -23,15 +25,15 @@ angular.module('WebPortal')
                     console.log("[Info] :: Get Configuration List", response);
                     for (var i = 0; i < response.length; i++) {
                         switch (response[i].ApplicationConfigurationType) {
-                            case "CampusPowerBI":
+                            case "PremisePowerBI":
                                 if (response[i].ApplicationConfigurationEntries.length > 0) {
-                                    $scope.checkCampusPowerBI = '#c3f7d0';
+                                    $scope.checkPremisePowerBI = '#c3f7d0';
                                     for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
-                                        $scope.campusPowerBiConfig[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
+                                        $scope.premisePowerBiConfig[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
                                     }  
                                 }
                                 else {
-                                    $scope.checkCampusPowerBI = '#f29898';
+                                    $scope.checkPremisePowerBI = '#f29898';
                                 }
                                 break;
                             case "BuildingPowerBI":
@@ -56,7 +58,7 @@ angular.module('WebPortal')
                                     $scope.checkAzureMl = '#f29898';
                                 }
                                 break;
-                            case "UniversityPowerBI":
+                            case "OrganizationPowerBI":
                                 if (response[i].ApplicationConfigurationEntries.length > 0) {
                                     $scope.checkUniversityPowerBI = '#c3f7d0';
                                     for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
@@ -103,6 +105,7 @@ angular.module('WebPortal')
                         }
                     }
                     $scope.checkUser = '#c3f7d0';
+                    $scope.checkOrganization = '#c3f7d0';
                     if (Token.data.accesstoken == "") {
                         $scope.checkPowerBiCredentials = '#f29898';
                     }
@@ -120,7 +123,7 @@ angular.module('WebPortal')
 
         $scope.addPiServer = function () {
             var jsonobj = {};
-            jsonobj.CampusID = $scope.selectedCampus;
+            jsonobj.PremiseID = $scope.selectedPremise;
             jsonobj.PiServerName = $scope.PiServerName;
             jsonobj.PiServerURL = $scope.connectionstring;
             jsonobj.PiServerDesc = $scope.piserverdesc;
@@ -158,30 +161,31 @@ angular.module('WebPortal')
 
 
         /**
-        * Function to get all campus associated with login user 
+        * Function to get all premise associated with login user 
         */
-        function getCampusList() {
-            Restservice.get('api/GetAllCampus', function (err, response) {
+        function getPremiseList() {
+            Restservice.get('api/GetAllPremise', function (err, response) {
                 if (!err) {
-                    $scope.campusList = response;
-                    console.log("[Info] :: Get Campus List ", response);
-                    $scope.Campuses = response;
-                    $scope.selectedCampus = $scope.Campuses[0].CampusID;
-                    if ($scope.Campuses.length > 0) {
-                        $scope.checkCampus = '#c3f7d0';
+                    $scope.loading = "display:none;"
+                    $scope.premiseList = response;
+                    console.log("[Info] :: Get Premise List", response);
+                    $scope.Premises = response;
+                    $scope.selectedPremise = $scope.Premises[0].PremiseID;
+                    if ($scope.Premises.length > 0) {
+                        $scope.checkPremise = '#c3f7d0';
                     }
                     else {
-                        $scope.checkCampus = '#f29898';
+                        $scope.checkPremise = '#f29898';
                     }
                 }
                 else {
-                    console.log("[Error]:: Get Campus List", err);
+                    console.log("[Error]:: Get Premise List", err);
                 }
             });
         }
-        getCampusList();
+        getPremiseList();
         /**
-        * Function to get all user associated with campus
+        * Function to get all user associated with Premise
         */
         function getUserList() {
             Restservice.get('api/GetAllUsers', function (err, response) {
@@ -216,10 +220,23 @@ angular.module('WebPortal')
             });
         }
         getPIserverList();
-        $scope.addCampus = function () {
+        function getOrganizationDetail() {
+            Restservice.get('api/GetOrganization', function (err, response) {
+                if (!err) {
+                    $scope.organization = response;
+                    console.log("[Info] :: GetOrganization ", response);
+
+                }
+                else {
+                    console.log("[Error]:: GetOrganization", err);
+                }
+            });
+        }
+        getOrganizationDetail();
+        $scope.addPremise = function () {
             var modalInstance = $modal.open({
-                templateUrl: 'addCampus.html',
-                controller: 'addCampusCtrl'
+                templateUrl: 'addPremise.html',
+                controller: 'addPremiseCtrl'
 
 
             }).result.then(function (result) {
@@ -228,13 +245,13 @@ angular.module('WebPortal')
                 // Cancel
             });
         }
-        $scope.addBuilding = function (campus) {
+        $scope.addBuilding = function (premise) {
             var modalInstance = $modal.open({
                 templateUrl: 'addBuilding.html',
                 controller: 'addBuildingCtrl',
                  resolve: {
-                    campus: function () {
-                        return campus;
+                     premise: function () {
+                         return premise;
                     }
                 }
 
@@ -244,14 +261,14 @@ angular.module('WebPortal')
                 // Cancel
             });
         }
-        $scope.openPopup = function (campus) {
+        $scope.openPopup = function (premise) {
 
             var modalInstance = $modal.open({
-                templateUrl: 'editCampus.html',
-                controller: 'editCampusCtrl',
+                templateUrl: 'editPremise.html',
+                controller: 'editPremiseCtrl',
                 resolve: {
-                    campus: function () {
-                        return campus;
+                    premise: function () {
+                        return premise;
                     }
                 }
 
@@ -300,30 +317,29 @@ angular.module('WebPortal')
             sendConfigOnServer(sampleConfig);
             updateConfigOnLocal({
                 "requestParams": {
-                    "Type": "university",
+                    "Type": "organization",
                     "Values": $scope.universityPowerBiConfig
                 }
             });
         }
-        $scope.addCampusPowerBiUrl = function () {
+        $scope.addPremisePowerBiUrl = function () {
             var sampleConfig = {
-                "ApplicationConfigurationType": "CampusPowerBI" ,
+                "ApplicationConfigurationType": "PremisePowerBI" ,
                 "ApplicationConfigurationEntries": [
 
                 ]
             }
-            for (key in $scope.campusPowerBiConfig) {
-                var obj = { "ConfigurationKey": key, "ConfigurationValue": $scope.campusPowerBiConfig[key] };
+            for (key in $scope.premisePowerBiConfig) {
+                var obj = { "ConfigurationKey": key, "ConfigurationValue": $scope.premisePowerBiConfig[key] };
                 sampleConfig.ApplicationConfigurationEntries.push(obj);
             }
             sendConfigOnServer(sampleConfig);
             updateConfigOnLocal({
                 "requestParams": {
-                    "Type": "campus",
-                    "Values": $scope.campusPowerBiConfig
+                    "Type": "premise",
+                    "Values": $scope.premisePowerBiConfig
                 }
             });
-            //updateConfigOnLocal({ 'university': $scope.campusPowerBiConfig });
         }
         $scope.addBuildingPowerBiUrl = function () {
             var sampleConfig = {
@@ -384,7 +400,7 @@ angular.module('WebPortal')
                 ]
             }
             for (key in $scope.azureml) {
-                var obj = { "ConfigKey": key, "ConfigValue": $scope.azureml[key] };
+                var obj = { "ConfigurationKey": key, "ConfigurationValue": $scope.azureml[key] };
                 sampleConfig.ApplicationConfigurationEntries.push(obj);
             }
             //sendConfigOnServer(sampleConfig);
@@ -397,14 +413,50 @@ angular.module('WebPortal')
                 ]
             }
             for (key in $scope.firebase) {
-                var obj = { "ConfigKey": key, "ConfigValue": $scope.firebase[key] };
+                var obj = { "ConfigurationKey": key, "ConfigurationValue": $scope.firebase[key] };
                 sampleConfig.ApplicationConfigurationEntries.push(obj);
             }
             sendConfigOnServer(sampleConfig);
             updateFirebaseOnLocal($scope.firebase);
 
         }
+        $scope.addOrganizationConfig = function () {
+            var authResponse = hello('adB2CSignIn').getAuthResponse();
+            $scope.organization.file = document.getElementById('organization_logo').files[0];  
+            if (authResponse != null) {
+
+                $http({
+                    method: 'POST',
+                    url: config.restServer + 'api/AddOrganization',
+                    headers: {
+                        'Content-Type': undefined,
+                        "Authorization": authResponse.token_type + ' ' + authResponse.access_token
+                    },
+                    data: $scope.organization,
+                    transformRequest: function (data, headersGetter) {
+                        var formData = new FormData();
+                        angular.forEach(data, function (value, key) {
+                            formData.append(key, value);
+                        });
+
+                        var headers = headersGetter();
+                        delete headers['Content-Type'];
+
+                        return formData;
+                    }
+                })
+                    .then(function (response) {
+                        console.log("[Info] :: Add Application Config ", response);
+                    })
+                    .catch(function (error) {
+                        console.log("[Error] :: Add Application Config ", error);
+                    });
+            }
+
+
+        }
         function sendConfigOnServer(sampleConfig) {
+            console.log(sampleConfig);
             Restservice.post('api/AddApplicationConfiguration', sampleConfig, function (err, response) {
                 if (!err) {
                     console.log("[Info] :: Add Application Config ", response);
@@ -453,8 +505,8 @@ angular.module('WebPortal')
         }
     });
 
-angular.module('WebPortal').controller('editCampusCtrl', function ($scope, $modalInstance, $http, campus, Restservice) {
-    $scope.campus = campus;
+angular.module('WebPortal').controller('editPremiseCtrl', function ($scope, $modalInstance, $http, premise, Restservice) {
+    $scope.premise = premise;
 
 
     /**
@@ -462,13 +514,13 @@ angular.module('WebPortal').controller('editCampusCtrl', function ($scope, $moda
      */
     $scope.ok = function () {
 
-        Restservice.put('api/UpdateCampus', $scope.campus, function (err, response) {
+        Restservice.put('api/UpdatePremise', $scope.premise, function (err, response) {
             if (!err) {
-                console.log("[Info] :: Campus Updated", response);
+                console.log("[Info] :: Premise Updated", response);
                 $modalInstance.dismiss('cancel');
             }
             else {
-                console.log("[Error] ::  Campus Not Updated  ", err);
+                console.log("[Error] ::  Premise Not Updated  ", err);
             }
         });
 
@@ -485,10 +537,10 @@ angular.module('WebPortal').controller('editCampusCtrl', function ($scope, $moda
 
 });
 
-angular.module('WebPortal').controller('addCampusCtrl', function ($scope, $modalInstance, $http, Restservice) {
-    $scope.campus = {
-        CampusName: '',
-        CampusDesc: '',
+angular.module('WebPortal').controller('addPremiseCtrl', function ($scope, $modalInstance, $http, Restservice) {
+    $scope.premise = {
+        PremiseName: '',
+        PremiseDesc: '',
         Latitude: '',
         Longitude: '',
         UniversityID: 1
@@ -497,13 +549,15 @@ angular.module('WebPortal').controller('addCampusCtrl', function ($scope, $modal
      * Function to Upload Image 
      */
     $scope.ok = function () {
-        Restservice.post('api/AddCampus', $scope.campus, function (err, response) {
+        $scope.loading = "display:block;";
+        Restservice.post('api/AddPremise', $scope.premise, function (err, response) {
             if (!err) {
-                console.log("[Info] :: Campus Added", response);
+                $scope.loading = "display:none;";
+                console.log("[Info] :: Premise Added", response);
                 $modalInstance.dismiss('cancel');
             }
             else {
-                console.log("[Error] ::  Campus Not Added  ", err);
+                console.log("[Error] ::  Premise Not Added  ", err);
             }
         });
 
@@ -516,21 +570,23 @@ angular.module('WebPortal').controller('addCampusCtrl', function ($scope, $modal
 
 });
 
-angular.module('WebPortal').controller('addBuildingCtrl', function ($scope, $modalInstance, $http, Restservice, campus) {
+angular.module('WebPortal').controller('addBuildingCtrl', function ($scope, $modalInstance, $http, Restservice, premise) {
    
     $scope.building = {
         BuildingName	: '',
         BuildingDesc: '',
         Latitude: '',
         Longitude: '',
-        CampusID:campus.CampusID	
+        PremiseID:premise.PremiseID	
     }
     /**
      * Function to Upload Image 
      */
     $scope.ok = function () {        
+        $scope.loading = "display:block;"
         Restservice.post('api/AddBuilding' , $scope.building, function (err, response) {
             if (!err) {
+                $scope.loading = "display:none;"
                 console.log("[Info] :: Building Added", response);
                 $modalInstance.dismiss('cancel');
             }
@@ -570,8 +626,10 @@ angular.module('WebPortal').controller('changeRoleCtrl', function ($scope, $moda
      * Function to Upload Image 
      */
     $scope.ok = function () {
+        $scope.loading = "display:block;";
         Restservice.put('api/AssignRoleToUser/' + user.UserId + '/' + $scope.selectedRole.selected.Id, null, function (err, response) {
             if (!err) {
+                $scope.loading = "display:none;"
                 console.log("[Info] :: Assign Role to user  ", response);
                 $modalInstance.dismiss('cancel');
             }
@@ -602,13 +660,10 @@ angular.module('WebPortal').controller('changeRoleCtrl', function ($scope, $moda
 
 angular.module('WebPortal').controller('addRoleCtrl', function ($scope, $modalInstance, $http, Restservice, $modal) {
   
-    $scope.names = ["Emil", "Tobias", "Linus"];
-    $scope.cars = [{ id: 1, label: 'Audi' }, { id: 2, label: 'BMW' }, { id: 3, label: 'Honda' }];
-    $scope.selectedCar = [];
     $scope.role = {
         'RoleName': '',
         'Description': '',
-        'CampusIds':[]
+        'PremiseIds':[]
     };
     $scope.CategoriesSelected = [];
     $scope.Categories = [];
@@ -616,17 +671,17 @@ angular.module('WebPortal').controller('addRoleCtrl', function ($scope, $modalIn
         scrollable: true,
         scrollableHeight: '200px'
     }
-    Restservice.get('api/GetAllCampus', function (err, response) {
+    Restservice.get('api/GetAllPremise', function (err, response) {
         if (!err) {
-            $scope.campus= response;
-            $scope.campus.forEach(function (campus) {
-                campus.id = campus.CampusID;
-                 campus.label = campus.CampusName;
+            $scope.premise= response;
+            $scope.premise.forEach(function (premise) {
+                premise.id = premise.PremiseID;
+                premise.label = premise.PremiseName;
             });
 
         }
         else {
-            console.log("[Error] ::  Get Campus List    ", err);
+            console.log("[Error] ::  Get Premise List    ", err);
         }
     });
     
@@ -635,10 +690,12 @@ angular.module('WebPortal').controller('addRoleCtrl', function ($scope, $modalIn
     $scope.ok = function () {
         if ($scope.CategoriesSelected.length > 0) {       
             $scope.CategoriesSelected.forEach(function (category) {
-                $scope.role.CampusIds.push(category.id);
+                $scope.role.PremiseIds.push(category.id);
             });
+            $scope.loading = "display:block;";
             Restservice.post('api/AddRole', $scope.role, function (err, response) {
                 if (!err) {
+                    $scope.loading = "display:none;";
                     $modalInstance.dismiss('cancel');
                 }
                 else {

@@ -102,24 +102,20 @@ angular.module('WebPortal')
 /**
  * Controller for alert detail popup
  */
-angular.module('WebPortal').controller('alertModalCtrl', function ($scope, $modalInstance, alerts, $http, config) {
-    console.log("Alerts", alerts);
-    $http({
-        url: config.restServer + "api/getalertdetails/" + localStorage.getItem("userId") + "/" + alerts.Sensor_Log_Id,
-        dataType: 'json',
-        headers: {
-            "Content-Type": "application/json"
-        }
-    }).success(function (response) {
+angular.module('WebPortal').controller('alertModalCtrl', function ($scope, $modalInstance, alerts, $http, config, Restservice) {
+   
+    Restservice.get('api/GetAlertDetails/' + alerts.Sensor_Log_Id, function (err, response) {
+        if (!err) {
             console.log("[Info]:: Get alert Details response ", response);
             $scope.selectAlert = response;
             acknowledgeAlert(alerts);
-        })
-        .error(function (error) {
-            $scope.loading = "display:none;"
-            
+        }
+        else {
+            $scope.loading = "display:none;";
             console.log("[Error]:: Get alert Details response", error);
-        });
+        }
+    }); 
+
     /**
      * Function to update acknowledge sattus of alert 
      */
@@ -129,23 +125,17 @@ angular.module('WebPortal').controller('alertModalCtrl', function ($scope, $moda
             var JSONobj = new Object();
             JSONobj.Alert_Id = alerts.Alert_Id;
             JSONobj.Acknowledged_By = localStorage.getItem("UserName");
-            $http({
-                url: config.restServer + "api/acknowledgealert/" + localStorage.getItem("userId"),
-                dataType: 'json',
-                method: 'POST',
-                data: JSONobj,
-                headers: {
-                    "Content-Type": "application/json"
+
+            Restservice.put('api/AcknowledgeAlert', JSONobj, function (err, response) {
+                if (!err) {
+                    console.log("[Info]:: Get alert acknolwedgement response ", response);
                 }
-            }).success(function (response) {
-                console.log("[Info]:: Get alert acknolwedgement response ", response);
-
-            })
-                .error(function (error) {
+                else {
                     $scope.loading = "display:none;";
-                    console.log("[Error]:: Get alert acknolwedgement response ", error);
-
-                });
+                    console.log("[Error]:: Get alert acknolwedgement response ", err);
+                }
+            }); 
+           
         }
     }
     $scope.ok = function () {

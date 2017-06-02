@@ -20,9 +20,9 @@ angular.module('WebPortal')
             $http.get('powerBI.json')
                 .then(function (data, status, headers) {
                     $scope.powerBiUrls = data.data;
-                    if ($scope.powerBiUrls.feedback) {   
-                        embedReport($scope.powerBiUrls.university.summary, 'summary');
-                        embedReport($scope.powerBiUrls.university.summarydetails, 'summarydetails');
+                    if ($scope.powerBiUrls.organization) {   
+                        embedReport($scope.powerBiUrls.organization.summary, 'summary');
+                        embedReport($scope.powerBiUrls.organization.summarydetails, 'summarydetails');
                     }
                 })
                 .catch(function (data, status, headers) {

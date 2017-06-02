@@ -17,7 +17,7 @@ var colors = ['rgba(60,162,224, 0.7)', 'rgba(138, 212, 235, 0.7)', 'rgba(254, 15
 angular.module('WebPortal')
     .controller('overviewCtrl', function ($scope, $http, $location, Token, config, $timeout, Restservice ) {
         $scope.userId = localStorage.getItem("userId");
-        $scope.campusList = [];
+        $scope.premiseList = [];
         $scope.meterList = [];
         $scope.urls = [];
         $scope.back_button = false;
@@ -36,54 +36,54 @@ angular.module('WebPortal')
 
                 });
            
-            getCampusList();
+            getPremiseList();
         }
         /**
-        * Function to get all Building associated with campus
+        * Function to get all Building associated with premise
         */
-        function getBuildingList(campusId) {
-            Restservice.get('api/GetBuildingsByCampus/' + campusId, function (err, response) {
+        function getBuildingList(premiseId) {
+            Restservice.get('api/GetBuildingsByPremise/' + premiseId, function (err, response) {
                 if (!err) {
-                    console.log("[Info]  :: Get BuildingsBy Campus ", response);
+                    console.log("[Info]  :: Get BuildingsBy Premise ", response);
                     createBasePushPin('building', response);
                 }
                 else {
-                    console.log("[Error]  :: Get BuildingsBy Campus ", err);
+                    console.log("[Error]  :: Get BuildingsBy Premise ", err);
                 }
             });
         }
         /**
-         * Function to get all campus associated with login user 
+         * Function to get all premise associated with login user 
          */
-        function getCampusList() {
-            Restservice.get('api/GetAllCampus', function (err, response) {
+        function getPremiseList() {
+            Restservice.get('api/GetAllPremise', function (err, response) {
                 if (!err) {
-                    $scope.campusList = response;
-                    createBasePushPin('campus',$scope.campusList);
-                    createColorPushPin('campus', $scope.campusList);
-                    console.log("[Info]  :: Get All Campus ", response);
+                    $scope.premiseList = response;
+                    createBasePushPin('premise', $scope.premiseList);
+                    createColorPushPin('premise', $scope.premiseList);
+                    console.log("[Info]  :: Get All Premise ", response);
                     
                 }
                 else {
                    
-                    console.log("[Error]  :: Get all Campus ", err);
+                    console.log("[Error]  :: Get all Premise ", err);
                 }
             });
         }
-        $scope.loadCampus = function () {
+        $scope.loadPremise = function () {
             map.entities.clear();
             $scope.back_button = false;
-            createBasePushPin('campus', $scope.campusList);
-            createColorPushPin('campus', $scope.campusList);
+            createBasePushPin('premise', $scope.premiseList);
+            createColorPushPin('premise', $scope.premiseList);
         }
 
         function getPowerBiUrls() {
             $http.get('powerBI.json')
                 .then(function (data, status, headers) {
                     $scope.powerBIUrls = data.data;
-                    if ($scope.powerBIUrls.campus) {
-                        embedReport($scope.powerBIUrls.campus.summary, 'summary');
-                        embedReport($scope.powerBIUrls.campus.summarydetails, 'summarydetails');
+                    if ($scope.powerBIUrls.premise) {
+                        embedReport($scope.powerBIUrls.premise.summary, 'summary');
+                        embedReport($scope.powerBIUrls.premise.summarydetails, 'summarydetails');
                     }
                     else {
                         $scope.configurationError = "Please Check Configuration";
@@ -106,15 +106,15 @@ angular.module('WebPortal')
                     anchor: new Microsoft.Maps.Point(5, 5)
                 });
                 map.entities.push(pushpin);
-                if(type=='campus'){
-                    pushpin.Name = entityList[i].CampusName;
-                    pushpin.ID = entityList[i].CampusID;
-                    pushpin.Type = 'campus';
+                if(type=='premise'){
+                    pushpin.Name = entityList[i].PremiseName;
+                    pushpin.ID = entityList[i].PremiseID;
+                    pushpin.Type = 'premise';
                 }
                 else if (type == 'building') {
                     pushpin.Name = entityList[i].BuildingName;
                     pushpin.ID = entityList[i].BuildingID;
-                    pushpin.CampusID = entityList[i].CampusID;
+                    pushpin.PremiseID = entityList[i].PremiseID;
                     pushpin.Type = 'building';
                 }
                 Microsoft.Maps.Events.addHandler(pushpin, 'click', onPushpinClicked);
@@ -137,20 +137,20 @@ angular.module('WebPortal')
                 
                 var pushpin2 = new Microsoft.Maps.Pushpin(location, {
                     icon: svg.join(''),
-                    anchor: new Microsoft.Maps.Point(radius, radius), text: entityList[i].CampusName, textOffset: new Microsoft.Maps.Point(0, 10)
+                    anchor: new Microsoft.Maps.Point(radius, radius), text: entityList[i].PremiseName, textOffset: new Microsoft.Maps.Point(0, 10)
 
                 });
                 
                 map.entities.push(pushpin2);
-                if (type == 'campus') {
-                    pushpin2.Name = entityList[i].CampusName;
-                    pushpin2.ID = entityList[i].CampusID;
-                    pushpin2.Type = 'campus';
+                if (type == 'premise') {
+                    pushpin2.Name = entityList[i].PremiseName;
+                    pushpin2.ID = entityList[i].PremiseID;
+                    pushpin2.Type = 'premise';
                 }
                 else if (type == 'building') {
                     pushpin.Name = entityList[i].BuildingName;
                     pushpin.ID = entityList[i].BuildingID;
-                    pushpin.CampusID = entityList[i].CampusID;
+                    pushpin.PremiseID = entityList[i].PremiseID;
                     pushpin.Type = 'building';
                 }
                 Microsoft.Maps.Events.addHandler(pushpin2, 'click', onPushpinClicked);
@@ -168,29 +168,29 @@ angular.module('WebPortal')
             //    scrollTop: $("#srollreports").offset().top
             //});
             infobox.setOptions({ visible: false });
-            if (args.target.Type == 'campus') {
+            if (args.target.Type == 'premise') {
                 map.entities.clear();
                 $scope.back_button = true;
                 getBuildingList(args.target.ID);
-                if ($scope.powerBIUrls.campus) {
-                    embedReport($scope.powerBIUrls.campus.summary + "&$filter=Campus/CampusName eq \'" + args.target.Name + "\'", 'summary');
-                    embedReport($scope.powerBIUrls.campus.summarydetails + "&$filter=Campus/CampusName eq \'" + args.target.Name + "\'", 'summarydetails');
+                if ($scope.powerBIUrls.premise) {
+                    embedReport($scope.powerBIUrls.premise.summary + "&$filter=Premise/PremiseName eq \'" + args.target.Name + "\'", 'summary');
+                    embedReport($scope.powerBIUrls.premise.summarydetails + "&$filter=Premise/PremiseName eq \'" + args.target.Name + "\'", 'summarydetails');
                 }
                 $scope.$apply();
             }
             else {
-                //args.target.Name = 'CSU Campus 2Chemistry Building';
                 if ($scope.powerBIUrls.building) {
-                    var campus = $scope.campusList.filter(function (obj) {
-                        return obj.CampusID === args.target.CampusID;
+                    var premise = $scope.premiseList.filter(function (obj) {
+                        return obj.PremiseID === args.target.PremiseID;
                     })[0];
-                    embedReport($scope.powerBIUrls.building.summary + "&$filter=BridgeCampusBuilding/CampusBuilding eq \'"+ campus.CampusName+ args.target.Name + "\'", 'summary');
-                    embedReport($scope.powerBIUrls.building.summarydetails + "&$filter=BridgeCampusBuilding/CampusBuilding eq \'" + campus.CampusName+ args.target.Name + "\'", 'summarydetails');
+                    embedReport($scope.powerBIUrls.building.summary + "&$filter=BridgePremiseBuilding/PremiseBuilding eq \'" + premise.PremiseName+ args.target.Name + "\'", 'summary');
+                    embedReport($scope.powerBIUrls.building.summarydetails + "&$filter=BridgePremiseBuilding/PremiseBuilding eq \'" + premise.PremiseName+ args.target.Name + "\'", 'summarydetails');
                 }
             }
         }
 
-        function embedReport(reportURL,iframeId) {          
+        function embedReport(reportURL, iframeId) {   
+            console.log("Report Url", reportURL);
             var embedUrl = reportURL;
             if ("" === embedUrl) {
                 console.log("[Error]  :: No embed URL found ", err);

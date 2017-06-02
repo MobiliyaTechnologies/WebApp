@@ -91,7 +91,7 @@ angular.module('WebPortal')
                         $state.go('feedback');
                     }
                     else {
-                        AclService.attachRole('campus_admin');
+                        AclService.attachRole('premise_admin');
                         $state.go('overview');
                     }
                 }

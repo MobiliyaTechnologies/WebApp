@@ -1,9 +1,9 @@
 ﻿<div class="panel-group" id="accordion">
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseZero" style="cursor:pointer;background-color:{{checkCampus}}">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseZero" style="cursor:pointer;background-color:{{checkPremise}}">
             <h4 class="panel-title">
                 <label>
-                    Campus Configuration
+                    Premise Configuration
                 </label>
             </h4>
         </div>
@@ -20,27 +20,27 @@
                                     <div class="table-responsive">
                                         <table id="entry-grid" datatable="ng" width="100%" dt-options="dtOptions">
                                             <thead>
-                                            <th>Campus ID</th>
-                                            <th>Campus Name</th>
-                                            <th>Campus Desc</th>
+                                            <th>Premise ID</th>
+                                            <th>Premise Name</th>
+                                            <th>Premise Desc</th>
                                             <th>Monthly Consumption</th>
                                             <th>Edit</th>
                                             <th>Add Building</th>
                                             </thead>
                                             <tbody>
-                                                <tr ng-repeat="campus in campusList">
-                                                    <td>{{campus.CampusID}}</td>
-                                                    <td>{{campus.CampusName}}</td>
-                                                    <td>{{campus.CampusDesc | date}}</td>
-                                                    <td>{{campus.MonthlyConsumption}}</td>
-                                                    <td><a ng-click="openPopup(campus)" title="View Details"><i class="fa fa-edit"></i></a></td>
-                                                    <td><a ng-click="addBuilding(campus)" title="View Details"><i class="fa fa-plus"></i></a></td>
+                                                <tr ng-repeat="premise in premiseList">
+                                                    <td>{{premise.PremiseID}}</td>
+                                                    <td>{{premise.PremiseName}}</td>
+                                                    <td>{{premise.PremiseDesc | date}}</td>
+                                                    <td>{{premise.MonthlyConsumption}}</td>
+                                                    <td><a ng-click="openPopup(premise)" title="View Details"><i class="fa fa-edit"></i></a></td>
+                                                    <td><a ng-click="addBuilding(premise)" title="View Details"><i class="fa fa-plus"></i></a></td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-                                <button class="btn" style="background-color:#31573e;color:white;" ng-click="addCampus()">Add Campus</button>
+                                <button class="btn blue-button" ng-click="addPremise()">Add Premise</button>
                             </div>
                         </div>
                     </div>
@@ -62,12 +62,12 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-offset-4 col-lg-3 dash-unit">
-                            <label>Select Campus &nbsp;</label><select ng-options="campus.CampusID as campus.CampusName for campus in Campuses" ng-change="getBuildingList()" ng-model="selectedCampus" style="z-index:1;width:70px;margin-top:20px;"></select>   </label>    </br>
+                            <label>Select Premise &nbsp;</label><select ng-options="premise.PremiseID as premise.PremiseName for premise in Premises" ng-change="getBuildingList()" ng-model="selectedPremise" style="z-index:1;width:70px;margin-top:20px;"></select>   </label>    </br>
                             <input class="form-control" style="margin-top:20px;" placeholder="Pi Server Name" type="text" ng-model="PiServerName" />
                             <input class="form-control" style="margin-top:20px;" placeholder="Connection String" type="text" ng-model="connectionstring" />
                             <input class="form-control" style="margin-top:20px;" placeholder="Description" type="text" ng-model="piserverdesc" />
                             <input id="class_schedulefile" type="file" accept=".csv" />
-                            <button class="btn" style="margin-top:20px;text-align:center;margin-left:35%;background-color:#31573e;color:white;" ng-click="addPiServer()">Add</button>
+                            <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:35%;" ng-click="addPiServer()">Add</button>
                         </div>
                     </div>
 
@@ -88,7 +88,7 @@
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
                     <input class="form-control" style="margin-top:20px;" placeholder="Client Id" type="text" ng-model="powerBicredentials.ClientId" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Client Secret" type="text" ng-model="powerBicredentials.ClientSecret" />
-                    <button class="btn" style="margin-top:20px;text-align:center;margin-left:45%;background-color:#31573e;color:white;" ng-click="addPowerBiCredntials()">Add</button>
+                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addPowerBiCredntials()">Add</button>
                 </div>
             </div>
         </div>
@@ -98,7 +98,7 @@
         <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseThree" style="cursor:pointer;background-color:{{checkUniversityPowerBI}}">
             <h4 class="panel-title">
                 <label >
-                    Power BI Configuration(University) 
+                    Power BI Configuration(Organisation) 
                 </label>
             </h4>
         </div>
@@ -107,25 +107,25 @@
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
                     <input class="form-control" style="margin-top:20px;" placeholder="Summary Report" type="text" ng-model="universityPowerBiConfig.summary" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Summary Details" type="text" ng-model="universityPowerBiConfig.summarydetails" />
-                    <button class="btn" style="margin-top:20px;text-align:center;margin-left:45%;background-color:#31573e;color:white;" ng-click="addUniPowerBiUrl()">Add</button>
+                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addUniPowerBiUrl()">Add</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFour" style="cursor:pointer;background-color:{{checkCampusPowerBI}}">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFour" style="cursor:pointer;background-color:{{checkPremisePowerBI}}">
             <h4 class="panel-title">
                 <label >
-                    Power BI Configuration(Campus)
+                    Power BI Configuration(Premise)
                 </label>
             </h4>
         </div>
         <div id="collapseFour" class="panel-collapse collapse out">
             <div class="panel-body">
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
-                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Report" type="text" ng-model="campusPowerBiConfig.summary" />
-                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Details" type="text" ng-model="campusPowerBiConfig.summarydetails" />
-                    <button class="btn" style="margin-top:20px;text-align:center;margin-left:45%;background-color:#31573e;color:white;" ng-click="addCampusPowerBiUrl()">Add</button>
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Report" type="text" ng-model="premisePowerBiConfig.summary" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Details" type="text" ng-model="premisePowerBiConfig.summarydetails" />
+                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addPremisePowerBiUrl()">Add</button>
                 </div>
             </div>
         </div>
@@ -144,7 +144,7 @@
                     <h3>Power BI Url Configuration For Building</h3>
                     <input class="form-control" style="margin-top:20px;" placeholder="Summary Report" type="text" ng-model="buildingPowerBiConfig.summary" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Summary Details" type="text" ng-model="buildingPowerBiConfig.summarydetails" />
-                    <button class="btn" style="margin-top:20px;text-align:center;margin-left:45%;background-color:#31573e;color:white;" ng-click="addBuildingPowerBiUrl()">Add</button>
+                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addBuildingPowerBiUrl()">Add</button>
                 </div>
                 
             </div>
@@ -163,7 +163,7 @@
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
                     <h3>Power BI Url Configuration For Feedback</h3>
                     <input class="form-control" style="margin-top:20px;" placeholder="Feedback report" type="text" ng-model="feebackPowerBi.summary" />
-                    <button class="btn" style="margin-top:20px;text-align:center;margin-left:45%;background-color:#31573e;color:white;" ng-click="addFeedbackPowerBiUrl()">Add</button>
+                    <button class="btn" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFeedbackPowerBiUrl()">Add</button>
                 </div>
 
             </div>
@@ -183,7 +183,7 @@
                     <h3>Azure ML Configuration</h3>
                     <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml App Url" type="text" ng-model="azureml.azuremlappurl" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml App key" type="text" ng-model="azureml.azuremlappkey" />
-                    <button class="btn" style="margin-top:20px;text-align:center;margin-left:45%;background-color:#31573e;color:white;" ng-click="addAzureMlConfig()">Add</button>
+                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addAzureMlConfig()">Add</button>
                 </div>
             </div>
         </div>
@@ -208,7 +208,7 @@
                     <input class="form-control" style="margin-top:20px;" placeholder="Authorisation Key" type="text" ng-model="firebase.NotificationAuthorizationKey" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Messaging Sender Id" type="text" ng-model="firebase.NotificationSender" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Messaging Receiver Id" type="text" ng-model="firebase.NotificationReceiver" />
-                    <button class="btn" style="margin-top:20px;text-align:center;margin-left:45%;background-color:#31573e;color:white;" ng-click="addFirebaseConfig()">Add</button>
+                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFirebaseConfig()">Add</button>
                 </div>
             </div>
         </div>
@@ -261,44 +261,64 @@
         </div>
 
     </div>
-    
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapsetwelve" style="cursor:pointer;background-color:{{checkOrganization}}">
+            <h4 class="panel-title">
+                <label>
+                   Organization Configuration
+                </label>
+            </h4>
+        </div>
+        <div id="collapsetwelve" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:320px;">
+                    <h3>Organization Configuration</h3>
+                    <input class="form-control" style="margin-top:20px;" placeholder="Organization" type="text" ng-model="organization.OrganizationName" />               
+                    <input class="form-control" style="margin-top:20px;" placeholder="Description" type="text" ng-model="organization.OrganizationDesc" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Address" type="text" ng-model="organization.OrganizationAddress" />
+                    <input id="organization_logo" type="file" accept="image/*" style="margin-top:20px;"/>
+                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addOrganizationConfig()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 
-<script type="text/ng-template" id="editCampus.html">
+<script type="text/ng-template" id="editPremise.html">
     <div class="modal-header">
         <h3 class="modal-title">Edit Details </h3>
     </div>
     <div>
         <div class="col-lg-offset-1 col-lg-10 ">
-            <input class="form-control" style="margin-top:20px;" placeholder="Campus Name" type="text" ng-model="campus.CampusName" />
-            <input class="form-control" style="margin-top:20px;" placeholder="Campus Description" type="text" ng-model="campus.CampusDesc" />
-            <input class="form-control" style="margin-top:20px;" placeholder="latitude" type="text" ng-model="campus.Latitude" />
-            <input class="form-control" style="margin-top:20px;margin-bottom:20px;" placeholder="longitude" type="text" ng-model="campus.Longitude" />
+            <input class="form-control" style="margin-top:20px;" placeholder="Premise Name" type="text" ng-model="premise.PremiseName" />
+            <input class="form-control" style="margin-top:20px;" placeholder="Premise Description" type="text" ng-model="premise.PremiseDesc" />
+            <input class="form-control" style="margin-top:20px;" placeholder="latitude" type="text" ng-model="premise.Latitude" />
+            <input class="form-control" style="margin-top:20px;margin-bottom:20px;" placeholder="longitude" type="text" ng-model="premise.Longitude" />
         </div>
 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">Edit</button>
+        <button class="btn blue-button" ng-click="ok()">Edit</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
-<script type="text/ng-template" id="addCampus.html">
+<script type="text/ng-template" id="addPremise.html">
     <div class="modal-header">
-        <h3 class="modal-title">Add Campus </h3>
+        <h3 class="modal-title">Add Premise </h3>
     </div>
     <div>
         <div class="col-lg-offset-1 col-lg-10 ">
-            <input class="form-control" style="margin-top:20px;" placeholder="Campus Name" type="text" ng-model="campus.CampusName" />
-            <input class="form-control" style="margin-top:20px;" placeholder="Campus Description" type="text" ng-model="campus.CampusDesc" />
-            <input class="form-control" style="margin-top:20px;" placeholder="latitude" type="text" ng-model="campus.Latitude" />
-            <input class="form-control" style="margin-top:20px;margin-bottom:20px;" placeholder="longitude" type="text" ng-model="campus.Longitude" />
+            <input class="form-control" style="margin-top:20px;" placeholder="Premise Name" type="text" ng-model="premise.PremiseName" />
+            <input class="form-control" style="margin-top:20px;" placeholder="Premise Description" type="text" ng-model="premise.PremiseDesc" />
+            <input class="form-control" style="margin-top:20px;" placeholder="latitude" type="text" ng-model="premise.Latitude" />
+            <input class="form-control" style="margin-top:20px;margin-bottom:20px;" placeholder="longitude" type="text" ng-model="premise.Longitude" />
         </div>
 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">Add</button>
+        <button class="btn blue-button" ng-click="ok()">Add</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
@@ -316,7 +336,7 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">Add</button>
+        <button class="btn blue-button" ng-click="ok()">Add</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
@@ -332,7 +352,7 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">Change</button>
+        <button class="btn blue-button" ng-click="ok()">Change</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
@@ -344,14 +364,18 @@
         <div class="col-lg-offset-1 col-lg-10 ">
             <input class="form-control" style="margin-top:20px;" placeholder="Role Name" type="text" ng-model="role.RoleName" />
             <input class="form-control" style="margin-top:20px;" placeholder="Description" type="text" ng-model="role.Description" />
-            Select Campus :<div ng-dropdown-multiselect="" extra-settings="dropdownSetting"
-                 options="campus" selected-model="CategoriesSelected" checkboxes="true" style="margin-top:20px;"></div>
+            Select Premise :<div ng-dropdown-multiselect="" extra-settings="dropdownSetting"
+                 options="premise" selected-model="CategoriesSelected" checkboxes="true" style="margin-top:20px;"></div>
 
         </div>
 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">Add</button>
+        <button class="btn blue-button" ng-click="ok()">Add</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
+<div id="loadingid" class="loading style-2 ng-scope" style="{{loading}}">
+    <div class="loading-wheel">
+    </div>
+</div>
