@@ -39,7 +39,7 @@ body {
     background: #ffffff;
     max-width: 320px;
     width: 100%;
-    border-top: 5px solid #31573e;
+    border-top: 5px solid rgb(1, 115, 197);
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
     margin: 0 auto;
 }
@@ -49,7 +49,7 @@ body {
         position: absolute;
         top: -0;
         right: -0;
-        background: #31573e;
+        background: rgb(1, 115, 197);
         width: 30px;
         height: 30px;
         margin: -5px 0 0;
@@ -114,13 +114,13 @@ body {
     }
 
         .form-module input:focus {
-            border: 1px solid #31573e;
+            border: 1px solid rgb(1, 115, 197);
             color: #333333;
         }
 
     .form-module button {
         cursor: pointer;
-        background: #31573e;
+        background: rgb(1, 115, 197);
         width: 100%;
         border: 0;
         padding: 10px 15px;
@@ -130,7 +130,7 @@ body {
     }
 
         .form-module button:hover {
-            background: #192c1f;
+            background: rgb(1, 115, 197);
         }
 
     .form-module .cta {
@@ -386,7 +386,7 @@ body {
 }
 /************************************************************HEADER*****************************************/
 .header-div {
-    background-color: #1d4c2a;
+    background-color: rgb(1, 115, 197);
     height: 60px;
     position: absolute;
     width: 100%;
@@ -396,8 +396,12 @@ body {
 .header-logo {
     width: 28vw;
     height: 60px;
+    color:white;
 }
-
+.header-label{
+    margin-top:15px;
+    font-size:20px;
+}
 
 
 /*************************************************************DASHBOARD*******************************************************/
@@ -786,6 +790,10 @@ a.bg-danger:hover {
     top: 0;
     bottom: 0;
 }
+.blue-button {
+    background-color: rgb(1, 115, 197);
+    color:white;
+}
 /**Accordion*/
 
 
@@ -805,7 +813,8 @@ a.bg-danger:hover {
             .accordion .section input[type='radio']:checked + label:before {
                 content: " ";
                 position: absolute;
-                border-left: 5px solid #c6d82e;
+                border-left: 5px solid rgb(1, 115, 197);
+                ;
                 height: 100%;
                 left: 0;
             }
@@ -1192,7 +1201,8 @@ a.bg-danger:hover {
 .recommendation-bar {
     display: block;
     overflow: auto;
-    background-color: #dfe993;
+    background-color: rgb(71, 71, 71);
+    color:white;
 }
 
 .recommendation-bar-content {
@@ -1201,7 +1211,7 @@ a.bg-danger:hover {
 
     .recommendation-bar-content h2 {
         display: inline;
-        color: black;
+        color: white;
     }
 
 .recommendation-content {

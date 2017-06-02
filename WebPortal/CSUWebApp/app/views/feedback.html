@@ -15,7 +15,7 @@
                     <div class="panel panel-default">
                         <div class="panel-body" style="height:80vh;overflow:auto;">
                             <div class="sensor-detail  col-sm-12">
-                                <label>Select Campus &nbsp;</label><select ng-options="campus.CampusID as campus.CampusName for campus in Campuses" ng-change="getBuildingList()" ng-model="selectedCampus" style="z-index:1;width:70px;"></select>   </label>    </br>
+                                <label>Select Premise &nbsp;</label><select ng-options="premise.PremiseID as premise.PremiseName for premise in Premises" ng-change="getBuildingList()" ng-model="selectedPremise" style="z-index:1;width:70px;"></select>   </label>    </br>
                                 <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingDesc for building in Buildings" ng-change="getClassRoomList()" ng-model="selectedBuilding" style="z-index:1;width:70px;"></select>   </label>    </br>
                                 <label>Select Classroom &nbsp;</label><select ng-options="class.ClassId as class.ClassDescription for class in Classes" ng-change="getSensorList()" ng-model="selectedClass" style="z-index:1;width:70px;"></select>   </label>    </br>
                                 <h3>CLASS DETAILS </h3></br>

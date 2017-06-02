@@ -37,19 +37,19 @@ namespace CSUWebApp.Models
 
     public class ResponseUrlModel
     {
-        public Values university { get; set; }
+        public Values organization { get; set; }
 
-        public Values campus { get; set; }
+        public Values premise { get; set; }
 
         public Values building { get; set; }
 
         public Values feedback { get; set; }
 
 
-        public ResponseUrlModel(Values universityValues, Values campusValues, Values buildingValues, Values feedbackValues)
+        public ResponseUrlModel(Values organizationValues, Values premiseValues, Values buildingValues, Values feedbackValues)
         {
-            university = universityValues == null ? new Values() : universityValues;
-            campus = campusValues == null ? new Values() : campusValues;
+            organization = organizationValues == null ? new Values() : organizationValues;
+            premise = premiseValues == null ? new Values() : premiseValues;
             building = buildingValues == null ? new Values() : buildingValues;
             feedback = feedbackValues == null ? new Values() : feedbackValues;
         }

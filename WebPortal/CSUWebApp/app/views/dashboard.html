@@ -11,14 +11,14 @@
 
                     <br />
                     <div class="text-center" style="padding: 5px 5px 5px 5px;">
-                        <img src="./app/images/{{avatar}}" class="user-avatar" ng-click="openPopup()" style="border:solid #192c1f;border-radius: 50%;" />
+                        <img src="./app/images/{{avatar}}" class="user-avatar" ng-click="openPopup()" style="border:solid rgb(1, 115, 197);border-radius: 50%;" />
                         <h4>{{username}}&nbsp;{{lastname}}</h4>
-                        <button class="btn" style="background-color:#c6d82e;color:white;" ng-click="logoutb2c()">Logout</button>
+                        <button class="btn" style="background-color:rgb(1, 115, 197);color:white;" ng-click="logoutb2c()">Logout</button>
                     </div>                   
                     <div class="left-menu">
 
                         <div class="accordion">
-                            <div ng-if="can('overview')" class="section" ng-click="changeState('overview')">
+                            <div ng-if="can('overview')" class="section"   ng-click="changeState('overview')" >
                                 <input type="radio" name="accordion-1" id="section-1" checked="checked" />
                                 <label for="section-1"><span>DASHBOARD</span></label>
 
@@ -67,46 +67,6 @@
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="ok()">Change</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-    </div>
-</script>
-<script type="text/ng-template" id="configuration.html">
-    <div class="modal-header">
-        <h3 class="modal-title">Configuration </h3>
-    </div>
-    <div class="modal-body">
-        <div class="row" style="color:black;">
-            <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:150px;">
-                <h3>PI Server Configuration</h3>
-                <input class="form-control" style="margin-top:20px;" placeholder="PI Server Name" type="text" ng-model="Piserver.piservername" />
-                <input class="form-control" style="margin-top:20px;" placeholder="DB Connection String" type="text" ng-model="Piserver.dbConnectionstring" />
-            </div>
-            <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:310px;">
-                <h3>Power BI Url Configuration For Campus</h3>               
-                <input class="form-control" style="margin-top:20px;" placeholder="Generic report" type="text" ng-model="campusPowerBiConfig.generic" />
-                <input class="form-control" style="margin-top:20px;" placeholder="Monthly Consumption" type="text" ng-model="campusPowerBiConfig.monthly_consumption" />
-                <input class="form-control" style="margin-top:20px;" placeholder="Weekly Consumption" type="text" ng-model="campusPowerBiConfig.weekly_consumption" />
-                <input class="form-control" style="margin-top:20px;" placeholder="Day Wise Current Month" type="text" ng-model="campusPowerBiConfig.day_wise_current_month" />
-                <input class="form-control" style="margin-top:20px;" placeholder="Current Month Prediction" type="text" ng-model="campusPowerBiConfig.current_month_prediction" />
-            </div>
-            <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:310px;">
-                <h3>Power BI Url Configuration For Building</h3>
-                <input class="form-control" style="margin-top:20px;" placeholder="Generic report" type="text" ng-model="buildingPowerBiConfig.generic" />
-                <input class="form-control" style="margin-top:20px;" placeholder="Monthly Consumption" type="text" ng-model="buildingPowerBiConfig.monthly_consumption" />
-                <input class="form-control" style="margin-top:20px;" placeholder="Weekly Consumption" type="text" ng-model="buildingPowerBiConfig.weekly_consumption" />
-                <input class="form-control" style="margin-top:20px;" placeholder="Day Wise Current Month" type="text" ng-model="buildingPowerBiConfig.day_wise_current_month" />
-                <input class="form-control" style="margin-top:20px;" placeholder="Current Month Prediction" type="text" ng-model="buildingPowerBiConfig.current_month_prediction" />
-            </div>
-            <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:150px;">
-                <h3>Azure ML Configuration</h3>
-                <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml App Url" type="text" ng-model="azureml.azuremlappurl" />
-                <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml App key" type="text" ng-model="azureml.azuremlappkey" />
-            </div>
-        </div>
-
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="update()">Change</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
