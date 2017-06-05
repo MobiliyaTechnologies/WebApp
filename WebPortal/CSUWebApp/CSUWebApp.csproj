@@ -107,6 +107,7 @@
   <ItemGroup>
     <Content Include="app\css\jquery.dataTables.min.css" />
     <Content Include="app\css\map.css" />
+    <Content Include="app\css\newstyle.css" />
     <Content Include="app\css\sb-admin-2.css" />
     <Content Include="app\css\Style.css" />
     <Content Include="app\css\Main.css" />
@@ -130,10 +131,8 @@
     <Content Include="app\scripts\aadb2c.js" />
     <Content Include="app\scripts\angular-datatables.js" />
     <Content Include="app\scripts\controllers\alertsCtrl.js" />
-    <Content Include="app\scripts\controllers\campusconfCtrl.js" />
     <Content Include="app\scripts\controllers\dashboardCtrl.js" />
     <Content Include="app\scripts\app.js" />
-    <Content Include="app\scripts\controllers\dataconfCtrl.js" />
     <Content Include="app\scripts\controllers\feedbackCtrl.js" />
     <Content Include="app\scripts\controllers\piconfCtrl.js" />
     <Content Include="app\scripts\controllers\recommendationCtrl.js" />
@@ -141,14 +140,17 @@
     <Content Include="app\scripts\controllers\overviewCtrl.js" />
     <Content Include="app\scripts\controllers\profileCtrl.js" />
     <Content Include="app\scripts\controllers\reportCtrl.js" />
-    <Content Include="app\scripts\controllers\userconfCtrl.js" />
+    <Content Include="app\scripts\directives\header.js" />
     <Content Include="app\scripts\hello.all.js" />
     <Content Include="app\scripts\jquery.dataTables.js" />
+    <Content Include="app\scripts\services\AadService.js" />
+    <Content Include="app\scripts\services\AclServiceProvider.js" />
+    <Content Include="app\scripts\services\ConfigService.js" />
+    <Content Include="app\scripts\services\RestService.js" />
+    <Content Include="app\scripts\services\WeatherService.js" />
     <Content Include="app\styles\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="app\views\alerts.html" />
-    <Content Include="app\views\campusconf.html" />
     <Content Include="app\views\dashboard.html" />
-    <Content Include="app\views\dataconf.html" />
     <Content Include="app\views\Directive\header.html" />
     <Content Include="app\views\feedback.html" />
     <Content Include="app\views\piconf.html" />
@@ -156,7 +158,6 @@
     <Content Include="app\views\recommendation.html" />
     <Content Include="app\views\overview.html" />
     <Content Include="app\views\reports.html" />
-    <Content Include="app\views\userconf.html" />
     <Content Include="Assets\CSU_2.jpg" />
     <Content Include="app\views\login.html" />
     <Content Include="Default.aspx" />
@@ -264,6 +265,7 @@
     <Content Include="app\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="app\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="powerBI.json" />
+    <Content Include="firebaseConfig.json" />
     <None Include="Properties\PublishProfiles\CSUMobiliya - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\csutempwebapp1 - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\CSUWebApp - Web Deploy %282%29.pubxml" />
