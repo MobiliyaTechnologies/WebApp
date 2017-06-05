@@ -325,53 +325,7 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFourteen" style="cursor:pointer;background-color:{{checkRoom}}">
-            <h4 class="panel-title">
-                <label>
-                    Room Configuration
-                </label>
-            </h4>
-        </div>
-        <div id="collapseFourteen" class="panel-collapse collapse out">
-            <div class="panel-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="jumbotron">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="k-content">
-                                        <div ng-if="datatable.loader" class="loader"></div>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table id="entry-grid" datatable="ng" width="100%" dt-options="dtOptions">
-                                            <thead>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                            <th>Email</th>
-                                            <th>Role Id</th>
-                                            <th>Add Room</th>
-                                            </thead>
-                                            <tbody>
-                                                <tr ng-repeat="user in userList">
-                                                    <td>{{user.FirstName}}</td>
-                                                    <td>{{user.LastName}}</td>
-                                                    <td>{{user.Email}}</td>
-                                                    <td>{{user.RoleId}}</td>
-                                                    <td><a ng-click="addRoom(user)" title="View Details"><i class="fa fa-edit"></i></a></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
+    
 </div>
 
 
@@ -517,8 +471,8 @@
 <div id="loadingid" class="loading style-2 ng-scope" style="{{loading}}">
     <div class="loading-wheel">
     </div>
-</div>
+</div>-->
 <div id="loadingidgq" class="loading style-2 ng-scope"  >
     <div class="loading-wheel">
     </div>
-</div>-->
+</div>
