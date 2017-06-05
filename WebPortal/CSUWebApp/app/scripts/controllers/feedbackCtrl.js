@@ -47,9 +47,11 @@ angular.module('WebPortal')
                 if (!err) {
                     console.log("[Info] :: Get BuildingsBy Premise ", response);
                     $scope.Buildings = response;
-                    $scope.selectedBuilding = $scope.Buildings[0].BuildingID;
-                    $scope.getClassRoomList();
-                    $scope.$apply();
+                    if ($scope.Buildings.length > 0) {
+                        $scope.selectedBuilding = $scope.Buildings[0].BuildingID;
+                        //console.log("$scope.Buildings", $scope.selectedBuilding);
+                        $scope.getClassRoomList();
+                    }
                 }
                 else {
                     console.log("[Error] :: Get BuildingsBy Premise", err);
@@ -61,17 +63,18 @@ angular.module('WebPortal')
         * Function to get all classrooms  
         */
         $scope.getClassRoomList = function() {
-            Restservice.get('api/GetClassroomByBuilding/' + $scope.selectedBuilding, function (err, response) {
+            Restservice.get('api/GetRoomByBuilding/' + $scope.selectedBuilding, function (err, response) {
                 if (!err) {
-                    console.log("[Info] :: Get Classroom for Building ", response);
+                    console.log("[Info] :: Get room for Building ", response);
                     $scope.Classes = response;
-                    $scope.selectedClass = $scope.Classes[0].ClassId;
-                    $scope.getSensorList();
-                  
-                    $scope.$apply();
+                    if ($scope.Classes.length > 0) {
+                        $scope.selectedClass = $scope.Classes[0].RoomId;
+                        $scope.getSensorList();
+                    }
+                   
                 }
                 else {
-                    console.log("[Error]:: Get Classroom for Building", err);
+                    console.log("[Error]:: Get room for Building", err);
                 }
             });
 
@@ -94,7 +97,7 @@ angular.module('WebPortal')
                 return obj.ClassId === $scope.selectedClass;
             })[0];     
             if ($scope.powerBiUrls.feedback.summary){
-                embedReport($scope.powerBiUrls.feedback.summary + "&$filter=BridgeClassroomBuilding/premiseBuildingClass eq '" + premise.PremiseName + building.BuildingName + classes.ClassName + "'", 'feedback');
+                embedReport($scope.powerBiUrls.feedback.summary + "&$filter=BridgeRoomBuilding/premiseBuildingRoom eq '" + premise.PremiseName + building.BuildingName + classes.ClassName + "'", 'feedback');
             }
             Restservice.get('api/GetAllSensorsForClass/' + $scope.selectedClass, function (err, response) {
                 if (!err) {

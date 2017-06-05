@@ -170,7 +170,7 @@ angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope,
      * Function to get classroom list  
      */
     function getClassRoomList() {
-         Restservice.get('api/GetAllClassrooms', function (err, response) {
+        Restservice.get('api/GetAllRooms', function (err, response) {
             if (!err) {
                 console.log("[Info]:: Get Classroom Details response ", response);
                 $scope.classrooms = response;
@@ -209,10 +209,10 @@ angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope,
                     return item.Sensor_Id == sid;
                 });
                 if (index >= 0) {
-                    mapping[index].Class_Id = $scope.classrooms[i].ClassId;
+                    mapping[index].Room_Id = $scope.classrooms[i].RoomId;
                 }
                 else {
-                    mapping.push({ 'Sensor_Id': sid, 'Class_Id': $scope.classrooms[i].ClassId })
+                    mapping.push({ 'Sensor_Id': sid, 'Room_Id': $scope.classrooms[i].RoomId })
                 }
             }
         }
@@ -223,7 +223,7 @@ angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope,
     $scope.associateSensor = function () {
 
         for (var i = 0; i < mapping.length; i++) {  
-            Restservice.put('api/MapSensor/' + mapping[i].Sensor_Id + '/' + mapping[i].Class_Id,null, function (err, response) {
+            Restservice.put('api/MapSensor/' + mapping[i].Sensor_Id + '/' + mapping[i].Room_Id,null, function (err, response) {
                 if (!err) {
                     console.log("[Info]:: Assign Sensor  response ", response);
                     $modalInstance.close();

@@ -31,6 +31,7 @@ angular.module('WebPortal')
         Restservice.get('api/GetOrganization', function (err, response) {
             if (!err) {
                 $scope.organization = response;
+                localStorage.setItem('organizationID', response.OrganizationID);
                 console.log("[Info] :: GetOrganization ", response);
 
             }

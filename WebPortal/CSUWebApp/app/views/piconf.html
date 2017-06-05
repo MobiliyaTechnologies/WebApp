@@ -18,14 +18,14 @@
                                         <div ng-if="datatable.loader" class="loader"></div>
                                     </div>
                                     <div class="table-responsive">
-                                        <table id="entry-grid" datatable="ng" width="100%" dt-options="dtOptions">
+                                        <table id="entry-grid1" datatable="ng" width="100%" dt-options="dtOptions1">
                                             <thead>
                                             <th>Premise ID</th>
                                             <th>Premise Name</th>
                                             <th>Premise Desc</th>
                                             <th>Monthly Consumption</th>
                                             <th>Edit</th>
-                                            <th>Add Building</th>
+                                            <!--<th>Add Building</th>-->
                                             </thead>
                                             <tbody>
                                                 <tr ng-repeat="premise in premiseList">
@@ -34,7 +34,7 @@
                                                     <td>{{premise.PremiseDesc | date}}</td>
                                                     <td>{{premise.MonthlyConsumption}}</td>
                                                     <td><a ng-click="openPopup(premise)" title="View Details"><i class="fa fa-edit"></i></a></td>
-                                                    <td><a ng-click="addBuilding(premise)" title="View Details"><i class="fa fa-plus"></i></a></td>
+                                                    <!--<td><a ng-click="addBuilding(premise)" title="View Details"><i class="fa fa-plus"></i></a></td>-->
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -42,6 +42,32 @@
                                 </div>
                                 <button class="btn blue-button" ng-click="addPremise()">Add Premise</button>
                             </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseThirteen" style="cursor: pointer; background-color: {{checkPremise}};">
+            <h4 class="panel-title">
+                <label>
+                    Premise-Building Mapping
+                </label>
+            </h4>
+        </div>
+        <div id="collapseThirteen" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-offset-4 col-lg-3 dash-unit">
+                            <label>Select Premise &nbsp;</label><select ng-options="premise.PremiseID as premise.PremiseName for premise in Premises" ng-model="selectedPremise" style="z-index:1;width:70px;margin-top:20px;"></select>   </label>    </br>
+                            <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingName for building in buildingList" ng-model="selectedBuilding" style="z-index:1;width:70px;margin-top:20px;"></select>   </label>    </br>
+                            <input class="form-control" style="margin-top:20px;" placeholder="Building latitude" type="text" ng-model="buildingLat" />
+                            <input class="form-control" style="margin-top:20px;" placeholder="Building longitude" type="text" ng-model="buildingLong" />
+                            <!--<input id="class_schedulefile" type="file" accept=".csv" />-->
+                            <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:35%;" ng-click="mapPremiseBuilding()">Map</button>
                         </div>
                     </div>
 
@@ -59,18 +85,35 @@
         </div>
         <div id="collapseOne" class="panel-collapse collapse out">
             <div class="panel-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-offset-4 col-lg-3 dash-unit">
-                            <label>Select Premise &nbsp;</label><select ng-options="premise.PremiseID as premise.PremiseName for premise in Premises" ng-change="getBuildingList()" ng-model="selectedPremise" style="z-index:1;width:70px;margin-top:20px;"></select>   </label>    </br>
-                            <input class="form-control" style="margin-top:20px;" placeholder="Pi Server Name" type="text" ng-model="PiServerName" />
-                            <input class="form-control" style="margin-top:20px;" placeholder="Connection String" type="text" ng-model="connectionstring" />
-                            <input class="form-control" style="margin-top:20px;" placeholder="Description" type="text" ng-model="piserverdesc" />
-                            <input id="class_schedulefile" type="file" accept=".csv" />
-                            <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:35%;" ng-click="addPiServer()">Add</button>
+                <div class="jumbotron">
+                    <div class="container">
+                        <div class="row">
+                            <div class="k-content">
+                                <div ng-if="datatable.loader" class="loader"></div>
+                            </div>
+                            <div class="table-responsive">
+                                <table id="entry-grid" datatable="ng" width="100%" dt-options="dtOptions">
+                                    <thead>
+                                    <th>PIserver ID</th>
+                                    <th>PIserver Name</th>
+                                    <th>PIserver Desc</th>
+                                    <th>Add Schedule</th>
+                                    <!--<th>Add Building</th>-->
+                                    </thead>
+                                    <tbody>
+
+                                        <tr ng-repeat="Piserver in PIserverList">
+                                            <td>{{Piserver.PiServerID}}</td>
+                                            <td>{{Piserver.PiServerName}}</td>
+                                            <td>{{Piserver.PiServerDesc}}</td>
+                                            <td><a ng-click="openSchedulePopup(Piserver)" title="View Details"><i class="fa fa-edit"></i></a></td>
+                                            <!--<td><a ng-click="addBuilding(premise)" title="View Details"><i class="fa fa-plus"></i></a></td>-->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -163,7 +206,7 @@
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
                     <h3>Power BI Url Configuration For Feedback</h3>
                     <input class="form-control" style="margin-top:20px;" placeholder="Feedback report" type="text" ng-model="feebackPowerBi.summary" />
-                    <button class="btn" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFeedbackPowerBiUrl()">Add</button>
+                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFeedbackPowerBiUrl()">Add</button>
                 </div>
 
             </div>
@@ -282,6 +325,53 @@
             </div>
         </div>
     </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFourteen" style="cursor:pointer;background-color:{{checkRoom}}">
+            <h4 class="panel-title">
+                <label>
+                    Room Configuration
+                </label>
+            </h4>
+        </div>
+        <div id="collapseFourteen" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="jumbotron">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="k-content">
+                                        <div ng-if="datatable.loader" class="loader"></div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table id="entry-grid" datatable="ng" width="100%" dt-options="dtOptions">
+                                            <thead>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Email</th>
+                                            <th>Role Id</th>
+                                            <th>Add Room</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="user in userList">
+                                                    <td>{{user.FirstName}}</td>
+                                                    <td>{{user.LastName}}</td>
+                                                    <td>{{user.Email}}</td>
+                                                    <td>{{user.RoleId}}</td>
+                                                    <td><a ng-click="addRoom(user)" title="View Details"><i class="fa fa-edit"></i></a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -320,6 +410,7 @@
     <div class="modal-footer">
         <button class="btn blue-button" ng-click="ok()">Add</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+       
     </div>
 </script>
 <script type="text/ng-template" id="addBuilding.html">
@@ -375,7 +466,59 @@
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
+<script type="text/ng-template" id="addSchedule.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Schedule</h3>
+    </div>
+    <div>
+        <div class="col-lg-offset-1 col-lg-10 ">
+          
+            <div class="col-lg-4 col-lg-offset-2" style="height:30vh;">
+                <label>Pi Server Id :</label></br>
+                <label>Pi Server Name:</label></br>
+                <label>Description :</label></br>
+                <label>Schedule File :</label></br>
+            </div>
+            <div class="col-lg-4" style="height:30vh;">
+                <label>{{Piserver.PiServerID}}</label></br>
+                <label>{{Piserver.PiServerName}}</label></br>
+                <label>{{Piserver.PiServerDesc}}</label></br>                
+                <input id="class_schedulefile" type="file" accept=".csv" />
+            </div>
+            
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn blue-button" ng-click="ok()">Add</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+<!--<script type="text/ng-template" id="addRoom.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Building </h3>
+    </div>
+    <div>
+        <div class="col-lg-offset-1 col-lg-10 ">
+            <input class="form-control" style="margin-top:20px;" placeholder="Class Room Name" type="text" ng-model="room.RoomName	" />
+            <input class="form-control" style="margin-top:20px;" placeholder="Class Room Description" type="text" ng-model="room.RoomDesc" />
+            <input class="form-control" style="margin-top:20px;" placeholder="X Position on Layout" type="text" ng-model="room.RoomX" />
+            <input class="form-control" style="margin-top:20px;" placeholder="Y Position on Layout" type="text" ng-model="room.RoomY" />
+           
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn blue-button" ng-click="ok()">Add</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
 <div id="loadingid" class="loading style-2 ng-scope" style="{{loading}}">
     <div class="loading-wheel">
     </div>
 </div>
+<div id="loadingidgq" class="loading style-2 ng-scope"  >
+    <div class="loading-wheel">
+    </div>
+</div>-->
