@@ -16,9 +16,9 @@
                         <div class="panel-body" style="height:80vh;overflow:auto;">
                             <div class="sensor-detail  col-sm-12">
                                 <label>Select Premise &nbsp;</label><select ng-options="premise.PremiseID as premise.PremiseName for premise in Premises" ng-change="getBuildingList()" ng-model="selectedPremise" style="z-index:1;width:70px;"></select>   </label>    </br>
-                                <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingDesc for building in Buildings" ng-change="getClassRoomList()" ng-model="selectedBuilding" style="z-index:1;width:70px;"></select>   </label>    </br>
-                                <label>Select Classroom &nbsp;</label><select ng-options="class.ClassId as class.ClassDescription for class in Classes" ng-change="getSensorList()" ng-model="selectedClass" style="z-index:1;width:70px;"></select>   </label>    </br>
-                                <h3>CLASS DETAILS </h3></br>
+                                <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingName for building in Buildings" ng-change="getClassRoomList()" ng-model="selectedBuilding" style="z-index:1;width:70px;"></select>   </label>    </br>
+                                <label>Select Room &nbsp;</label><select ng-options="class.ClassId as class.ClassDescription for class in Classes" ng-change="getSensorList()" ng-model="selectedClass" style="z-index:1;width:70px;"></select>   </label>    </br>
+                                <h3>ROOM DETAILS </h3></br>
                                 <div ng-repeat="sensor in sensors">
                                     <h4>{{sensor.Sensor_Name}}</h4>
                                     <Label>Humidity :&nbsp;&nbsp;</Label>{{sensor.Humidity.toFixed(2)}}</br>

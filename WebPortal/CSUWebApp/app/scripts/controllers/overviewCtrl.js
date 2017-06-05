@@ -90,7 +90,7 @@ angular.module('WebPortal')
                     }
                 })
                 .catch(function (data, status, headers) {
-                    console.log("[Error]  :: Get Power Bi Urls ", err);
+                    console.log("[Error]  :: Get Power Bi Urls ", data);
                 });
         }
         getPowerBiUrls();
@@ -190,7 +190,6 @@ angular.module('WebPortal')
         }
 
         function embedReport(reportURL, iframeId) {   
-            console.log("Report Url", reportURL);
             var embedUrl = reportURL;
             if ("" === embedUrl) {
                 console.log("[Error]  :: No embed URL found ", err);

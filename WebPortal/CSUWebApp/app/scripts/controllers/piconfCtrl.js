@@ -15,7 +15,15 @@ angular.module('WebPortal')
         $scope.powerBicredentials = {};
         $scope.firebase = {};
         $scope.organization = {};
-        $scope.loading = "display:block;"
+        $scope.loading = "display:block;";
+        $scope.checkPremisePowerBI = '#f29898';
+        $scope.checkBuildingPowerBI = '#f29898';
+        $scope.checkAzureMl = '#f29898';
+        $scope.checkUniversityPowerBI = '#f29898';
+        $scope.checkFeedbackPowerBI = '#f29898';
+        $scope.checkFirebase = '#f29898';
+        $scope.checkPIserver = '#f29898';
+       
         /**
          * Function to get all Config  
          */
@@ -163,6 +171,7 @@ angular.module('WebPortal')
         /**
         * Function to get all premise associated with login user 
         */
+        $scope.checkPremise = '#f29898';
         function getPremiseList() {
             Restservice.get('api/GetAllPremise', function (err, response) {
                 if (!err) {
@@ -170,8 +179,9 @@ angular.module('WebPortal')
                     $scope.premiseList = response;
                     console.log("[Info] :: Get Premise List", response);
                     $scope.Premises = response;
-                    $scope.selectedPremise = $scope.Premises[0].PremiseID;
+                    
                     if ($scope.Premises.length > 0) {
+                        $scope.selectedPremise = $scope.Premises[0].PremiseID;
                         $scope.checkPremise = '#c3f7d0';
                     }
                     else {
@@ -184,6 +194,74 @@ angular.module('WebPortal')
             });
         }
         getPremiseList();
+        function getBuildingList() {
+            Restservice.get('api/GetAllBuildings', function (err, response) {
+                if (!err) {
+                    $scope.loading = "display:none;"
+                    $scope.buildingList = response;
+                    console.log("[Info] :: Get Building List", response);
+
+                    if ($scope.buildingList.length > 0) {
+                        $scope.selectedBuilding = $scope.buildingList[0].BuildingID;
+                    }
+
+                }
+                else {
+                    console.log("[Error]:: Get Building List", err);
+                }
+            });
+        }
+        getBuildingList();
+        $scope.mapPremiseBuilding = function () {
+            if ($scope.selectedBuilding) {
+                var obj = [];
+                obj.push($scope.selectedBuilding);
+                document.getElementById("loadingidgq").style.display = "block";
+                Restservice.put('api/AddBuildingsToPremise/' + $scope.selectedPremise, obj, function (err, response) {
+                    if (!err) {
+                        console.log("[Info] :: AddBuildingsToPremise  ", response);
+                    }
+                    else {
+                        console.log("[Error] :: AddBuildingsToPremise ", err);
+                    }
+                });
+                var buildingObj = {
+                    'BuildingID': $scope.selectedBuilding,
+                    'Latitude': $scope.buildingLat,
+                    'Longitude': $scope.buildingLong
+                }
+                console.log("buildingObj", buildingObj);
+                Restservice.put('api/UpdateBuilding', buildingObj, function (err, response) {
+                    document.getElementById("loadingidgq").style.display = "none";
+                    if (!err) {
+                        console.log("[Info] :: UpdateBuilding", response);
+                    }
+                    else {
+                        console.log("[Error] :: UpdateBuilding", err);
+                    }
+                });
+            }
+            else{
+                console.log("[Error] :: Please Select Building ", err);
+            }
+        }
+        $scope.openSchedulePopup = function (Piserver) {
+            console.log(Piserver);
+            var modalInstance = $modal.open({
+                templateUrl: 'addSchedule.html',
+                controller: 'addScheduleCtrl',
+                resolve: {
+                    Piserver: function () {
+                        return Piserver;
+                    }
+                }
+
+            }).result.then(function (result) {
+                $scope.avatar = result.src;
+            }, function () {
+                // Cancel
+            });
+        }
         /**
         * Function to get all user associated with Premise
         */
@@ -206,12 +284,15 @@ angular.module('WebPortal')
        */
         function getPIserverList() {
             Restservice.get('api/GetAllPiServers', function (err, response) {
-                if (!err) {                   
+                if (!err) {     
+                    
                     if (response.length > 0) {
+                        $scope.PIserverList = response;
                         $scope.checkPIserver = '#c3f7d0';
                     }
                     else {
                         $scope.checkPIserver = '#f29898';
+                     
                     }
                 }
                 else {
@@ -234,6 +315,7 @@ angular.module('WebPortal')
         }
         getOrganizationDetail();
         $scope.addPremise = function () {
+            
             var modalInstance = $modal.open({
                 templateUrl: 'addPremise.html',
                 controller: 'addPremiseCtrl'
@@ -261,6 +343,22 @@ angular.module('WebPortal')
                 // Cancel
             });
         }
+        //$scope.addRoom = function (building) {
+        //    var modalInstance = $modal.open({
+        //        templateUrl: 'addRoom.html',
+        //        //controller: 'addBuildingCtrl',
+        //        resolve: {
+        //            building: function () {
+        //                return building;
+        //            }
+        //        }
+
+        //    }).result.then(function (result) {
+        //        $scope.avatar = result.src;
+        //    }, function () {
+        //        // Cancel
+        //    });
+        //}
         $scope.openPopup = function (premise) {
 
             var modalInstance = $modal.open({
@@ -304,7 +402,7 @@ angular.module('WebPortal')
         }
         $scope.addUniPowerBiUrl = function () {
             var sampleConfig = {
-                "ApplicationConfigurationType": "UniversityPowerBI",
+                "ApplicationConfigurationType": "OrganizationPowerBI",
                 "ApplicationConfigurationEntries": [
 
                 ]
@@ -456,8 +554,9 @@ angular.module('WebPortal')
 
         }
         function sendConfigOnServer(sampleConfig) {
-            console.log(sampleConfig);
+            document.getElementById("loadingidgq").style.display = "block";
             Restservice.post('api/AddApplicationConfiguration', sampleConfig, function (err, response) {
+                document.getElementById("loadingidgq").style.display = "none";
                 if (!err) {
                     console.log("[Info] :: Add Application Config ", response);
                 }
@@ -480,7 +579,7 @@ angular.module('WebPortal')
 
             })
                 .catch(function (error) {
-                    console.log("[Error] ::  Config Not Updated in Local ", err);
+                    console.log("[Error] ::  Config Not Updated in Local ", error);
                 });
         }
         function updateFirebaseOnLocal(config) {
@@ -538,6 +637,7 @@ angular.module('WebPortal').controller('editPremiseCtrl', function ($scope, $mod
 });
 
 angular.module('WebPortal').controller('addPremiseCtrl', function ($scope, $modalInstance, $http, Restservice) {
+    
     $scope.premise = {
         PremiseName: '',
         PremiseDesc: '',
@@ -549,8 +649,10 @@ angular.module('WebPortal').controller('addPremiseCtrl', function ($scope, $moda
      * Function to Upload Image 
      */
     $scope.ok = function () {
-        $scope.loading = "display:block;";
+        document.getElementById("loadingidgq").style.display = "block";
+        $scope.premise.OrganizationID = localStorage.getItem('organizationID');
         Restservice.post('api/AddPremise', $scope.premise, function (err, response) {
+            document.getElementById("loadingidgq").style.display = "none";
             if (!err) {
                 $scope.loading = "display:none;";
                 console.log("[Info] :: Premise Added", response);
@@ -626,8 +728,9 @@ angular.module('WebPortal').controller('changeRoleCtrl', function ($scope, $moda
      * Function to Upload Image 
      */
     $scope.ok = function () {
-        $scope.loading = "display:block;";
+        document.getElementById("loadingidgq").style.display = "block";
         Restservice.put('api/AssignRoleToUser/' + user.UserId + '/' + $scope.selectedRole.selected.Id, null, function (err, response) {
+            document.getElementById("loadingidgq").style.display = "none";
             if (!err) {
                 $scope.loading = "display:none;"
                 console.log("[Info] :: Assign Role to user  ", response);
@@ -671,19 +774,7 @@ angular.module('WebPortal').controller('addRoleCtrl', function ($scope, $modalIn
         scrollable: true,
         scrollableHeight: '200px'
     }
-    Restservice.get('api/GetAllPremise', function (err, response) {
-        if (!err) {
-            $scope.premise= response;
-            $scope.premise.forEach(function (premise) {
-                premise.id = premise.PremiseID;
-                premise.label = premise.PremiseName;
-            });
-
-        }
-        else {
-            console.log("[Error] ::  Get Premise List    ", err);
-        }
-    });
+   
     
 
     
@@ -692,8 +783,9 @@ angular.module('WebPortal').controller('addRoleCtrl', function ($scope, $modalIn
             $scope.CategoriesSelected.forEach(function (category) {
                 $scope.role.PremiseIds.push(category.id);
             });
-            $scope.loading = "display:block;";
+            document.getElementById("loadingidgq").style.display = "block";
             Restservice.post('api/AddRole', $scope.role, function (err, response) {
+                document.getElementById("loadingidgq").style.display = "none";
                 if (!err) {
                     $scope.loading = "display:none;";
                     $modalInstance.dismiss('cancel');
@@ -702,6 +794,55 @@ angular.module('WebPortal').controller('addRoleCtrl', function ($scope, $modalIn
                     console.log("[Error] :: Add role  ", err);
                 }
             });
+        }
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+});
+
+angular.module('WebPortal').controller('addScheduleCtrl', function (config,$scope, $modalInstance, $http, Restservice, $modal, Piserver) {
+     
+    $scope.Piserver = Piserver;
+    $scope.ok = function () {
+        var jsonobj = {};
+        jsonobj.PIserverID = Piserver.PiServerID;
+        jsonobj.file = document.getElementById('class_schedulefile').files[0];
+        if (jsonobj.file) {
+            var authResponse = hello('adB2CSignIn').getAuthResponse();
+            document.getElementById("loadingidgq").style.display = "block";
+            if (authResponse != null) {
+                $http({
+                    method: 'PUT',
+                    url: config.restServer + 'api/UpdatePiServer ',
+                    headers: {
+                        'Content-Type': undefined,
+                        "Authorization": authResponse.token_type + ' ' + authResponse.access_token
+                    },
+                    data: jsonobj,
+                    transformRequest: function (data, headersGetter) {
+                        var formData = new FormData();
+                        angular.forEach(data, function (value, key) {
+                            formData.append(key, value);
+                        });
+
+                        var headers = headersGetter();
+                        delete headers['Content-Type'];
+
+                        return formData;
+                    }
+                })
+                    .then(function (response) {
+                        document.getElementById("loadingidgq").style.display = "none";
+                        console.log("[Info] :: Update Pi Server", response);
+                    })
+                    .catch(function (error) {
+                        document.getElementById("loadingidgq").style.display = "none";
+                        console.log("[Error] :: Update Pi Server", error);
+                    });
+            }
+
         }
     };
 
