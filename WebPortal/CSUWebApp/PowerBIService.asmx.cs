@@ -35,14 +35,7 @@ namespace CSUWebApp
                 System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
                 this.Context.Response.ContentType = "application/json; charset=utf-8";
                 this.Context.Response.Write(serializer.Serialize(new { tokens = "" }));
-            }
-
-            if (string.IsNullOrEmpty(ConfigurationSettings.AppSettings["Access_Token"]) || string.IsNullOrEmpty(ConfigurationSettings.AppSettings["Refresh_Token"]))
-            {
-                System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-                this.Context.Response.ContentType = "application/json; charset=utf-8";
-                this.Context.Response.Write(serializer.Serialize(new { tokens = "" }));
-            }
+            }        
             else
             {
                 PowerBIToken token = new PowerBIToken()

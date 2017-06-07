@@ -190,7 +190,7 @@ angular
                     console.log("[Error]:: Updating config", data);
                 });
         }).catch(function (data) {
-            console.log("[Error]:: Updating config", err);
+            console.log("[Error]:: Updating config", data);
         });
         updateAccessToken();
         /**
