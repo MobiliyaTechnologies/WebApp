@@ -325,6 +325,60 @@
             </div>
         </div>
     </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFourteen" style="cursor:pointer;background-color:{{checkAddClassroom}}">
+            <h4 class="panel-title">
+                <label>
+                    Room Configuration
+                </label>
+            </h4>
+        </div>
+        <div id="collapseFourteen" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="jumbotron">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="k-content">
+                                        <div ng-if="datatable.loader" class="loader"></div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table id="entry-grid" datatable="ng" width="100%" dt-options="dtOptions">
+                                            <thead>
+                                            <th>Room Name</th>
+                                            <th>Room X</th>
+                                            <th>Romm Y</th>
+                                            <th>Sendor Map</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="room in roomList">
+                                                    <td>{{room.RoomName}}</td>
+                                                    <td>{{room.X}}</td>
+                                                    <td>{{room.Y}}</td>
+                                                    <td>{{room.SensorId}}</td>
+                                                    <td><a ng-click="editRoomPopup(room)" title="Edit Details"><i class="fa fa-edit"></i></a></td>
+                                                    <td><a ng-click="deleteRoom(room)" title="Delete Room"><i class="fa fa-trash"></i></a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:190px;">
+                        <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingName for building in buildingList" ng-model="selectedBuilding" style="z-index:1;width:70px;margin-top:20px;"></select>     </br></br>
+                        <input  id="roomlist" type="file" accept=".csv" /></br></br>
+                        <button class="btn blue-button" ng-click="addRooms()">Add Classrooms</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
 </div>
 
@@ -404,6 +458,7 @@
 <script type="text/ng-template" id="addRole.html">
     <div class="modal-header">
         <h3 class="modal-title">Add Role</h3>
+
     </div>
     <div>
         <div class="col-lg-offset-1 col-lg-10 ">
@@ -449,29 +504,26 @@
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
-<!--<script type="text/ng-template" id="addRoom.html">
+<script type="text/ng-template" id="editRoom.html">
     <div class="modal-header">
-        <h3 class="modal-title">Add Building </h3>
+        <h3 class="modal-title">Edit Room Details</h3>
     </div>
     <div>
         <div class="col-lg-offset-1 col-lg-10 ">
             <input class="form-control" style="margin-top:20px;" placeholder="Class Room Name" type="text" ng-model="room.RoomName	" />
-            <input class="form-control" style="margin-top:20px;" placeholder="Class Room Description" type="text" ng-model="room.RoomDesc" />
-            <input class="form-control" style="margin-top:20px;" placeholder="X Position on Layout" type="text" ng-model="room.RoomX" />
-            <input class="form-control" style="margin-top:20px;" placeholder="Y Position on Layout" type="text" ng-model="room.RoomY" />
-           
+            <input class="form-control" style="margin-top:20px;" placeholder="X Position on Layout" type="text" ng-model="room.X" />
+            <input class="form-control" style="margin-top:20px;" placeholder="Y Position on Layout" type="text" ng-model="room.Y" />
         </div>
-
     </div>
     <div class="modal-footer">
-        <button class="btn blue-button" ng-click="ok()">Add</button>
+        <button class="btn blue-button" ng-click="ok()">Update</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
 <div id="loadingid" class="loading style-2 ng-scope" style="{{loading}}">
     <div class="loading-wheel">
     </div>
-</div>-->
+</div>
 <div id="loadingidgq" class="loading style-2 ng-scope"  >
     <div class="loading-wheel">
     </div>

@@ -22,8 +22,8 @@ namespace CSUWebApp
                     (ConfigurationSettings.AppSettings["ClientId"],
                     ConfigurationSettings.AppSettings["ClientSecret"]);
 
-                AuthenticationResult authenticationResult = authenticationContext.AcquireTokenByRefreshToken(ConfigurationSettings.AppSettings["Refresh_Token"], clientCredential);
-
+                //AuthenticationResult authenticationResult = authenticationContext.AcquireTokenByRefreshToken(ConfigurationSettings.AppSettings["Refresh_Token"], clientCredential);
+                AuthenticationResult authenticationResult = authenticationContext.AcquireToken("https://graph.windows.net", clientCredential);
                 #region Update config
                 Configuration objConfig = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
                 AppSettingsSection objAppsettings = (AppSettingsSection)objConfig.GetSection("appSettings");

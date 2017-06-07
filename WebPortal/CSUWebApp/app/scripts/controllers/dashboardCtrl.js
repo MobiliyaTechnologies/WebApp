@@ -106,7 +106,7 @@ angular.module('WebPortal')
             })
             .catch(function (data, status, headers) {
                 // log error
-                alert('error');
+                console.log("[Error] :: Firebase Error",data);
          });
         function iniateFirebase(apikey,config,topic) {
             firebase.initializeApp(config);

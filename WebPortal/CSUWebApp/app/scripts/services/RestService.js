@@ -80,6 +80,28 @@ angular.module('WebPortal')
                 else {
                     console.log("Please login");
                 }
+            },
+            delete: function (urlpath, callback) {
+                var authResponse = hello('adB2CSignIn').getAuthResponse();
+                if (authResponse != null) {
+                    $http({
+                        url: config.restServer + urlpath,
+                        method: 'DELETE',
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": authResponse.token_type + ' ' + authResponse.access_token,
+                        }
+                    }).then(function (response) {
+                        callback(null, response);
+
+                    })
+                        .catch(function (error) {
+                            callback(error, null);
+                        });
+                }
+                else {
+                    console.log("Please login");
+                }
             }
         };
 

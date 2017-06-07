@@ -23,7 +23,7 @@ angular.module('WebPortal')
         $scope.checkFeedbackPowerBI = '#f29898';
         $scope.checkFirebase = '#f29898';
         $scope.checkPIserver = '#f29898';
-       
+        $scope.checkAddClassroom = '#c3f7d0';
         /**
          * Function to get all Config  
          */
@@ -114,7 +114,7 @@ angular.module('WebPortal')
                     }
                     $scope.checkUser = '#c3f7d0';
                     $scope.checkOrganization = '#c3f7d0';
-                    if (Token.data.accesstoken == "") {
+                    if (Token.data.accesstoken == "" || Token.data.accesstoken == undefined) {
                         $scope.checkPowerBiCredentials = '#f29898';
                     }
                     else {
@@ -246,7 +246,6 @@ angular.module('WebPortal')
             }
         }
         $scope.openSchedulePopup = function (Piserver) {
-            console.log(Piserver);
             var modalInstance = $modal.open({
                 templateUrl: 'addSchedule.html',
                 controller: 'addScheduleCtrl',
@@ -314,6 +313,20 @@ angular.module('WebPortal')
             });
         }
         getOrganizationDetail();
+        function getRoomList() {
+            Restservice.get('api/GetAllRooms', function (err, response) {
+                if (!err) {
+                    $scope.roomList = response;
+                    console.log("[Info] :: api/GetAllRooms ", response);
+
+                }
+                else {
+                    console.log("[Error]:: api/GetAllRooms", err);
+                }
+            });
+
+        }
+        getRoomList();
         $scope.addPremise = function () {
             
             var modalInstance = $modal.open({
@@ -343,22 +356,82 @@ angular.module('WebPortal')
                 // Cancel
             });
         }
-        //$scope.addRoom = function (building) {
-        //    var modalInstance = $modal.open({
-        //        templateUrl: 'addRoom.html',
-        //        //controller: 'addBuildingCtrl',
-        //        resolve: {
-        //            building: function () {
-        //                return building;
-        //            }
-        //        }
+        $scope.addRooms=function(){
+            $scope.room = {
+                file: '',
+                building:'1'
+            };
+            var authResponse = hello('adB2CSignIn').getAuthResponse();
+            $scope.room.file = document.getElementById('roomlist').files[0];
+            if (authResponse != null && $scope.room.file) {
+                document.getElementById("loadingidgq").style.display = "block";
+                $http({
+                    method: 'POST',
+                    url: config.restServer + 'api/AddRoomsToBuilding/' + $scope.selectedBuilding,
+                    headers: {
+                        'Content-Type': undefined,
+                        "Authorization": authResponse.token_type + ' ' + authResponse.access_token
+                    },
+                    data: $scope.room,
+                    transformRequest: function (data, headersGetter) {
+                        var formData = new FormData();
+                        angular.forEach(data, function (value, key) {
+                            formData.append(key, value);
+                        });
 
-        //    }).result.then(function (result) {
-        //        $scope.avatar = result.src;
-        //    }, function () {
-        //        // Cancel
-        //    });
-        //}
+                        var headers = headersGetter();
+                        delete headers['Content-Type'];
+
+                        return formData;
+                    }
+                })
+                    .then(function (response) {
+                        document.getElementById("loadingidgq").style.display = "none";
+                        console.log("[Info] :: Add Rooms ", response);
+                    })
+                    .catch(function (error) {
+                        document.getElementById("loadingidgq").style.display = "none";
+                        console.log("[Error] ::Add Rooms  ", error);
+                    });
+            }
+            else {
+                console.log("[Error] ::Please Upload File  ", error);
+            }
+
+        }
+        $scope.editRoomPopup = function (room) {
+            var modalInstance = $modal.open({
+                templateUrl: 'editRoom.html',
+                controller: 'editRoomCtrl',
+                resolve: {
+                    room: function () {
+                        return room;
+                    }
+                }
+
+            }).result.then(function (result) {
+                $scope.avatar = result.src;
+            }, function () {
+                // Cancel
+            });
+
+        }
+        $scope.deleteRoom = function (room) {
+            document.getElementById("loadingidgq").style.display = "block";
+            Restservice.delete('api/DeleteRoom/' + room.RoomId, function (err, response) {
+                    if (!err) {
+                        document.getElementById("loadingidgq").style.display = "none";
+                        console.log("[Info] :: api/DeleteRoom/' ", response);
+                        getRoomList();
+                    }
+                    else {
+                        console.log("[Error]:: api/DeleteRoom/'", err);
+                    }
+            });
+
+
+        }
+       
         $scope.openPopup = function (premise) {
 
             var modalInstance = $modal.open({
@@ -393,9 +466,12 @@ angular.module('WebPortal')
                 // Cancel
             });
         };
-        $scope.addPowerBiCredntials=function () {
+        $scope.addPowerBiCredntials = function () {
+            document.getElementById("loadingidgq").style.display = "block";
             $http.post($location.protocol() + '://' + $location.host() + ':' + $location.port() + '/PowerBIService.asmx/updatePowerBiCredentials', $scope.powerBicredentials).then(function (data) {
                 console.log("[Info] :: Credentials Updated", data);
+                document.getElementById("loadingidgq").style.display = "none";
+                Token.update(function () { });
             }).catch(function (data) {
                 console.log('[Error] ::', data);
             });
@@ -606,11 +682,7 @@ angular.module('WebPortal')
 
 angular.module('WebPortal').controller('editPremiseCtrl', function ($scope, $modalInstance, $http, premise, Restservice) {
     $scope.premise = premise;
-
-
-    /**
-     * Function to Upload Image 
-     */
+    
     $scope.ok = function () {
 
         Restservice.put('api/UpdatePremise', $scope.premise, function (err, response) {
@@ -635,6 +707,33 @@ angular.module('WebPortal').controller('editPremiseCtrl', function ($scope, $mod
 
 
 });
+angular.module('WebPortal').controller('editRoomCtrl', function ($scope, $modalInstance, $http, room, Restservice) {
+    $scope.room = room;
+
+    $scope.ok = function () {
+
+        Restservice.put('api/UpdateRoom', $scope.room, function (err, response) {
+            if (!err) {
+                console.log("[Info] :: Room Updated", response);
+                $modalInstance.dismiss('cancel');
+            }
+            else {
+                console.log("[Error] ::  Room Not Updated  ", err);
+            }
+        });
+
+
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+
+
+
+
+});
 
 angular.module('WebPortal').controller('addPremiseCtrl', function ($scope, $modalInstance, $http, Restservice) {
     
@@ -643,7 +742,6 @@ angular.module('WebPortal').controller('addPremiseCtrl', function ($scope, $moda
         PremiseDesc: '',
         Latitude: '',
         Longitude: '',
-        UniversityID: 1
     }
     /**
      * Function to Upload Image 
@@ -651,6 +749,7 @@ angular.module('WebPortal').controller('addPremiseCtrl', function ($scope, $moda
     $scope.ok = function () {
         document.getElementById("loadingidgq").style.display = "block";
         $scope.premise.OrganizationID = localStorage.getItem('organizationID');
+        if ($scope.premise.OrganizationID) { 
         Restservice.post('api/AddPremise', $scope.premise, function (err, response) {
             document.getElementById("loadingidgq").style.display = "none";
             if (!err) {
@@ -662,7 +761,10 @@ angular.module('WebPortal').controller('addPremiseCtrl', function ($scope, $moda
                 console.log("[Error] ::  Premise Not Added  ", err);
             }
         });
-
+        }
+        else {
+            console.log("[Error] :: Pleas Add Organization Details");
+        }
 
     };
 
@@ -810,6 +912,7 @@ angular.module('WebPortal').controller('addScheduleCtrl', function (config,$scop
         jsonobj.PIserverID = Piserver.PiServerID;
         jsonobj.file = document.getElementById('class_schedulefile').files[0];
         if (jsonobj.file) {
+            console.log(jsonobj);
             var authResponse = hello('adB2CSignIn').getAuthResponse();
             document.getElementById("loadingidgq").style.display = "block";
             if (authResponse != null) {

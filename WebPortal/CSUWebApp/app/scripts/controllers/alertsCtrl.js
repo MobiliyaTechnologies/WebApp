@@ -9,6 +9,19 @@
 angular.module('WebPortal')
     .controller('alertsCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, DTOptionsBuilder, Restservice ) {
         console.log("[Info] :: Alerts Controller");
+        var modalInstance = $modal.open({
+            templateUrl: 'deviceAlertModal.html',
+            controller: 'deviceAlertModalCtrl',
+            windowClass: 'app-modal-window',
+
+            resolve: {
+                alerts: function () {
+                    return alert;
+                }
+            }
+        }).result.then(function (result) {
+            $scope.getAlerts();
+        });
         $scope.dtOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
             .withDisplayLength(10)
@@ -63,6 +76,7 @@ angular.module('WebPortal')
         /**
         * Function to open popup for device related alert 
         */
+      
         $scope.openDeviceAlertPopup = function (alert) {
             var modalInstance = $modal.open({
                 templateUrl: 'deviceAlertModal.html',
@@ -173,13 +187,13 @@ angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope,
         Restservice.get('api/GetAllRooms', function (err, response) {
             if (!err) {
                 console.log("[Info]:: Get Classroom Details response ", response);
-                $scope.classrooms = response;
+                $scope.rooms = response;
                 var tablePos = $("#class-table").offset();
                 var top = tablePos.top + 40;
                 var left = tablePos.left;
-                for (var i = 0; i < $scope.classrooms.length; i++) {
-                    $scope.classrooms[i].top = top;
-                    $scope.classrooms[i].left = left;
+                for (var i = 0; i < $scope.rooms.length; i++) {
+                    $scope.rooms[i].top = top;
+                    $scope.rooms[i].left = left;
                     top = top + 40;
                 }
 
@@ -200,19 +214,19 @@ angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope,
         var sid = sensorId.target.title;
         console.log(sid);
         var sensorPos = $("#sensor_" + sid).offset();
-        for (var i = 0; i < $scope.classrooms.length; i++) {
-            if (sensorPos.top > $scope.classrooms[i].top - 5 && sensorPos.top < $scope.classrooms[i].top + 45) {
-                console.log("Class Room Mapped ::", $scope.classrooms[i]);
-                $("#sensor_layout_" + sid).css({ display: 'block', left: $scope.classrooms[i].Y, top: $scope.classrooms[i].X, position: 'absolute' });
+        for (var i = 0; i < $scope.rooms.length; i++) {
+            if (sensorPos.top > $scope.rooms[i].top - 5 && sensorPos.top < $scope.rooms[i].top + 45) {
+                console.log("Class Room Mapped ::", $scope.rooms[i]);
+                $("#sensor_layout_" + sid).css({ display: 'block', left: $scope.rooms[i].Y, top: $scope.rooms[i].X, position: 'absolute' });
                 var found = mapping.filter(function (item) { return item.sen === sid; });
                 var index = mapping.findIndex(function (item, i) {
                     return item.Sensor_Id == sid;
                 });
                 if (index >= 0) {
-                    mapping[index].Room_Id = $scope.classrooms[i].RoomId;
+                    mapping[index].Room_Id = $scope.rooms[i].RoomId;
                 }
                 else {
-                    mapping.push({ 'Sensor_Id': sid, 'Room_Id': $scope.classrooms[i].RoomId })
+                    mapping.push({ 'Sensor_Id': sid, 'Room_Id': $scope.rooms[i].RoomId })
                 }
             }
         }

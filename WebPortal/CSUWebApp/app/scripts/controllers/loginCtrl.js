@@ -9,7 +9,7 @@
  * 
  */
 angular.module('WebPortal')
-    .controller('loginCtrl', ['$scope', '$http', '$state', 'AuthService', 'Token', 'config', '$interval', 'Restservice', '$modal', 'aadService', '$rootScope', 'AclService', function ($scope, $http, $state, AuthService, Token, config, $interval, Restservice, $modal, aadService, $rootScope, AclService) {
+    .controller('loginCtrl', ['$scope', '$http', '$state', 'AuthService', 'Token', 'config', '$interval', 'Restservice', '$modal', 'aadService', '$rootScope', 'AclService', '$timeout', function ($scope, $http, $state, AuthService, Token, config, $interval, Restservice, $modal, aadService, $rootScope, AclService, $timeout ) {
 
         console.log("[Info] :: Login Controller loaded");    
         //Azure B2c Config
@@ -45,7 +45,11 @@ angular.module('WebPortal')
             });                                         
         }
         $scope.showLogin = false;
-
+        if (config.restServer != "" && config.restServer != undefined) {
+            $timeout(function () {
+                $rootScope.$broadcast('config-loaded');
+            }, 1000);
+        }
         //Once configuration is loaded it will broadcast an event 'config-loaded' which will load rest server url
         $rootScope.$on('config-loaded', function () {
             $scope.showLogin = true;
