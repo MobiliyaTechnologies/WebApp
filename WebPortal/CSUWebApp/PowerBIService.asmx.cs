@@ -9,6 +9,9 @@ using System.Web.Script.Serialization;
 using System.Configuration;
 using Newtonsoft.Json;
 using CSUWebApp.Models;
+using System.Threading.Tasks;
+using System.Net.Http;
+using PBIWebApp;
 
 namespace CSUWebApp
 {
@@ -28,28 +31,76 @@ namespace CSUWebApp
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public void GetAccessToken()
         {
-            HttpContext.Current.Response.AddHeader("Access-Control-Allow-Origin", "*");
-            var isSuccess = Security.AuthenticateUser();
-            if (!isSuccess)
+            //HttpContext.Current.Response.AddHeader("Access-Control-Allow-Origin", "*");
+            //var isSuccess = Security.AuthenticateUser();
+            //if (!isSuccess)
+            //{
+            //    System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            //    this.Context.Response.ContentType = "application/json; charset=utf-8";
+            //    this.Context.Response.Write(serializer.Serialize(new { tokens = "" }));
+            //}        
+            //else
+            //{
+            //    PowerBIToken token = new PowerBIToken()
+            //    {
+            //        AccessToken = ConfigurationSettings.AppSettings["Access_Token"],
+            //        RefreshToken = ConfigurationSettings.AppSettings["Refresh_Token"]
+            //    };
+
+            //    System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+
+            //    this.Context.Response.ContentType = "application/json; charset=utf-8";
+            //    this.Context.Response.Write(serializer.Serialize(new { tokens = token }));
+            //}
+            //return new JavaScriptSerializer().Serialize(token);
+            var token = GetToken();
+
+            System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+
+            this.Context.Response.ContentType = "application/json; charset=utf-8";
+            this.Context.Response.Write(serializer.Serialize(new { tokens = token.Result }));
+            //return tokenRes.AccessToken;
+        }
+
+        public async Task<PowerBIToken> GetToken()
+        {
+            string pBiUser = ConfigurationManager.AppSettings["Username"];
+            string pBiPwd = ConfigurationManager.AppSettings["Password"];
+            string pBiClientId = ConfigurationManager.AppSettings["ClientId"];
+            string pBiSecret = ConfigurationManager.AppSettings["ClientSecret"];
+
+            if (string.IsNullOrEmpty(pBiUser) || string.IsNullOrEmpty(pBiPwd) || string.IsNullOrEmpty(pBiClientId) || string.IsNullOrEmpty(pBiSecret))
             {
-                System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-                this.Context.Response.ContentType = "application/json; charset=utf-8";
-                this.Context.Response.Write(serializer.Serialize(new { tokens = "" }));
-            }        
-            else
+                return null;
+            }
+            string tokenEndpointUri = "https://login.microsoftonline.com/common/oauth2/token";
+
+            var content = new FormUrlEncodedContent(new[]
+                {
+                        new KeyValuePair<string, string>("grant_type", "password"),
+                        new KeyValuePair<string, string>("username", pBiUser),
+                        new KeyValuePair<string, string>("password", pBiPwd),
+                        new KeyValuePair<string, string>("client_id", pBiClientId),
+                        new KeyValuePair<string, string>("client_secret", pBiSecret),
+                        new KeyValuePair<string, string>("resource", "https://analysis.windows.net/powerbi/api")
+            });
+            AzureResponse tokenRes = new AzureResponse();
+            using (var client = new HttpClient())
             {
+                HttpResponseMessage res = client.PostAsync(tokenEndpointUri, content).Result;
+
+                string json = await res.Content.ReadAsStringAsync();
+
+                tokenRes = JsonConvert.DeserializeObject<AzureResponse>(json);
+
                 PowerBIToken token = new PowerBIToken()
                 {
-                    AccessToken = ConfigurationSettings.AppSettings["Access_Token"],
-                    RefreshToken = ConfigurationSettings.AppSettings["Refresh_Token"]
+                    AccessToken = tokenRes.access_token,
+                    RefreshToken = tokenRes.refresh_token
                 };
 
-                System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-
-                this.Context.Response.ContentType = "application/json; charset=utf-8";
-                this.Context.Response.Write(serializer.Serialize(new { tokens = token }));
+                return token;
             }
-            //return new JavaScriptSerializer().Serialize(token);
         }
 
         [WebMethod]
@@ -84,7 +135,7 @@ namespace CSUWebApp
         }
 
         [WebMethod]
-        public string updatePowerBiCredentials(String ClientId, String ClientSecret)
+        public string updatePowerBiCredentials(String ClientId, String ClientSecret, String Username, String Password)
         {
             Configuration objConfig = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
             AppSettingsSection objAppsettings = (AppSettingsSection)objConfig.GetSection("appSettings");
@@ -92,9 +143,11 @@ namespace CSUWebApp
             {
                 objAppsettings.Settings["ClientId"].Value = ClientId;
                 objAppsettings.Settings["ClientSecret"].Value = ClientSecret;
+                objAppsettings.Settings["Username"].Value = Username;
+                objAppsettings.Settings["Password"].Value = Password;
                 objConfig.Save();
             }
-            
+
             //System.Configuration.ConfigurationManager.AppSettings["ClientId"] = ClientId;
             //System.Configuration.ConfigurationManager.AppSettings["ClientSecret"] = ClientSecret;
 
@@ -109,11 +162,11 @@ namespace CSUWebApp
             configs.Add("tenantName", System.Configuration.ConfigurationManager.AppSettings["tenantName"]);
             configs.Add("signInPolicyName", System.Configuration.ConfigurationManager.AppSettings["signInPolicyName"]);
             configs.Add("signInSignUpPolicyName", System.Configuration.ConfigurationManager.AppSettings["signInSignUpPolicyName"]);
-            configs.Add("editProfilePolicyName", System.Configuration.ConfigurationManager.AppSettings["editProfilePolicyName"]);            
+            configs.Add("editProfilePolicyName", System.Configuration.ConfigurationManager.AppSettings["editProfilePolicyName"]);
             configs.Add("redirect_uri", System.Configuration.ConfigurationManager.AppSettings["redirect_uri"]);
             configs.Add("adB2CSignIn", System.Configuration.ConfigurationManager.AppSettings["adB2CSignIn"]);
             configs.Add("adB2CSignInSignUp", System.Configuration.ConfigurationManager.AppSettings["adB2CSignInSignUp"]);
-            
+
             return configs;
         }
 
@@ -121,11 +174,11 @@ namespace CSUWebApp
         public string SaveUrl(RequestUrlModel requestParams)
         {
             var fileData = GetData();
-            ResponseUrlModel response = new ResponseUrlModel(null,null,null,null);
+            ResponseUrlModel response = new ResponseUrlModel(null, null, null, null);
             switch (requestParams.Type)
             {
                 case "organization":
-                    response = new ResponseUrlModel(requestParams.Values, fileData.premise, fileData.building,fileData.feedback);
+                    response = new ResponseUrlModel(requestParams.Values, fileData.premise, fileData.building, fileData.feedback);
                     break;
                 case "premise":
                     response = new ResponseUrlModel(fileData.organization, requestParams.Values, fileData.building, fileData.feedback);
