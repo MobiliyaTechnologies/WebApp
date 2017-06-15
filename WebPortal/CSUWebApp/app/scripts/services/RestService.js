@@ -30,7 +30,7 @@ angular.module('WebPortal')
                         });
                 }
                 else {
-                    console.log("Please login");
+                    console.log("Please login");                   
                 }
             },
             post: function (urlpath, data, callback) {
