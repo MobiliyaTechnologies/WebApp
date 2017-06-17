@@ -1,18 +1,18 @@
-{
-  "organization": {
-    "summary": "https://app.powerbi.com/reportEmbed?reportId=51e2d2d6-a6f5-416f-8baa-711829d86a5c",
-    "summarydetails": "https://app.powerbi.com/reportEmbed?reportId=3d45933e-386e-4773-9c1f-0c26ccfd7e3b"
-  },
-  "premise": {
-    "summary": "https://app.powerbi.com/reportEmbed?reportId=3be478a6-a54b-4941-b10f-f6a3f5127c09",
-    "summarydetails": "https://app.powerbi.com/reportEmbed?reportId=2d099277-61b5-4143-9c35-46d4bd6afd1e"
-  },
-  "building": {
-    "summary": "https://app.powerbi.com/reportEmbed?reportId=0c8c65d2-ba61-427b-8596-dfcc58fa7c8e",
-    "summarydetails": "https://app.powerbi.com/reportEmbed?reportId=5c976c7e-8aed-4746-93fc-2cd8bd6daa64"
-  },
-  "feedback": {
-    "summary": "https://app.powerbi.com/reportEmbed?reportId=d794e930-b85f-4270-8c23-de2e64fd98d0",
-    "summarydetails": null
-  }
+{  
+   "organization":{  
+      "summary":"",
+      "summarydetails":""
+   },
+   "premise":{  
+      "summary":"",
+      "summarydetails":""
+   },
+   "building":{  
+      "summary":"",
+      "summarydetails":""
+   },
+   "feedback":{  
+      "summary":"",
+      "summarydetails":null
+   }
 }
