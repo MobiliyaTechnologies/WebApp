@@ -10,6 +10,8 @@ namespace CSUWebApp
     {
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
+        public string StatusCode { get; set; }
+        public string Message { get; set; }
     }
 
     public class PowerBIURL

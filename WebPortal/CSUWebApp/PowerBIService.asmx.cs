@@ -12,6 +12,7 @@ using CSUWebApp.Models;
 using System.Threading.Tasks;
 using System.Net.Http;
 using PBIWebApp;
+using System.Net;
 
 namespace CSUWebApp
 {
@@ -31,75 +32,68 @@ namespace CSUWebApp
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public void GetAccessToken()
         {
-            //HttpContext.Current.Response.AddHeader("Access-Control-Allow-Origin", "*");
-            //var isSuccess = Security.AuthenticateUser();
-            //if (!isSuccess)
-            //{
-            //    System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-            //    this.Context.Response.ContentType = "application/json; charset=utf-8";
-            //    this.Context.Response.Write(serializer.Serialize(new { tokens = "" }));
-            //}        
-            //else
-            //{
-            //    PowerBIToken token = new PowerBIToken()
-            //    {
-            //        AccessToken = ConfigurationSettings.AppSettings["Access_Token"],
-            //        RefreshToken = ConfigurationSettings.AppSettings["Refresh_Token"]
-            //    };
-
-            //    System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-
-            //    this.Context.Response.ContentType = "application/json; charset=utf-8";
-            //    this.Context.Response.Write(serializer.Serialize(new { tokens = token }));
-            //}
-            //return new JavaScriptSerializer().Serialize(token);
             var token = GetToken();
 
             System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
 
             this.Context.Response.ContentType = "application/json; charset=utf-8";
             this.Context.Response.Write(serializer.Serialize(new { tokens = token.Result }));
-            //return tokenRes.AccessToken;
         }
 
         public async Task<PowerBIToken> GetToken()
         {
-            string pBiUser = ConfigurationManager.AppSettings["Username"];
-            string pBiPwd = ConfigurationManager.AppSettings["Password"];
-            string pBiClientId = ConfigurationManager.AppSettings["ClientId"];
-            string pBiSecret = ConfigurationManager.AppSettings["ClientSecret"];
-
-            if (string.IsNullOrEmpty(pBiUser) || string.IsNullOrEmpty(pBiPwd) || string.IsNullOrEmpty(pBiClientId) || string.IsNullOrEmpty(pBiSecret))
+            try
             {
-                return null;
-            }
-            string tokenEndpointUri = "https://login.microsoftonline.com/common/oauth2/token";
+                string pBiUser = ConfigurationManager.AppSettings["Username"];
+                string pBiPwd = ConfigurationManager.AppSettings["Password"];
+                string pBiClientId = ConfigurationManager.AppSettings["ClientId"];
+                string pBiSecret = ConfigurationManager.AppSettings["ClientSecret"];
 
-            var content = new FormUrlEncodedContent(new[]
+                if (string.IsNullOrEmpty(pBiUser) || string.IsNullOrEmpty(pBiPwd) || string.IsNullOrEmpty(pBiClientId) || string.IsNullOrEmpty(pBiSecret))
                 {
-                        new KeyValuePair<string, string>("grant_type", "password"),
-                        new KeyValuePair<string, string>("username", pBiUser),
-                        new KeyValuePair<string, string>("password", pBiPwd),
-                        new KeyValuePair<string, string>("client_id", pBiClientId),
-                        new KeyValuePair<string, string>("client_secret", pBiSecret),
-                        new KeyValuePair<string, string>("resource", "https://analysis.windows.net/powerbi/api")
-            });
-            AzureResponse tokenRes = new AzureResponse();
-            using (var client = new HttpClient())
-            {
-                HttpResponseMessage res = client.PostAsync(tokenEndpointUri, content).Result;
+                    return null;
+                }
+                string tokenEndpointUri = "https://login.microsoftonline.com/common/oauth2/token";
 
-                string json = await res.Content.ReadAsStringAsync();
-
-                tokenRes = JsonConvert.DeserializeObject<AzureResponse>(json);
-
+                var content = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("grant_type", "password"),
+                    new KeyValuePair<string, string>("username", pBiUser),
+                    new KeyValuePair<string, string>("password", pBiPwd),
+                    new KeyValuePair<string, string>("client_id", pBiClientId),
+                    new KeyValuePair<string, string>("client_secret", pBiSecret),
+                    new KeyValuePair<string, string>("resource", "https://analysis.windows.net/powerbi/api")
+                });
+                AzureResponse tokenRes = new AzureResponse();
+                HttpStatusCode statusCode;
+                string message;
+                using (var client = new HttpClient())
+                {
+                    HttpResponseMessage res = client.PostAsync(tokenEndpointUri, content).Result;
+                    statusCode = res.StatusCode;
+                    message = res.IsSuccessStatusCode == true ? "Success" : "failure";
+                    string json = await res.Content.ReadAsStringAsync();
+                    tokenRes = JsonConvert.DeserializeObject<AzureResponse>(json);
+                }
                 PowerBIToken token = new PowerBIToken()
                 {
                     AccessToken = tokenRes.access_token,
-                    RefreshToken = tokenRes.refresh_token
+                    RefreshToken = tokenRes.refresh_token,
+                    StatusCode = statusCode.ToString(),
+                    Message = message
                 };
 
                 return token;
+            }
+            catch (Exception ex)
+            {
+                return new PowerBIToken()
+                {
+                    AccessToken = null,
+                    RefreshToken = null,
+                    StatusCode = HttpStatusCode.InternalServerError.ToString(),
+                    Message = ex.Message
+                };
             }
         }
 
@@ -115,43 +109,62 @@ namespace CSUWebApp
             this.Context.Response.Write(serializer.Serialize(new { urls = embedURL }));
         }
 
-
-
         [WebMethod]
         public string updateConfig()
         {
-            var configs = LoadAllConfig();
-            var json = JsonConvert.SerializeObject(configs);
-            File.WriteAllText(HttpContext.Current.Server.MapPath("~\\config.json"), json);
-            return "Updated";
+            try
+            {
+                var configs = LoadAllConfig();
+                var json = JsonConvert.SerializeObject(configs);
+                File.WriteAllText(HttpContext.Current.Server.MapPath("~\\config.json"), json);
+                return "Updated General Config";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         [WebMethod]
         public string updateFirebaseConfig(FirebaseConfig config)
         {
-            var json = JsonConvert.SerializeObject(config);
-            File.WriteAllText(HttpContext.Current.Server.MapPath("~\\firebaseConfig.json"), json);
-            return "Updated";
+            try
+            {
+                var json = JsonConvert.SerializeObject(config);
+                File.WriteAllText(HttpContext.Current.Server.MapPath("~\\firebaseConfig.json"), json);
+                return "Updated Firebase config";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         [WebMethod]
         public string updatePowerBiCredentials(String ClientId, String ClientSecret, String Username, String Password)
         {
-            Configuration objConfig = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
-            AppSettingsSection objAppsettings = (AppSettingsSection)objConfig.GetSection("appSettings");
-            if (objAppsettings != null)
+            try
             {
-                objAppsettings.Settings["ClientId"].Value = ClientId;
-                objAppsettings.Settings["ClientSecret"].Value = ClientSecret;
-                objAppsettings.Settings["Username"].Value = Username;
-                objAppsettings.Settings["Password"].Value = Password;
-                objConfig.Save();
+                Configuration objConfig = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
+                AppSettingsSection objAppsettings = (AppSettingsSection)objConfig.GetSection("appSettings");
+                if (objAppsettings != null)
+                {
+                    objAppsettings.Settings["ClientId"].Value = ClientId;
+                    objAppsettings.Settings["ClientSecret"].Value = ClientSecret;
+                    objAppsettings.Settings["Username"].Value = Username;
+                    objAppsettings.Settings["Password"].Value = Password;
+                    objConfig.Save();
+                }
+
+                //System.Configuration.ConfigurationManager.AppSettings["ClientId"] = ClientId;
+                //System.Configuration.ConfigurationManager.AppSettings["ClientSecret"] = ClientSecret;
+
+                return "Power BI Credentials updated";
             }
-
-            //System.Configuration.ConfigurationManager.AppSettings["ClientId"] = ClientId;
-            //System.Configuration.ConfigurationManager.AppSettings["ClientSecret"] = ClientSecret;
-
-            return "updated";
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         Dictionary<string, string> LoadAllConfig()
@@ -174,7 +187,12 @@ namespace CSUWebApp
         public string SaveUrl(RequestUrlModel requestParams)
         {
             var fileData = GetData();
-            ResponseUrlModel response = new ResponseUrlModel(null, null, null, null);
+            ResponseUrlModel response;
+            if (fileData == null)
+            {
+                fileData = new ResponseUrlModel();
+            }
+            response = new ResponseUrlModel();
             switch (requestParams.Type)
             {
                 case "organization":
@@ -189,17 +207,23 @@ namespace CSUWebApp
                 case "feedback":
                     response = new ResponseUrlModel(fileData.organization, fileData.premise, fileData.building, requestParams.Values);
                     break;
-
             }
             string json = JsonConvert.SerializeObject(response);
             File.WriteAllText(HttpContext.Current.Server.MapPath("~\\powerBI.json"), json);
-            return "success";
+            return "Power BI URL saved successfully";
         }
 
         public ResponseUrlModel GetData()
         {
-            var data = File.ReadAllText(HttpContext.Current.Server.MapPath("~\\powerBI.json"));
-            return JsonConvert.DeserializeObject<ResponseUrlModel>(data);
+            try
+            {
+                var data = File.ReadAllText(HttpContext.Current.Server.MapPath("~\\powerBI.json"));
+                return JsonConvert.DeserializeObject<ResponseUrlModel>(data);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }
