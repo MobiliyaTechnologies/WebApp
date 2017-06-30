@@ -31,6 +31,12 @@ namespace CSUWebApp.Models
         public string summary { get; set; }
 
         public string summarydetails { get; set; }
+
+        public Values()
+        {
+            summary = "";
+            summarydetails = "";
+        }
     }
 
     
@@ -52,6 +58,14 @@ namespace CSUWebApp.Models
             premise = premiseValues == null ? new Values() : premiseValues;
             building = buildingValues == null ? new Values() : buildingValues;
             feedback = feedbackValues == null ? new Values() : feedbackValues;
+        }
+
+        public ResponseUrlModel()
+        {
+            organization = new Values();
+            premise = new Values();
+            building = new Values();
+            feedback = new Values();
         }
     }
 }
