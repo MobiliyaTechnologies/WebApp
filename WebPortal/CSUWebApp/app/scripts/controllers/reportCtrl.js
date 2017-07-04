@@ -8,7 +8,8 @@
  */
 angular.module('WebPortal')
     .controller('reportCtrl', function ($scope, $http, $location, $state, config, Token) {
-        console.log("[Info] :: Report Controller Loaded")
+        console.log("[Info] :: Report Controller Loaded");
+        $scope.configurationError = false;
         //Check for token if available display report or else get the token
         if (Token.data.accesstoken != '') {
         }
@@ -16,7 +17,6 @@ angular.module('WebPortal')
             Token.update(function () { });
         }    
         function getPowerBiUrls() {
-            console.log("Get");
             $http.get('powerBI.json')
                 .then(function (data, status, headers) {
                     $scope.powerBiUrls = data.data;
@@ -32,11 +32,12 @@ angular.module('WebPortal')
         getPowerBiUrls();
 
 
-
+        var iframe;
         function embedReport(reportURL, iframeId) {
             var embedUrl = reportURL;
             if ("" === embedUrl) {
                 console.log("No embed URL found");
+                $scope.configurationError = true;
                 return;
             }
             iframe = document.getElementById(iframeId);

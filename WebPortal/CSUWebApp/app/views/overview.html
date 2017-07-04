@@ -134,7 +134,10 @@
                         <!--<div class="configuration-error">
                             <h2>{{configurationError}}</h2>
                         </div>-->
-                        <iframe id="summary" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
+                        <div ng-show="configurationError" class="iframe-class-report-page powerBiError">
+
+                        </div>
+                        <iframe ng-show="!configurationError" id="summary" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
                     </div>
 
                 </div>
@@ -149,8 +152,11 @@
         <div class="ui-widget">
             <div id="example">
                 <div class="row">
+                    <div ng-show="configurationError" class="iframe-class-report-page powerBiError">
+
+                    </div>
                     <div id="srollreports" class="dash-unit col-sm-12" style="height:100%;padding:0;">
-                        <iframe id="summarydetails" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
+                        <iframe ng-show="!configurationError" id="summarydetails" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
                     </div>
 
                 </div>

@@ -9,19 +9,7 @@
 angular.module('WebPortal')
     .controller('alertsCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, DTOptionsBuilder, Restservice ) {
         console.log("[Info] :: Alerts Controller");
-        var modalInstance = $modal.open({
-            templateUrl: 'deviceAlertModal.html',
-            controller: 'deviceAlertModalCtrl',
-            windowClass: 'app-modal-window',
-
-            resolve: {
-                alerts: function () {
-                    return alert;
-                }
-            }
-        }).result.then(function (result) {
-            $scope.getAlerts();
-        });
+       
         $scope.dtOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
             .withDisplayLength(10)

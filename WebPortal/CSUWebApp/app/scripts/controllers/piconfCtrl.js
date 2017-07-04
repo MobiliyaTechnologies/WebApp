@@ -38,7 +38,8 @@ angular.module('WebPortal')
                                     $scope.checkPremisePowerBI = '#c3f7d0';
                                     for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
                                         $scope.premisePowerBiConfig[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
-                                    }  
+                                    }
+                                    $scope.addPremisePowerBiUrl();
                                 }
                                 else {
                                     $scope.checkPremisePowerBI = '#f29898';
@@ -50,6 +51,7 @@ angular.module('WebPortal')
                                     for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
                                         $scope.buildingPowerBiConfig[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
                                     }      
+                                    $scope.addBuildingPowerBiUrl();
                                 }
                                 else {
                                     $scope.checkBuildingPowerBI = '#f29898';
@@ -71,7 +73,8 @@ angular.module('WebPortal')
                                     $scope.checkUniversityPowerBI = '#c3f7d0';
                                     for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
                                         $scope.universityPowerBiConfig[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
-                                    }                                    
+                                    }  
+                                    $scope.addUniPowerBiUrl();
                                 }
                                 else {
                                     $scope.checkUniversityPowerBI = '#f29898';
