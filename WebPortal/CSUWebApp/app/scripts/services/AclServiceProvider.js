@@ -24,11 +24,14 @@ angular.module('WebPortal')
 
 
     }])
-    .run(['$rootScope', '$location', function ($rootScope, $location) {
+    .run(['$rootScope', '$location','$state', function ($rootScope, $location,$state) {
         // If the route change failed due to our "Unauthorized" error, redirect them
-        $rootScope.$on('$routeChangeError', function (event, current, previous, rejection) {
-            if (rejection === 'Unauthorized') {
-                $location.path('/');
-            }
+        $rootScope.$on('$stateChangeError', function (event, current, previous, rejection) {
+            return $state.go('login');
+            //console.log(rejection);
+            //$location.path('/login');
+            //if (rejection === 'Unauthorized') {
+               
+            //}
         })
     }]);

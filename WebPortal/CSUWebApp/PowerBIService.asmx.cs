@@ -51,7 +51,13 @@ namespace CSUWebApp
 
                 if (string.IsNullOrEmpty(pBiUser) || string.IsNullOrEmpty(pBiPwd) || string.IsNullOrEmpty(pBiClientId) || string.IsNullOrEmpty(pBiSecret))
                 {
-                    return null;
+                    return new PowerBIToken()
+                    {
+                        AccessToken = null,
+                        RefreshToken = null,
+                        StatusCode = HttpStatusCode.BadRequest.ToString(),
+                        Message = "Authentication Credentials missing"
+                    };
                 }
                 string tokenEndpointUri = "https://login.microsoftonline.com/common/oauth2/token";
 
@@ -211,6 +217,32 @@ namespace CSUWebApp
             string json = JsonConvert.SerializeObject(response);
             File.WriteAllText(HttpContext.Current.Server.MapPath("~\\powerBI.json"), json);
             return "Power BI URL saved successfully";
+        }
+
+        [WebMethod]
+        public string SavePowerBIUrl(string data)
+        {
+            //var fileData = GetData();
+            //ResponseUrlModel response = new ResponseUrlModel(null, null, null, null);
+            //switch (requestParams.Type)
+            //{
+            //    case "organization":
+            //        response = new ResponseUrlModel(requestParams.Values, fileData.premise, fileData.building, fileData.feedback);
+            //        break;
+            //    case "premise":
+            //        response = new ResponseUrlModel(fileData.organization, requestParams.Values, fileData.building, fileData.feedback);
+            //        break;
+            //    case "building":
+            //        response = new ResponseUrlModel(fileData.organization, fileData.premise, requestParams.Values, fileData.feedback);
+            //        break;
+            //    case "feedback":
+            //        response = new ResponseUrlModel(fileData.organization, fileData.premise, fileData.building, requestParams.Values);
+            //        break;
+
+            //}
+            //string json = JsonConvert.SerializeObject(response);
+            File.WriteAllText(HttpContext.Current.Server.MapPath("~\\powerBI.json"), data);
+            return "success";
         }
 
         public ResponseUrlModel GetData()

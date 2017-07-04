@@ -1295,3 +1295,8 @@ a.bg-danger:hover {
 .app-modal-anomaly .modal-dialog {
     width: 800px;
 }
+
+.powerBiError {
+    background-size: 100%;
+    background-image: url('../images/powerBIError.png');
+}

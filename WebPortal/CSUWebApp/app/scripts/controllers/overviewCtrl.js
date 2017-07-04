@@ -21,6 +21,7 @@ angular.module('WebPortal')
         $scope.meterList = [];
         $scope.urls = [];
         $scope.back_button = false;
+        $scope.configurationError = false;
 
         /**
          * This function would trigger after map get loaded 
@@ -46,6 +47,7 @@ angular.module('WebPortal')
                 if (!err) {
                     console.log("[Info]  :: Get BuildingsBy Premise ", response);
                     createBasePushPin('building', response);
+                    createColorPushPin('building', response);
                 }
                 else {
                     console.log("[Error]  :: Get BuildingsBy Premise ", err);
@@ -84,16 +86,16 @@ angular.module('WebPortal')
                     if ($scope.powerBIUrls.premise) {
                         embedReport($scope.powerBIUrls.premise.summary, 'summary');
                         embedReport($scope.powerBIUrls.premise.summarydetails, 'summarydetails');
+                        console 
                     }
-                    else {
-                        $scope.configurationError = "Please Check Configuration";
-                    }
+                       
+                        
                 })
                 .catch(function (data, status, headers) {
                     console.log("[Error]  :: Get Power Bi Urls ", data);
                 });
         }
-        getPowerBiUrls();
+        getPowerBiUrls();   
         /**
          * 
          * @param entityList
@@ -106,6 +108,12 @@ angular.module('WebPortal')
                     anchor: new Microsoft.Maps.Point(5, 5)
                 });
                 map.entities.push(pushpin);
+                map.setView({
+                    center: new Microsoft.Maps.Location(entityList[i].Latitude, entityList[i].Longitude),
+                    zoom: 18,
+                    animate: true
+
+                });
                 if(type=='premise'){
                     pushpin.Name = entityList[i].PremiseName;
                     pushpin.ID = entityList[i].PremiseID;
@@ -148,10 +156,10 @@ angular.module('WebPortal')
                     pushpin2.Type = 'premise';
                 }
                 else if (type == 'building') {
-                    pushpin.Name = entityList[i].BuildingName;
-                    pushpin.ID = entityList[i].BuildingID;
-                    pushpin.PremiseID = entityList[i].PremiseID;
-                    pushpin.Type = 'building';
+                    pushpin2.Name = entityList[i].BuildingName;
+                    pushpin2.ID = entityList[i].BuildingID;
+                    pushpin2.PremiseID = entityList[i].PremiseID;
+                    pushpin2.Type = 'building';
                 }
                 Microsoft.Maps.Events.addHandler(pushpin2, 'click', onPushpinClicked);
                 Microsoft.Maps.Events.addHandler(pushpin2, 'mouseover', onPushpinMouseOver);
@@ -192,7 +200,8 @@ angular.module('WebPortal')
         function embedReport(reportURL, iframeId) {   
             var embedUrl = reportURL;
             if ("" === embedUrl) {
-                console.log("[Error]  :: No embed URL found ", err);
+                console.log("[Error]  :: No embed URL found ");
+                $scope.configurationError = true;
                 return;
             }
             iframe = document.getElementById(iframeId);
