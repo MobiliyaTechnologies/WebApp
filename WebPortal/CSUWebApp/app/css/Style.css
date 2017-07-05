@@ -1299,4 +1299,6 @@ a.bg-danger:hover {
 .powerBiError {
     background-size: 100%;
     background-image: url('../images/powerBIError.png');
+    background-repeat:no-repeat;
+   
 }
