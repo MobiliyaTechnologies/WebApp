@@ -645,21 +645,22 @@ angular.module('WebPortal')
             });
         }
         function updateConfigOnLocal(config) {
-             $http({
-                url: $location.protocol() + '://' + $location.host() + ':' + $location.port() +'/PowerBIService.asmx/SaveUrl',
-                dataType: 'json',
-                method: 'POST',
-                data: config,
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            }).then(function (response) {
-                console.log("[Info] :: Config Updated in Local ", response);
+            // $http({
+            //    url: $location.protocol() + '://' + $location.host() + ':' + $location.port() +'/PowerBIService.asmx/SaveUrl',
+            //    dataType: 'json',
+            //    method: 'POST',
+            //    data: config,
+            //    headers: {
+            //        "Content-Type": "application/json",
+            //    }
+            //}).then(function (response) {
+            //    console.log("[Info] :: Config Updated in Local ", response);
 
-            })
-                .catch(function (error) {
-                    console.log("[Error] ::  Config Not Updated in Local ", error);
-                });
+            //})
+            //    .catch(function (error) {
+            //        console.log("[Error] ::  Config Not Updated in Local ", error);
+            //    });
+            //localStorage.setItem(config.requestParams.Type, JSON.stringify(config.requestParams.Values));
         }
         function updateFirebaseOnLocal(config) {
             var obj = {

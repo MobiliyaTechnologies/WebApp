@@ -252,7 +252,7 @@
                     <input class="form-control" style="margin-top:20px;" placeholder="Storage Bucket" type="text" ng-model="firebase.StorageBucket" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Authorisation Key" type="text" ng-model="firebase.NotificationAuthorizationKey" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Messaging Sender Id" type="text" ng-model="firebase.NotificationSender" />
-                    <input class="form-control" style="margin-top:20px;" placeholder="Messaging Receiver Id" type="text" ng-model="firebase.NotificationReceiver" />
+                    <!--<input class="form-control" style="margin-top:20px;" placeholder="Messaging Receiver Id" type="text" ng-model="firebase.NotificationReceiver" />-->
                     <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFirebaseConfig()">Add</button>
                 </div>
             </div>
@@ -320,7 +320,8 @@
                     <h3>Organization Configuration</h3>
                     <input class="form-control" style="margin-top:20px;" placeholder="Organization" type="text" ng-model="organization.OrganizationName" />               
                     <input class="form-control" style="margin-top:20px;" placeholder="Description" type="text" ng-model="organization.OrganizationDesc" />
-                    <input class="form-control" style="margin-top:20px;" placeholder="Address" type="text" ng-model="organization.OrganizationAddress" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Address" type="text" ng-model="organization.OrganizationAddress" /></br>
+                    <label>Logo for organization :</label>
                     <input id="organization_logo" type="file" accept="image/*" style="margin-top:20px;"/>
                     <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addOrganizationConfig()">Add</button>
                 </div>

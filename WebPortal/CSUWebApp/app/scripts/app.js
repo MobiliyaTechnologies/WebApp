@@ -131,7 +131,7 @@ angular
                 controller: 'recommendationCtrl',
                 resolve: {
                     'acl': ['$q', 'AclService', function ($q, AclService) {
-                        if (AclService.can('recommendtaion')) {
+                        if (AclService.can('recommendation')) {
                             // Has proper permissions
                             return true;
                         } else {

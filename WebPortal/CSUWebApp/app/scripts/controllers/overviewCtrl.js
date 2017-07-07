@@ -21,8 +21,14 @@ angular.module('WebPortal')
         $scope.meterList = [];
         $scope.urls = [];
         $scope.back_button = false;
-        $scope.configurationError = false;
-
+        $scope.configurationError = true;
+        $scope.powerBIUrls = {
+            'organization': {},
+            'premise': {},
+            'building': {},
+            'feedback': {}
+        }
+        
         /**
          * This function would trigger after map get loaded 
          */
@@ -78,24 +84,87 @@ angular.module('WebPortal')
             createBasePushPin('premise', $scope.premiseList);
             createColorPushPin('premise', $scope.premiseList);
         }
+        function getConfig() {
 
+            Restservice.get('api/GetAllApplicationConfiguration', function (err, response) {
+                if (!err) {
+                    console.log("[Info] :: Get Configuration List", response);
+                    for (var i = 0; i < response.length; i++) {
+                        switch (response[i].ApplicationConfigurationType) {
+                            case "PremisePowerBI":
+                                if (response[i].ApplicationConfigurationEntries.length > 0) {
+                                    for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
+                                        $scope.powerBIUrls.premise[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
+                                    }                                   
+                                    getPowerBiUrls(); 
+                                }
+                               
+                                break;
+                            case "BuildingPowerBI":
+                                if (response[i].ApplicationConfigurationEntries.length > 0) {
+                                    $scope.checkBuildingPowerBI = '#c3f7d0';
+                                    for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
+                                        $scope.powerBIUrls.building[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
+                                    }              
+                                }
+                                break;
+
+                            case "OrganizationPowerBI":
+                                if (response[i].ApplicationConfigurationEntries.length > 0) {
+                                    $scope.checkUniversityPowerBI = '#c3f7d0';
+                                    for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
+                                        $scope.powerBIUrls.organization[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
+                                    }     
+                                }
+
+                                break;
+
+                            case "FeedbackPowerBI":
+                                if (response[i].ApplicationConfigurationEntries.length > 0) {
+                                    $scope.checkFeedbackPowerBI = '#c3f7d0';
+                                    for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
+                                        $scope.powerBIUrls.feedback[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
+                                    }
+                                }
+                                break;
+
+
+
+                        }
+                    }
+                   
+                }
+                else {
+                    console.log("[Error]:: Get Configuration Lis", err);
+                }
+            });
+
+        }
+        getConfig();
         function getPowerBiUrls() {
-            $http.get('powerBI.json')
-                .then(function (data, status, headers) {
-                    $scope.powerBIUrls = data.data;
+            //$http.get('powerBI.json')
+               // .then(function (data, status, headers) {
+              //      $scope.powerBIUrls = data.data;
                     if ($scope.powerBIUrls.premise) {
                         embedReport($scope.powerBIUrls.premise.summary, 'summary');
                         embedReport($scope.powerBIUrls.premise.summarydetails, 'summarydetails');
-                        console 
                     }
                        
                         
-                })
-                .catch(function (data, status, headers) {
-                    console.log("[Error]  :: Get Power Bi Urls ", data);
-                });
+              //  })
+              //  .catch(function (data, status, headers) {
+               //     console.log("[Error]  :: Get Power Bi Urls ", data);
+              //  });
+
+
+
+
+
+
+
+
         }
-        getPowerBiUrls();   
+          
         /**
          * 
          * @param entityList
@@ -204,6 +273,7 @@ angular.module('WebPortal')
                 $scope.configurationError = true;
                 return;
             }
+            $scope.configurationError = false;
             iframe = document.getElementById(iframeId);
             iframe.src = embedUrl;
             iframe.onload = function () {

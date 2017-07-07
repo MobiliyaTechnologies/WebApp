@@ -22,7 +22,7 @@ angular.module('WebPortal')
     function HeaderController($scope, $location, $rootScope, weatherServiceFactory, Restservice ) {
         $rootScope.hideHeader = ($location.path() === '/login') ? true : false;
         $scope.weather = weatherServiceFactory;
-        $scope.weather.search();
+        
 
         $scope.organization = {};
         $scope.organization.logo = "./app/images/bullet_green.svg";
@@ -33,7 +33,10 @@ angular.module('WebPortal')
                 $scope.organization = response;
                 localStorage.setItem('organizationID', response.OrganizationID);
                 console.log("[Info] :: GetOrganization ", response);
-
+                if (response.OrganizationAddress != '' && response.OrganizationAddress != undefined) {
+                    $scope.weather.search(response.OrganizationAddress);
+                }
+                
             }
             else {
                 console.log("[Error]:: GetOrganization", err);
