@@ -2,8 +2,10 @@
     <h4>ORGANIZATION SUMMARY </h4>
     <div class="jumbotron">
         <div class="container">
-            <div ng-show="configurationError" class="iframe-class-report-page powerBiError">
+            <div ng-show="loadingpowerBi" class="iframe-class-report-page powerBiLoad">
 
+            </div>
+            <div ng-show="configurationError&&!loadingpowerBi" class="iframe-class-report-page powerBiError">
             </div>
             <iframe ng-show="!configurationError" id="summary" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
         </div>
@@ -13,7 +15,10 @@
     <h4>SUMMARY DETAILS </h4>
     <div class="jumbotron">
         <div class="container">
-            <div ng-show="configurationError" class="iframe-class-report-page powerBiError">
+            <div ng-show="loadingpowerBi" class="iframe-class-report-page powerBiLoad">
+
+            </div>
+            <div ng-show="configurationError&&!loadingpowerBi" class="iframe-class-report-page powerBiError">
 
             </div>
             <iframe  ng-show="!configurationError" id="summarydetails" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>

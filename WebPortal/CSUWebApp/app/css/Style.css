@@ -1302,3 +1302,12 @@ a.bg-danger:hover {
     background-repeat:no-repeat;
    
 }
+.powerBiLoad {
+    background-size: 100%;
+    background-image: url('../images/powerBILoad.png');
+    background-repeat: no-repeat;
+}
+.image {
+    position: relative;
+    width: 100%; /* for IE 6 */
+}

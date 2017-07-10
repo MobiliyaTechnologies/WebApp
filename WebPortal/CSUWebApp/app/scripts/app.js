@@ -19,7 +19,8 @@ angular
         'datatables',
         'ngDragDrop',
         'angularjs-dropdown-multiselect',
-        'mm.acl'
+        'mm.acl',
+        'Alertify'
 
     ])
     .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {

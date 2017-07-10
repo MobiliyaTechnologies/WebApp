@@ -9,7 +9,7 @@
  * 
  */
 angular.module('WebPortal')
-    .controller('loginCtrl', ['$scope', '$http', '$state', 'AuthService', 'Token', 'config', '$interval', 'Restservice', '$modal', 'aadService', '$rootScope', 'AclService', '$timeout', function ($scope, $http, $state, AuthService, Token, config, $interval, Restservice, $modal, aadService, $rootScope, AclService, $timeout ) {
+    .controller('loginCtrl', ['$scope', '$http', '$state', 'AuthService', 'Token', 'config', '$interval', 'Restservice', '$modal', 'aadService', '$rootScope', 'AclService', '$timeout', 'Alertify', function ($scope, $http, $state, AuthService, Token, config, $interval, Restservice, $modal, aadService, $rootScope, AclService, $timeout, Alertify) {
 
         console.log("[Info] :: Login Controller loaded");    
         //Azure B2c Config
@@ -101,6 +101,7 @@ angular.module('WebPortal')
                 }
                 else {
                     console.log("[Error]:: Get Current User Details", err);
+                    Alertify.error("Error in Get Current User Details");
                 }
             });
         }
