@@ -129,10 +129,11 @@
         <div id="collapseTwo" class="panel-collapse collapse out">
             <div class="panel-body">
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:320px;">
-                    <input class="form-control" style="margin-top:20px;" placeholder="Client Id" type="text" ng-model="powerBicredentials.ClientId" />
-                    <input class="form-control" style="margin-top:20px;" placeholder="Client Secret" type="text" ng-model="powerBicredentials.ClientSecret" />
-                    <input class="form-control" style="margin-top:20px;" placeholder="Username" type="text" ng-model="powerBicredentials.Username" />
-                    <input class="form-control" style="margin-top:20px;" placeholder="Password" type="text" ng-model="powerBicredentials.Password" />
+                    <input ng-disabled="edit" class="form-control" style="margin-top:20px;" placeholder="Client Id" type="text" ng-model="powerBicredentials.ClientId" />
+                    <input ng-disabled="edit" class="form-control" style="margin-top:20px;" placeholder="Client Secret" type="text" ng-model="powerBicredentials.ClientSecret" />
+                    <input ng-disabled="edit" class="form-control" style="margin-top:20px;" placeholder="Username" type="text" ng-model="powerBicredentials.Username" />
+                    <input ng-disabled="edit" class="form-control" style="margin-top:20px;" placeholder="Password" type="text" ng-model="powerBicredentials.Password" />
+                    <a ng-if="edit" ng-click="editClick()">edit</a>
                     <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addPowerBiCredntials()">Add</button>
                 </div>
             </div>
@@ -186,7 +187,6 @@
         <div id="collapseFive" class="panel-collapse collapse out">
             <div class="panel-body">
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
-                    <h3>Power BI Url Configuration For Building</h3>
                     <input class="form-control" style="margin-top:20px;" placeholder="Summary Report" type="text" ng-model="buildingPowerBiConfig.summary" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Summary Details" type="text" ng-model="buildingPowerBiConfig.summarydetails" />
                     <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addBuildingPowerBiUrl()">Add</button>
@@ -206,7 +206,6 @@
         <div id="collapseSix" class="panel-collapse collapse out">
             <div class="panel-body">
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
-                    <h3>Power BI Url Configuration For Feedback</h3>
                     <input class="form-control" style="margin-top:20px;" placeholder="Feedback report" type="text" ng-model="feebackPowerBi.summary" />
                     <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFeedbackPowerBiUrl()">Add</button>
                 </div>
@@ -224,10 +223,12 @@
         </div>
         <div id="collapseSeven" class="panel-collapse collapse out">
             <div class="panel-body">
-                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:190px;">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:300px;">
                     <h3>Azure ML Configuration</h3>
-                    <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml App Url" type="text" ng-model="azureml.azuremlappurl" />
-                    <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml App key" type="text" ng-model="azureml.azuremlappkey" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml AnomalyDetection Api key" type="text" ng-model="azureml.AzureMlAnomalyDetectionApiKey" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml AnomalyDetection Api Url" type="text" ng-model="azureml.AzureMlAnomalyDetectionApiUrl" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml DailyPrediction Api key" type="text" ng-model="azureml.AzureMlDailyPredictionApiKey" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml DailyPrediction Api Url" type="text" ng-model="azureml.AzureMlDailyPredictionApiURL" />
                     <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addAzureMlConfig()">Add</button>
                 </div>
             </div>
@@ -290,7 +291,10 @@
                                                     <td>{{user.FirstName}}</td>
                                                     <td>{{user.LastName}}</td>
                                                     <td>{{user.Email}}</td>
-                                                    <td>{{user.RoleId}}</td>
+
+                                                    <td ng-if="user.RoleId==1">Super Admin</td>
+                                                    <td ng-if="user.RoleId==2">Student</td>
+                                                    <td ng-if="user.RoleId!=1&&user.RoleId!=2">Campus Admin</td>
                                                     <td><a ng-click="changeRolePopup(user)" title="View Details"><i class="fa fa-edit"></i></a></td>
                                                 </tr>
                                             </tbody>
@@ -316,7 +320,7 @@
         </div>
         <div id="collapsetwelve" class="panel-collapse collapse out">
             <div class="panel-body">
-                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:320px;">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:330px;">
                     <h3>Organization Configuration</h3>
                     <input class="form-control" style="margin-top:20px;" placeholder="Organization" type="text" ng-model="organization.OrganizationName" />               
                     <input class="form-control" style="margin-top:20px;" placeholder="Description" type="text" ng-model="organization.OrganizationDesc" />
@@ -373,11 +377,8 @@
                             
                         </div>
                     </div>
-                    <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:190px;">
-                        <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingName for building in buildingList" ng-model="selectedBuilding" style="z-index:1;width:70px;margin-top:20px;"></select>     </br></br>
-                        <input  id="roomlist" type="file" accept=".csv" /></br></br>
-                        <button class="btn blue-button" ng-click="addRooms()">Add Classrooms</button>
-                    </div>
+                    <button class="btn blue-button" ng-click="addRooms()">Add Classrooms</button>
+                    
                 </div>
             </div>
         </div>
@@ -411,10 +412,15 @@
     </div>
     <div>
         <div class="col-lg-offset-1 col-lg-10 ">
-            <input class="form-control" style="margin-top:20px;" placeholder="Premise Name" type="text" ng-model="premise.PremiseName" />
-            <input class="form-control" style="margin-top:20px;" placeholder="Premise Description" type="text" ng-model="premise.PremiseDesc" />
-            <input class="form-control" style="margin-top:20px;" placeholder="latitude" type="text" ng-model="premise.Latitude" />
-            <input class="form-control" style="margin-top:20px;margin-bottom:20px;" placeholder="longitude" type="text" ng-model="premise.Longitude" />
+            <br />
+            <label>Premise Name: *</label>
+            <input class="form-control" placeholder="Premise Name" type="text" ng-model="premise.PremiseName" /></br>
+            <label>Premise Description: *</label>
+            <input class="form-control"  placeholder="Premise Description" type="text" ng-model="premise.PremiseDesc" /></br>
+            <label>Premise Latitude: *</label>
+            <input class="form-control"  placeholder="latitude" type="text" ng-model="premise.Latitude" /></br>
+            <label>Premise Longitude: *</label>
+            <input class="form-control"  placeholder="longitude" type="text" ng-model="premise.Longitude" /></br>
         </div>
 
     </div>
@@ -520,6 +526,21 @@
     </div>
     <div class="modal-footer">
         <button class="btn blue-button" ng-click="ok()">Update</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+<script type="text/ng-template" id="addRoom.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Room</h3>
+    </div>
+    <div>
+        <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:190px;">
+            <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingName for building in buildingList" ng-model="selectedBuilding" style="z-index:1;width:70px;margin-top:20px;"></select>     </br></br>
+            <input id="roomlist" type="file" accept=".csv" /></br></br>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn blue-button" ng-click="ok()">Add</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>

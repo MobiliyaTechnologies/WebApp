@@ -22,6 +22,7 @@ angular.module('WebPortal')
         $scope.urls = [];
         $scope.back_button = false;
         $scope.configurationError = true;
+        $scope.loadingpowerBi = true;
         $scope.powerBIUrls = {
             'organization': {},
             'premise': {},
@@ -38,7 +39,7 @@ angular.module('WebPortal')
                 {
                     credentials: 'Ahmc1XzhRQwnhx-_HvtFWJH5y1TOqNaUEOZgzPPHQyyffV8z-UyK3tfrkaEMZpiv',
                     center: mapLocation,
-                    zoom: 6,
+                    zoom: 10,
                     mapTypeId: Microsoft.Maps.MapTypeId.road,
 
                 });
@@ -97,8 +98,10 @@ angular.module('WebPortal')
                                         $scope.powerBIUrls.premise[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
                                     }                                   
                                     getPowerBiUrls(); 
+                                    $scope.configurationError = false;
+                                   
                                 }
-                               
+                                $scope.loadingpowerBi = false;
                                 break;
                             case "BuildingPowerBI":
                                 if (response[i].ApplicationConfigurationEntries.length > 0) {
@@ -179,7 +182,7 @@ angular.module('WebPortal')
                 map.entities.push(pushpin);
                 map.setView({
                     center: new Microsoft.Maps.Location(entityList[i].Latitude, entityList[i].Longitude),
-                    zoom: 18,
+                    zoom: 10,
                     animate: true
 
                 });

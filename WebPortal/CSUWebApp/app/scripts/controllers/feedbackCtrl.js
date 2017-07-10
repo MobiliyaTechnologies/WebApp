@@ -146,10 +146,10 @@ angular.module('WebPortal')
             })[0];
 
             var classes = $scope.Classes.filter(function (obj) {
-                return obj.ClassId === $scope.selectedClass;
+                return obj.RoomId === $scope.selectedClass;
             })[0];     
             if ($scope.powerBiUrls.feedback.summary){
-                embedReport($scope.powerBiUrls.feedback.summary + "&$filter=BridgeRoomBuilding/premiseBuildingRoom eq '" + premise.PremiseName + building.BuildingName + classes.ClassName + "'", 'feedback');
+                embedReport($scope.powerBiUrls.feedback.summary + "&$filter=BridgeRoomBuilding/PremiseBuildingRoom eq '" + premise.PremiseName + building.BuildingName + classes.RoomName + "'", 'feedback');
             }
             else {
                 $scope.configurationError = true;

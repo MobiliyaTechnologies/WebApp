@@ -10,6 +10,7 @@ angular.module('WebPortal')
     .controller('reportCtrl', function ($scope, $http, $location, $state, config, Token, Restservice ) {
         console.log("[Info] :: Report Controller Loaded");
         $scope.configurationError = true;
+        $scope.loadingpowerBi = true;
         $scope.powerBiUrls = {
             'organization': {},
             'premise': {},
@@ -68,8 +69,10 @@ angular.module('WebPortal')
                                         $scope.powerBiUrls.organization[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
                                     }
                                     getPowerBiUrls();
+                                   
+                                    $scope.configurationError = false;
                                 }
-
+                                $scope.loadingpowerBi = false;
                                 break;
 
                             case "FeedbackPowerBI":

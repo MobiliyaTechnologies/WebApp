@@ -21,7 +21,7 @@ function intiateFirebase() {
     const messaging = firebase.messaging();
 
     messaging.setBackgroundMessageHandler(function (payload) {
-        const title = 'CSU Notification';
+        const title = 'Energy Management Notification';
         console.log('[firebase-messaging-sw.js] Received background message ', payload);
         const options = {
             body: payload.data.body,

@@ -8,8 +8,9 @@
  */
 var roles = []
 angular.module('WebPortal')
-    .controller('dashboardCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, $rootScope, aadService, AclService, aadService ) {
+    .controller('dashboardCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, $rootScope, aadService, AclService, aadService, Alertify) {
         console.log("[Info] :: Login Controller loaded");  
+        
         $scope.can = AclService.can;
         $scope.weather = weatherServiceFactory;
         $scope.weather.search();
@@ -150,7 +151,7 @@ angular.module('WebPortal')
  /**
   * Controller for Change Avatar Popup
   */
-angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $modalInstance, images, $http, Restservice ) {
+angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $modalInstance, images, $http, Restservice,Alertify) {
 
     $scope.selectImage = function (index) {
         for (var i = 0; i < $scope.images.length; i++) {
@@ -178,10 +179,11 @@ angular.module('WebPortal').controller('changeAvatarCtrl', function ($scope, $mo
                 console.log("[Info] :: Change Avatar response ", response);
                 localStorage.setItem("Avatar", $scope.selected.image.src);
                 $modalInstance.close($scope.selected.image);
+                Alertify.success("Avatar Changed");
             }
             else {
-                
-                console.log("[Error]:: Get Current User Details", err);
+                Alertify.error("Error in Updating Avatar");
+                console.log("[Error]:: Updating avatar", err);
             }
         });
 
