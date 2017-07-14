@@ -102,14 +102,14 @@ angular.module('WebPortal')
                         storageBucket: data.data.StorageBucket,
                         messagingSenderId: data.data.NotificationSender
                     };
-                    iniateFirebase(data.data.ApiKey,config, data.data.NotificationReceiver);
+                    intiateFirebase(data.data.ApiKey,config, data.data.NotificationReceiver);
                 }
             })
             .catch(function (data, status, headers) {
                 // log error
                 console.log("[Error] :: Firebase Error",data);
          });
-        function iniateFirebase(apikey,config,topic) {
+        function intiateFirebase(apikey,config,topic) {
             firebase.initializeApp(config);
             /**
             * Function to get permission of firebase from user

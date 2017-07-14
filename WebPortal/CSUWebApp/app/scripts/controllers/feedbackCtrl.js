@@ -9,7 +9,7 @@
 angular.module('WebPortal')
     .controller('feedbackCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, Restservice ) {
         console.log("[Info] :: Feedback Controller loaded");
-        
+        $scope.loadingpowerBi = true;
         $scope.configurationError = true;
         $scope.powerBiUrls = {
             'organization': {},
@@ -56,6 +56,7 @@ angular.module('WebPortal')
                                     }
                                     $scope.configurationError = false;
                                 }
+                                $scope.loadingpowerBi = false;
                                 break;
 
 
