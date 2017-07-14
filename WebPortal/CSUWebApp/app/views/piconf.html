@@ -151,8 +151,8 @@
         <div id="collapseThree" class="panel-collapse collapse out">
             <div class="panel-body">
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
-                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Report" type="text" ng-model="universityPowerBiConfig.summary" />
-                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Details" type="text" ng-model="universityPowerBiConfig.summarydetails" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Report Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="universityPowerBiConfig.summary" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Details Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="universityPowerBiConfig.summarydetails" />
                     <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addUniPowerBiUrl()">Add</button>
                 </div>
             </div>
@@ -169,8 +169,8 @@
         <div id="collapseFour" class="panel-collapse collapse out">
             <div class="panel-body">
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
-                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Report" type="text" ng-model="premisePowerBiConfig.summary" />
-                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Details" type="text" ng-model="premisePowerBiConfig.summarydetails" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Report Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="premisePowerBiConfig.summary" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Details Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="premisePowerBiConfig.summarydetails" />
                     <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addPremisePowerBiUrl()">Add</button>
                 </div>
             </div>
@@ -187,8 +187,8 @@
         <div id="collapseFive" class="panel-collapse collapse out">
             <div class="panel-body">
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
-                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Report" type="text" ng-model="buildingPowerBiConfig.summary" />
-                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Details" type="text" ng-model="buildingPowerBiConfig.summarydetails" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Report Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="buildingPowerBiConfig.summary" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Details Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="buildingPowerBiConfig.summarydetails" />
                     <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addBuildingPowerBiUrl()">Add</button>
                 </div>
                 
@@ -206,7 +206,7 @@
         <div id="collapseSix" class="panel-collapse collapse out">
             <div class="panel-body">
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
-                    <input class="form-control" style="margin-top:20px;" placeholder="Feedback report" type="text" ng-model="feebackPowerBi.summary" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Feedback report Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="feebackPowerBi.summary" />
                     <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFeedbackPowerBiUrl()">Add</button>
                 </div>
 
@@ -247,13 +247,13 @@
             <div class="panel-body">
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:420px;">
                     <h3>Firebase Configuration</h3>
-                    <input class="form-control" style="margin-top:20px;" placeholder="Api Key" type="text" ng-model="firebase.ApiKey" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Legacy Server key" type="text" ng-model="firebase.ApiKey" /> <!--This is legacy server key-->
                     <input class="form-control" style="margin-top:20px;" placeholder="Auth Domain" type="text" ng-model="firebase.AuthDomain" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Database Url" type="text" ng-model="firebase.DatabaseURL" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Storage Bucket" type="text" ng-model="firebase.StorageBucket" />
-                    <input class="form-control" style="margin-top:20px;" placeholder="Authorisation Key" type="text" ng-model="firebase.NotificationAuthorizationKey" />
+                    <!--<input class="form-control" style="margin-top:20px;" placeholder="Authorisation Key" type="text" ng-model="firebase.NotificationAuthorizationKey" />-->
                     <input class="form-control" style="margin-top:20px;" placeholder="Messaging Sender Id" type="text" ng-model="firebase.NotificationSender" />
-                    <!--<input class="form-control" style="margin-top:20px;" placeholder="Messaging Receiver Id" type="text" ng-model="firebase.NotificationReceiver" />-->
+                   <input class="form-control" style="margin-top:20px;" placeholder="Messaging Receiver Id" type="text" value="/topics/Alerts" ng-model="firebase.NotificationReceiver" />
                     <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFirebaseConfig()">Add</button>
                 </div>
             </div>
@@ -283,7 +283,7 @@
                                             <th>First Name</th>
                                             <th>Last Name</th>
                                             <th>Email</th>
-                                            <th>Role Id</th>
+                                            <th>Role </th>
                                             <th>Changes role</th>
                                             </thead>
                                             <tbody>
@@ -293,7 +293,7 @@
                                                     <td>{{user.Email}}</td>
 
                                                     <td ng-if="user.RoleId==1">Super Admin</td>
-                                                    <td ng-if="user.RoleId==2">Student</td>
+                                                    <td ng-if="user.RoleId==2">User</td>
                                                     <td ng-if="user.RoleId!=1&&user.RoleId!=2">Campus Admin</td>
                                                     <td><a ng-click="changeRolePopup(user)" title="View Details"><i class="fa fa-edit"></i></a></td>
                                                 </tr>
@@ -320,13 +320,14 @@
         </div>
         <div id="collapsetwelve" class="panel-collapse collapse out">
             <div class="panel-body">
-                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:330px;">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:350px;">
                     <h3>Organization Configuration</h3>
                     <input class="form-control" style="margin-top:20px;" placeholder="Organization" type="text" ng-model="organization.OrganizationName" />               
                     <input class="form-control" style="margin-top:20px;" placeholder="Description" type="text" ng-model="organization.OrganizationDesc" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Address" type="text" ng-model="organization.OrganizationAddress" /></br>
                     <label>Logo for organization :</label>
                     <input id="organization_logo" type="file" accept="image/*" style="margin-top:20px;"/>
+                    <label>Note : Please upload logo of size 160 * 40</label>
                     <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addOrganizationConfig()">Add</button>
                 </div>
             </div>

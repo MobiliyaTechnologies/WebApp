@@ -6,7 +6,10 @@
                 <div class="highchart-wrapper col-sm-9">
                     <div ng-if="loading" class="loader"></div>
                     <div class="panel panel-default">
-                        <div ng-show="configurationError" class="iframe-class-report-page powerBiError" style="height:490px;">
+                        <div ng-show="loadingpowerBi" class="iframe-class-report-page powerBiLoad">
+
+                        </div>
+                        <div ng-show="configurationError&&!loadingpowerBi" class="iframe-class-report-page powerBiError" style="height:490px;">
 
                         </div>
                         <div ng-show="!configurationError" class="panel-body" style="height:500px;">
