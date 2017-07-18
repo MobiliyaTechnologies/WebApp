@@ -110,13 +110,20 @@
                                             <!--<td><a ng-click="addBuilding(premise)" title="View Details"><i class="fa fa-plus"></i></a></td>-->
                                         </tr>
                                     </tbody>
+                                   
                                 </table>
+                                
+
+
+
                             </div>
                         </div>
                     </div>
                 </div>
+                <a href="https://emdeployment.blob.core.windows.net/releasemtr/ClassSchedule_PiServer1.csv" >SAMPLE SCHEDULE FILE</a>
             </div>
         </div>
+        
     </div>
     <div class="panel panel-default">
         <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseTwo" style="cursor:pointer;background-color:{{checkPowerBiCredentials}}">
@@ -284,7 +291,7 @@
                                             <th>Last Name</th>
                                             <th>Email</th>
                                             <th>Role </th>
-                                            <th>Changes role</th>
+                                            <th>Change role</th>
                                             </thead>
                                             <tbody>
                                                 <tr ng-repeat="user in userList">
@@ -320,14 +327,14 @@
         </div>
         <div id="collapsetwelve" class="panel-collapse collapse out">
             <div class="panel-body">
-                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:350px;">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:375px;">
                     <h3>Organization Configuration</h3>
                     <input class="form-control" style="margin-top:20px;" placeholder="Organization" type="text" ng-model="organization.OrganizationName" />               
                     <input class="form-control" style="margin-top:20px;" placeholder="Description" type="text" ng-model="organization.OrganizationDesc" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Address" type="text" ng-model="organization.OrganizationAddress" /></br>
                     <label>Logo for organization :</label>
-                    <input id="organization_logo" type="file" accept="image/*" style="margin-top:20px;"/>
-                    <label>Note : Please upload logo of size 160 * 40</label>
+                    <input id="organization_logo" type="file" accept="image/*" style="margin-top:20px;"/><br />
+                    <label>Note : Please upload logo of size 160 * 40</label><br />
                     <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addOrganizationConfig()">Add</button>
                 </div>
             </div>
@@ -356,8 +363,8 @@
                                             <thead>
                                             <th>Room Name</th>
                                             <th>Room X</th>
-                                            <th>Romm Y</th>
-                                            <th>Sendor Map</th>
+                                            <th>Room Y</th>
+                                            <th>Sensor Map</th>
                                             <th>Edit</th>
                                             <th>Delete</th>
                                             </thead>
@@ -538,6 +545,8 @@
         <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:190px;">
             <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingName for building in buildingList" ng-model="selectedBuilding" style="z-index:1;width:70px;margin-top:20px;"></select>     </br></br>
             <input id="roomlist" type="file" accept=".csv" /></br></br>
+
+            <a href="https://emdeployment.blob.core.windows.net/releasemtr/Rooms.csv" >SAMPLE ROOM'S FILE</a>
         </div>
     </div>
     <div class="modal-footer">

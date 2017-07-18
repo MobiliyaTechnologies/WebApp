@@ -179,11 +179,15 @@ angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope,
                 var tablePos = $("#class-table").offset();
                 var top = tablePos.top + 40;
                 var left = tablePos.left;
-                for (var i = 0; i < $scope.rooms.length; i++) {
-                    $scope.rooms[i].top = top;
-                    $scope.rooms[i].left = left;
-                    top = top + 40;
-                }
+                setTimeout(function () {
+                    for (var i = 0; i < $scope.rooms.length; i++) {
+                        var rowPos = $("#RoomTable-" + $scope.rooms[i].RoomId).offset();
+                        console.log("Row Pos.....", rowPos);
+                        $scope.rooms[i].top = rowPos.top;
+                        $scope.rooms[i].left = rowPos.left;
+                        //top = top + 40;
+                    }
+                }, 2000);
 
             }
             else {

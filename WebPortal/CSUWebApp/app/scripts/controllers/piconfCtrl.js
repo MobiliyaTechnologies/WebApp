@@ -727,8 +727,9 @@ angular.module('WebPortal').controller('editPremiseCtrl', function ($scope, $mod
     $scope.premise = premise;
     
     $scope.ok = function () {
-
+        document.getElementById("loadingidgq").style.display = "block";
         Restservice.put('api/UpdatePremise', $scope.premise, function (err, response) {
+            document.getElementById("loadingidgq").style.display = "none";
             if (!err) {
                 console.log("[Info] :: Premise Updated", response);
                 Alertify.success("Premise Updated");
