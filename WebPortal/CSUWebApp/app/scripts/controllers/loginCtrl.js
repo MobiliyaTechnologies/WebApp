@@ -85,6 +85,7 @@ angular.module('WebPortal')
                 if (!err) {
                     $scope.loading = "display:none;";
                     console.log("[Info] :: Get Current User Details ", response);
+                    localStorage.setItem('demoCount', 1);
                     AuthService.setData(response);
                     if (response.RoleId == 1) {
                         AclService.attachRole('admin');

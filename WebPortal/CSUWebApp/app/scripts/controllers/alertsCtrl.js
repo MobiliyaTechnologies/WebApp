@@ -7,9 +7,13 @@
  * 
  */
 angular.module('WebPortal')
-    .controller('alertsCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, DTOptionsBuilder, Restservice ) {
+    .controller('alertsCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, DTOptionsBuilder, Restservice, $rootScope) {
         console.log("[Info] :: Alerts Controller");
-       
+        $scope.alertsFilter =""
+        $scope.demoMode = JSON.parse(localStorage.getItem("demoMode"));
+        if ($scope.demoMode) {
+            $scope.alertsFilter = '?DateFilter=' + localStorage.getItem('demoCount');
+        }
         $scope.dtOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
             .withDisplayLength(10)
@@ -20,7 +24,7 @@ angular.module('WebPortal')
         */
         $scope.getAllAlerts = function () {
            $scope.datatable = { 'loader': true };
-            Restservice.get('api/GetAllAlerts', function (err, response) {
+           Restservice.get('api/GetAllAlerts' + $scope.alertsFilter, function (err, response) {
                 if (!err) {
                     console.log("[Info]:: Get all alerts response ", response);
                     $scope.datatable.loader = false;
@@ -98,6 +102,12 @@ angular.module('WebPortal')
                 $scope.getAlerts();
             });
         };
+        $rootScope.$on('demoCount', function (event, data) {
+            console.log("Data", data);
+            
+            $scope.alertsFilter = '?DateFilter=' + data;
+            $scope.getAllAlerts();
+        });
 
     });
 

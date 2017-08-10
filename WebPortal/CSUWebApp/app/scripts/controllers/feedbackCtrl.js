@@ -7,10 +7,15 @@
  * 
  */
 angular.module('WebPortal')
-    .controller('feedbackCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, Restservice ) {
+    .controller('feedbackCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, Restservice, $rootScope) {
         console.log("[Info] :: Feedback Controller loaded");
         $scope.loadingpowerBi = true;
         $scope.configurationError = true;
+        $scope.feedbackFilter = '';
+        $scope.demoMode = JSON.parse(localStorage.getItem("demoMode"));
+        if ($scope.demoMode) {
+            $scope.feedbackFilter = " and DateFilter/FilterID eq \'" + localStorage.getItem('demoCount')+"\'";
+        }
         $scope.powerBiUrls = {
             'organization': {},
             'premise': {},
@@ -148,9 +153,12 @@ angular.module('WebPortal')
 
             var classes = $scope.Classes.filter(function (obj) {
                 return obj.RoomId === $scope.selectedClass;
-            })[0];     
+            })[0];
+            $scope.selectedPremiseName = premise.PremiseName;
+            $scope.selectedBuildingName = building.BuildingName;
+            $scope.selectedClassName = classes.RoomName;
             if ($scope.powerBiUrls.feedback.summary){
-                embedReport($scope.powerBiUrls.feedback.summary + "&$filter=BridgeRoomBuilding/PremiseBuildingRoom eq '" + premise.PremiseName + building.BuildingName + classes.RoomName + "'", 'feedback');
+                embedReport($scope.powerBiUrls.feedback.summary + "&$filter=BridgeRoomBuilding/PremiseBuildingRoom eq '" + premise.PremiseName + building.BuildingName + classes.RoomName + "'" + $scope.feedbackFilter, 'feedback');
             }
             else {
                 $scope.configurationError = true;
@@ -167,7 +175,7 @@ angular.module('WebPortal')
         }
        
         function embedReport(reportURL, iframeId) {
-            console.log(reportURL);
+            console.log("Feedback Url::",reportURL);
             var embedUrl = reportURL;
             if ("" === embedUrl) {
                 console.log("No embed URL found");
@@ -193,5 +201,10 @@ angular.module('WebPortal')
             iframe.contentWindow.postMessage(message, "*");;
         }
 
-
+        $rootScope.$on('demoCount', function (event, data) {
+            $scope.feedbackFilter = " and DateFilter/FilterID eq \'" + data + "\'";
+            if ($scope.powerBiUrls.feedback.summary) {
+                embedReport($scope.powerBiUrls.feedback.summary + "&$filter=BridgeRoomBuilding/PremiseBuildingRoom eq '" + $scope.selectedPremiseName + $scope.selectedBuildingName + $scope.selectedClassName + "'" + $scope.feedbackFilter, 'feedback');
+            }
+        });
     });

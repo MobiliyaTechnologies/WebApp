@@ -14,7 +14,6 @@ angular.module('WebPortal')
             Restservice.get('api/getrecommendations/', function (err, response) {
                 if (!err) {
                     $scope.recommendations = response;
-                    $scope.$apply();
                 }
                 else {
                     console.log(err);

@@ -185,7 +185,7 @@ namespace CSUWebApp
             configs.Add("redirect_uri", System.Configuration.ConfigurationManager.AppSettings["redirect_uri"]);
             configs.Add("adB2CSignIn", System.Configuration.ConfigurationManager.AppSettings["adB2CSignIn"]);
             configs.Add("adB2CSignInSignUp", System.Configuration.ConfigurationManager.AppSettings["adB2CSignInSignUp"]);
-
+            configs.Add("demoMode", System.Configuration.ConfigurationManager.AppSettings["demoMode"]);
             return configs;
         }
 

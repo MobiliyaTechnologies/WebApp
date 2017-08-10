@@ -17,14 +17,14 @@ angular.module('WebPortal')
         $scope.organization = {};
         $scope.azureml = {};
         $scope.loading = "display:block;";
-        $scope.checkPremisePowerBI = '#f29898';
-        $scope.checkBuildingPowerBI = '#f29898';
-        $scope.checkAzureMl = '#f29898';
-        $scope.checkUniversityPowerBI = '#f29898';
-        $scope.checkFeedbackPowerBI = '#f29898';
-        $scope.checkFirebase = '#f29898';
-        $scope.checkPIserver = '#f29898';
-        $scope.checkAddClassroom = '#c3f7d0';
+        $scope.checkPremisePowerBI = 'not-configured';
+        $scope.checkBuildingPowerBI = 'not-configured';
+        $scope.checkAzureMl = 'not-configured';
+        $scope.checkUniversityPowerBI = 'not-configured';
+        $scope.checkFeedbackPowerBI = 'not-configured';
+        $scope.checkFirebase = 'not-configured';
+        $scope.checkPIserver = 'not-configured';
+        $scope.checkAddClassroom = 'configured';
         /**
          * Function to get all Config  
          */
@@ -36,94 +36,94 @@ angular.module('WebPortal')
                         switch (response[i].ApplicationConfigurationType) {
                             case "PremisePowerBI":
                                 if (response[i].ApplicationConfigurationEntries.length > 0) {
-                                    $scope.checkPremisePowerBI = '#c3f7d0';
+                                    $scope.checkPremisePowerBI = 'configured';
                                     for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
                                         $scope.premisePowerBiConfig[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
                                     }
                                     //$scope.addPremisePowerBiUrl();
                                 }
                                 else {
-                                    $scope.checkPremisePowerBI = '#f29898';
+                                    $scope.checkPremisePowerBI = 'not-configured';
                                 }
                                 break;
                             case "BuildingPowerBI":
                                 if (response[i].ApplicationConfigurationEntries.length > 0) {
-                                    $scope.checkBuildingPowerBI = '#c3f7d0';
+                                    $scope.checkBuildingPowerBI = 'configured';
                                     for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
                                         $scope.buildingPowerBiConfig[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
                                     }      
                                     //$scope.addBuildingPowerBiUrl();
                                 }
                                 else {
-                                    $scope.checkBuildingPowerBI = '#f29898';
+                                    $scope.checkBuildingPowerBI = 'not-configured';
                                 }
                                 break;
                             case "AzureML":
                                 if (response[i].ApplicationConfigurationEntries.length > 0) {
-                                    $scope.checkAzureMl = '#c3f7d0';
+                                    $scope.checkAzureMl = 'configured';
                                     for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
                                         $scope.azureml[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
                                     } 
                                 }
                                 else {
-                                    $scope.checkAzureMl = '#f29898';
+                                    $scope.checkAzureMl = 'not-configured';
                                 }
                                 break;
                             case "OrganizationPowerBI":
                                 if (response[i].ApplicationConfigurationEntries.length > 0) {
-                                    $scope.checkUniversityPowerBI = '#c3f7d0';
+                                    $scope.checkUniversityPowerBI = 'configured';
                                     for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
                                         $scope.universityPowerBiConfig[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
                                     }  
                                     //$scope.addUniPowerBiUrl();
                                 }
                                 else {
-                                    $scope.checkUniversityPowerBI = '#f29898';
+                                    $scope.checkUniversityPowerBI = 'not-configured';
                                 }
                                 break;
                             case "BlobStorage":
                                 if (response[i].ApplicationConfigurationEntries.length > 0) {
-                                    $scope.checkBlobStrorage = '#c3f7d0';
+                                    $scope.checkBlobStrorage = 'configured';
                                 }
                                 else {
-                                    $scope.checkBlobStrorage = '#f29898';
+                                    $scope.checkBlobStrorage = 'not-configured';
                                 }
                                 break;
                             case "FeedbackPowerBI":
                                 if (response[i].ApplicationConfigurationEntries.length > 0) {
-                                    $scope.checkFeedbackPowerBI = '#c3f7d0';
+                                    $scope.checkFeedbackPowerBI = 'configured';
                                     for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
                                         $scope.feebackPowerBi[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
                                     }
                                 }
                                 else {
-                                    $scope.checkFeedbackPowerBI = '#f29898';
+                                    $scope.checkFeedbackPowerBI = 'not-configured';
                                 }
                                 break;
 
                             case "Firebase":
                                 if (response[i].ApplicationConfigurationEntries.length > 0) {
-                                    $scope.checkFirebase = '#c3f7d0';
+                                    $scope.checkFirebase = 'configured';
                                     for (var j = 0; j < response[i].ApplicationConfigurationEntries.length; j++) {
                                         $scope.firebase[response[i].ApplicationConfigurationEntries[j].ConfigurationKey] = response[i].ApplicationConfigurationEntries[j].ConfigurationValue;
                                         localforage.setItem(response[i].ApplicationConfigurationEntries[j].ConfigurationKey, response[i].ApplicationConfigurationEntries[j].ConfigurationValue);
                                     }
                                 }
                                 else {
-                                    $scope.checkFirebase = '#f29898';
+                                    $scope.checkFirebase = 'not-configured';
                                 }
                                 break;
 
                         }
                     }
-                    $scope.checkUser = '#c3f7d0';
-                    $scope.checkOrganization = '#c3f7d0';
+                    $scope.checkUser = 'configured';
+                    $scope.checkOrganization = 'configured';
                     if (Token.data.accesstoken == "" || Token.data.accesstoken == undefined) {
-                        $scope.checkPowerBiCredentials = '#f29898';
+                        $scope.checkPowerBiCredentials = 'not-configured';
                         $scope.edit = false;
                     }
                     else {
-                        $scope.checkPowerBiCredentials = '#c3f7d0';
+                        $scope.checkPowerBiCredentials = 'configured';
                         $scope.edit = true;
                     }
                 }
@@ -181,7 +181,7 @@ angular.module('WebPortal')
         /**
         * Function to get all premise associated with login user 
         */
-        $scope.checkPremise = '#f29898';
+        $scope.checkPremise = 'not-configured';
         function getPremiseList() {
             Restservice.get('api/GetAllPremise', function (err, response) {
                 if (!err) {
@@ -192,10 +192,10 @@ angular.module('WebPortal')
                     
                     if ($scope.Premises.length > 0) {
                         $scope.selectedPremise = $scope.Premises[0].PremiseID;
-                        $scope.checkPremise = '#c3f7d0';
+                        $scope.checkPremise = 'configured';
                     }
                     else {
-                        $scope.checkPremise = '#f29898';
+                        $scope.checkPremise = 'not-configured';
                     }
                 }
                 else {
@@ -300,10 +300,10 @@ angular.module('WebPortal')
                     
                     if (response.length > 0) {
                         $scope.PIserverList = response;
-                        $scope.checkPIserver = '#c3f7d0';
+                        $scope.checkPIserver = 'configured';
                     }
                     else {
-                        $scope.checkPIserver = '#f29898';
+                        $scope.checkPIserver = 'not-configured';
                      
                     }
                 }

@@ -8,7 +8,7 @@
     }
 
 </script>
-<div style="color:white;">
+<div class="overview-page">
     <div class="flip">
         <div class="card">
             <div class="face front">
@@ -17,18 +17,21 @@
                         <div class="ui-widget">
 
                             <div class="row">
-                                <img class="flip-button" src="./app/images/building_icon.png" ng-click="flip()" style="position: absolute;z-index:4;margin-top:5px;cursor:pointer;left:10px;">
-                                
+                                <div style="position: absolute;z-index:4;margin-top:15px;cursor:pointer;left:10px; background-color:rgba(53, 172, 207, 1);height: 34px;width: 34px;background-color: rgba(53, 172, 207, 1);border-radius: 3px;" ng-click="flip()">
+                                    <img class="flip-button" src="./app/images/building.svg"  style="margin-top:5px;">
+                                </div>
 
                                 <div class="dash-unit col-sm-12" style="height:60vh;padding:0;">
                                     <div id='mapView'>
-                                        <span ng-if="back_button" class="glyphicon glyphicon-circle-arrow-left gi-3x" style="margin-left:20px;position:absolute;z-index:101;cursor:pointer;left: 50px;" ng-click="loadPremise()"></span>
+                                        <span ng-if="back_button" class="glyphicon glyphicon-circle-arrow-left gi-3x" style="margin-left:25px;position:absolute;z-index:101;cursor:pointer;left: 50px;" ng-click="loadPremise()"></span>
                                     </div>
+
                                 </div>
 
                             </div>
 
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -38,7 +41,10 @@
                         <div class="ui-widget">
                             <div class="row">
                                 <div class="col-sm-9">
-                                    <img class="flip-button" src="./app/images/class_icon.png" ng-click="flip()" style="position: absolute;z-index:4;margin-top:5px;cursor:pointer;    left: -45px;top: -5px;">
+                                    <!--<img class="flip-button" src="./app/images/class_icon.png" ng-click="flip()" style="position: absolute;z-index:4;margin-top:5px;cursor:pointer;    left: -45px;top: -5px;">-->
+                                    <div style="position: absolute;z-index:4;margin-top:5px;cursor:pointer; left: -45px;top: -5px;background-color:rgba(53, 172, 207, 1);height: 34px;width: 34px;background-color: rgba(53, 172, 207, 1);border-radius: 3px;" ng-click="flip()">
+                                        <img class="flip-button" src="./app/images/building.svg" style="margin-top:5px;">
+                                    </div>
                                     <img src="./app/images/map_04.png" alt="Mountain View" style="width:990px;height:60vh;">
 
                                     <div ng-repeat="sensor in sensors">
@@ -71,106 +77,109 @@
                 </div>
             </div>
         </div>
-    </div>    
-    <h4 class="header-text">INSIGHTS</h4>
-    <div class="">
-        <div class="dash-unit">
-            <div class="ui-widget">
+    </div>  
+    <div class="insight">
+        <h4 class="header-text">INSIGHTS</h4>
+        <div class="">
+            <div class="">
+                <div class="ui-widget">
 
-                <div class="row">
-                    <div class="col-sm-12" style="padding:0;">
-                        <div class="recommendation-bar">
-                            <div class="recommendation-bar-content">
-                                <div class="col-sm-4">
-                                    <span class="glyphicon glyphicon-arrow-up arrow color-blue" aria-hidden="true"></span>
-                                    <h2 style="">{{insight.ConsumptionValue.toFixed(2)}}K</h2>
-                                    <label>CONSUMED IN LAST WEEK(KWH)</label>
-                                </div>
-                                <div class="col-sm-4">
-                                    <span class="glyphicon glyphicon-arrow-down arrow color-red" aria-hidden="true"></span>
-                                    <h2 style="">{{insight.overused.toFixed(2)}}K</h2>
-                                    <label>{{usage}}</label>
-                                </div>
-                                <div class="col-sm-4">
-                                    <span class="glyphicon glyphicon-arrow-up arrow color-green" aria-hidden="true"></span>
-                                    <h2 style="">{{insight.PredictedValue.toFixed(2)}}K</h2>
-                                    <label>EXPECTED</label>
+                    <div class="row">
+                        <div class="col-sm-12" style="padding:0;">
+                            <div class="recommendation-bar">
+                                <div class="recommendation-bar-content">
+                                    <div class="col-sm-4">
+                                        <img class="arrow" src="./app/images/up-blue.svg" />
+                                        <h2 style="">{{insight.ConsumptionValue.toFixed(2)}}K</h2>
+                                        <label>CONSUMED IN LAST WEEK(KWH)</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <img class="arrow" src="./app/images/up-green.svg" />
+                                        <h2 style="">{{insight.overused.toFixed(2)}}K</h2>
+                                        <label>{{usage}}</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <img class="arrow" src="./app/images/down-red.svg" />
+                                        <h2 style="">{{insight.PredictedValue.toFixed(2)}}K</h2>
+                                        <label>EXPECTED</label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
-                </div>
-                <div ng-repeat="recommendation in recommendations | limitTo:2" class="row">
-                    <div class="col-sm-12 recommendation-content">
-                        <div class="col-sm-8">
-                            <div class="col-sm-12 recommendation-title">
-                                {{recommendation.Alert_Type}}
+                    <div ng-repeat="recommendation in recommendations | limitTo:2" class="row">
+                        <div class="col-sm-12 recommendation-content">
+                            <div class="col-sm-8">
+                                
+                                <div class=" col-sm-12 recommendation-text">
+                                    {{recommendation.Alert_Desc}}
+                                </div>
                             </div>
-                            <div class=" col-sm-12 recommendation-text">
-                                {{recommendation.Alert_Desc}}
+                            <div class="col-sm-4 recommendation-date" >
+                                <label>{{recommendation.Timestamp | date}} </label>
                             </div>
                         </div>
-                        <div class="col-sm-4">
-                            <label>{{recommendation.Timestamp | date}} </label>
-                        </div>
+                    </div>
+                    <div class="row">
+                        <a class="recommendation-view-more" ui-sref="recommendation">VIEW MORE</a>
                     </div>
                 </div>
-                <div class="row">
-                    <a class="recommendation-view-more" ui-sref="recommendation">VIEW MORE</a>
-                </div>
-            </div>
 
-        </div>
-    </div>
-</div>
-<h4 class="header-text">SUMMARY&nbsp;{{MeterName}}</h4>
-<div class="jumbotron">
-    <div class="container">
-        <div class="ui-widget">
-            <div id="example">
-                <div class="row">
-                    <div id="srollreports" class="dash-unit col-sm-12" style="height:100%;padding:0;">
-                        <!--<div class="configuration-error">
-                            <h2>{{configurationError}}</h2>
-                        </div>-->
-                        <div ng-show="loadingpowerBi" class="iframe-class-report-page powerBiLoad">
-
-                        </div>
-                        <div ng-show="configurationError&&!loadingpowerBi" class="iframe-class-report-page powerBiError">
-
-                        </div>
-                        <iframe ng-show="!configurationError" id="summary" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
-                    </div>
-
-                </div>
             </div>
         </div>
     </div>
-</div>
+    <div class="insight">
+        <h4 class="header-text">SUMMARY&nbsp;{{MeterName}}</h4>
+        <div class="jumbotron">
+            <div class="container">
+                <div class="ui-widget">
+                    <div id="example">
+                        <div class="row">
+                            <div id="srollreports" class="dash-unit col-sm-12" style="height:100%;padding:0;">
+                                <!--<div class="configuration-error">
+                                    <h2>{{configurationError}}</h2>
+                                </div>-->
+                                <div ng-show="loadingpowerBi" class="iframe-class-report-page powerBiLoad">
 
-<h4 class="header-text">SUMMARY DETAILS&nbsp;{{MeterName}}</h4>
-<div class="jumbotron">
-    <div class="container">
-        <div class="ui-widget">
-            <div id="example">
-                <div class="row">
-                    <div ng-show="loadingpowerBi" class="iframe-class-report-page powerBiLoad">
+                                </div>
+                                <div ng-show="configurationError&&!loadingpowerBi" class="iframe-class-report-page powerBiError">
 
+                                </div>
+                                <iframe ng-show="!configurationError" id="summary" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
+                            </div>
+
+                        </div>
                     </div>
-                    <div ng-show="configurationError&&!loadingpowerBi" class="iframe-class-report-page powerBiError">
-
-                    </div>
-                    <div id="srollreports" class="dash-unit col-sm-12" style="height:100%;padding:0;">
-                        <iframe ng-show="!configurationError" id="summarydetails" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
-                    </div>
-
                 </div>
             </div>
         </div>
     </div>
-</div>
+    <div class="insight">
+        <h4 class="header-text">SUMMARY DETAILS&nbsp;{{MeterName}}</h4>
+        <div class="jumbotron">
+            <div class="container">
+                <div class="ui-widget">
+                    <div id="example">
+                        <div class="row">
+                            <div ng-show="loadingpowerBi" class="iframe-class-report-page powerBiLoad">
+
+                            </div>
+                            <div ng-show="configurationError&&!loadingpowerBi" class="iframe-class-report-page powerBiError">
+
+                            </div>
+                            <div id="srollreports" class="dash-unit col-sm-12" style="height:100%;padding:0;">
+                                <iframe ng-show="!configurationError" id="summarydetails" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
 
 
+    </div>
 
 
