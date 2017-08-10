@@ -58,7 +58,7 @@ angular.module('WebPortal')
                 {
                     credentials: 'Ahmc1XzhRQwnhx-_HvtFWJH5y1TOqNaUEOZgzPPHQyyffV8z-UyK3tfrkaEMZpiv',
                     center: mapLocation,
-                    zoom: 10,
+                    zoom: 30,
                     mapTypeId: Microsoft.Maps.MapTypeId.road,
 
                 });
@@ -217,10 +217,13 @@ angular.module('WebPortal')
         function createColorPushPin(type,entityList) {
             for (var i = 0; i < entityList.length; i++) {
                 var location = new Microsoft.Maps.Location(entityList[i].Latitude, entityList[i].Longitude);
-                var radius = entityList[i].MonthlyConsumption * 0.0001;
-                console.log("radius :",radius);
-
+                var radius = entityList[i].MonthlyConsumption * 0.0002;                
+                radius = radius + 5;
+                console.log("radius :", radius);
                 var fillColor = colors[i];
+                if (radius > 150) {
+                    radius = 150;
+                }
                 var offset = new Microsoft.Maps.Point(0, 5);
                 var svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="', ((radius + 5) * 2),
                     '" height="', ((radius + 5) * 2), '"><circle cx="', (radius + 5), '" cy="', (radius + 5), '" r="', radius, '" fill="', fillColor, '"/></svg>'];
