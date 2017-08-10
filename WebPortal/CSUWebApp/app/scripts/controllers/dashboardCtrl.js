@@ -16,7 +16,23 @@ angular.module('WebPortal')
         $scope.weather.search();
         $scope.username = localStorage.getItem("UserName");
         $scope.lastname = localStorage.getItem("LastName");
-       
+        $scope.demoMode = JSON.parse(localStorage.getItem("demoMode"));
+        
+       $scope.state=[
+                "Yesterday",
+                "Today" ,
+                "Week1" ,
+                "Week2" ,
+                "Week3" ,
+                "Week4" ,
+                "Month1" ,
+                "Month2" ,
+                "Month3" ,
+                "Month4" ,
+                "Month5" ,
+                "Month6" 
+        ]
+
         aadService.signIn(function (b2cSession) {
         });
 
@@ -138,14 +154,119 @@ angular.module('WebPortal')
             $state.go('alerts');
         }
 
-        $scope.changeState=function(state){
+        $scope.changeState = function (state) {
+
             $state.go(state);
         }
 
          
         $scope.logoutb2c = function () {           
             aadService.logout();
-        }        
+        }     
+        $scope.demoCount = 1;
+        $scope.previousData = function () {
+            if ($scope.demoCount > 1) {
+                $scope.demoCount--;
+                localStorage.setItem('demoCount', $scope.demoCount);
+                $rootScope.$broadcast('demoCount', $scope.demoCount);
+                $scope.stateValue = $scope.state[$scope.demoCount - 1];
+                var message = new Paho.MQTT.Message('{"State":' + $scope.demoCount+'}');
+                message.destinationName = "topic/AssetTracking";
+                client.send(message);
+            }
+        }
+        $scope.nextData = function () {
+            if ($scope.demoCount < $scope.state.length) {
+                $scope.demoCount++;
+                $rootScope.$broadcast('demoCount', $scope.demoCount);
+                localStorage.setItem('demoCount', $scope.demoCount);
+                $scope.stateValue = $scope.state[$scope.demoCount - 1];
+                var message = new Paho.MQTT.Message('{"State":' + $scope.demoCount + '}');
+                message.destinationName = "topic/AssetTracking";
+                client.send(message);
+            }
+
+        }
+        $scope.stateValue = $scope.state[$scope.demoCount - 1];
+
+
+        /*****MQTT******/
+        var client = new Paho.MQTT.Client("emdemo.mobiliya.com", Number('1884'), "clientId" + new Date());
+        //var client = new Paho.MQTT.Client("iot.eclipse.org", Number('443'), "clientId" + new Date());
+        // set callback handlers
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+
+        // connect the client
+        client.connect({ onSuccess: onConnect, useSSL: true});
+
+
+        // called when the client connects
+        function onConnect() {
+            // Once a connection has been made, make a subscription and send a message.
+            console.log("onConnect");
+            client.subscribe("topic/AssetTracking");
+          
+        }
+
+        // called when the client loses its connection
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:" + responseObject.errorMessage);
+            }
+        }
+
+        // called when a message arrives
+        function onMessageArrived(message) {
+            console.log("onMessageArrived:" + message.payloadString);
+        }
+
+        //var clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
+
+        //var host = 'wss://broker.mqttdashboard.com:8000';
+
+        //var options = {
+        //    keepalive: 10,
+        //    clientId: clientId,
+        //    protocolId: 'MQTT',
+        //    protocolVersion: 4,
+        //    clean: true,
+        //    reconnectPeriod: 1000,
+        //    connectTimeout: 30 * 1000,
+        //    will: {
+        //        topic: 'WillMsg',
+        //        payload: 'Connection Closed abnormally..!',
+        //        qos: 0,
+        //        retain: false
+        //    },
+        //    username: 'demo',
+        //    password: 'demo',
+        //    rejectUnauthorized: false
+        //}
+
+        //var client = mqtt.connect(host, options)
+
+        //client.on('error', function (err) {
+        //    console.log(err)
+        //    client.end()
+        //})
+
+        //client.on('connect', function () {
+        //    console.log('client connected:' + clientId)
+        //})
+
+        //client.subscribe('topic', { qos: 0 })
+
+        //client.publish('topic', 'wss secure connection demo...!', { qos: 0, retain: false })
+
+        //client.on('message', function (topic, message, packet) {
+        //    console.log('Received Message:= ' + message.toString() + '\nOn topic:= ' + topic)
+        //})
+
+        //client.on('close', function () {
+        //    console.log(clientId + ' disconnected')
+        //})
+         
        
     });
  /**

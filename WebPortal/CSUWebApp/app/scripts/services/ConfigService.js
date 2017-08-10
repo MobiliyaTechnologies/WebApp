@@ -21,7 +21,7 @@ angular.module('WebPortal')
                 this.signInSignUpPolicyName = data.signInSignUpPolicyName;
                 this.editProfilePolicyName = data.editProfilePolicyName;
                 this.redirect_uri = data.redirect_uri;
-
+                this.demoMode = data.demoMode;
                 localStorage.setItem("restServer", this.restServer);
                 localStorage.setItem("b2cApplicationId", this.b2cApplicationId);
                 localStorage.setItem("tenantName", this.tenantName);
@@ -29,7 +29,7 @@ angular.module('WebPortal')
                 localStorage.setItem("signInSignUpPolicyName", this.signInSignUpPolicyName);
                 localStorage.setItem("editProfilePolicyName", this.editProfilePolicyName);
                 localStorage.setItem("redirect_uri", this.redirect_uri);
-
+                localStorage.setItem("demoMode", this.demoMode);  
                 $timeout(function () {
                     $rootScope.$broadcast('config-loaded');
                 }, 1000);

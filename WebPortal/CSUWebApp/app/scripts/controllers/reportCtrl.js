@@ -7,7 +7,7 @@
  * 
  */
 angular.module('WebPortal')
-    .controller('reportCtrl', function ($scope, $http, $location, $state, config, Token, Restservice ) {
+    .controller('reportCtrl', function ($scope, $http, $location, $state, config, Token, Restservice, $rootScope) {
         console.log("[Info] :: Report Controller Loaded");
         $scope.configurationError = true;
         $scope.loadingpowerBi = true;
@@ -23,14 +23,19 @@ angular.module('WebPortal')
         else {
             Token.update(function () { });
         }    
+        $scope.reportFilter = '';
+        $scope.demoMode = JSON.parse(localStorage.getItem("demoMode"));
+        if ($scope.demoMode) {
+            $scope.reportFilter = "&$filter=DateFilter/FilterID eq \'" + localStorage.getItem('demoCount')+"\'";
+        }
         function getPowerBiUrls() {
             //$http.get('powerBI.json')
             //    .then(function (data, status, headers) {
             //        $scope.powerBiUrls = data.data;
             
                     if ($scope.powerBiUrls.organization) {   
-                        embedReport($scope.powerBiUrls.organization.summary, 'summary');
-                        embedReport($scope.powerBiUrls.organization.summarydetails, 'summarydetails');
+                        embedReport($scope.powerBiUrls.organization.summary + $scope.reportFilter, 'summary');
+                        embedReport($scope.powerBiUrls.organization.summarydetails + $scope.reportFilter, 'summarydetails');
                     }
                 //})
                 //.catch(function (data, status, headers) {
@@ -102,6 +107,7 @@ angular.module('WebPortal')
         var iframe;
         function embedReport(reportURL, iframeId) {
             var embedUrl = reportURL;
+            console.log("Report Url ::", reportURL);
             if ("" === embedUrl) {
                 console.log("No embed URL found");
                 $scope.configurationError = true;
@@ -126,5 +132,13 @@ angular.module('WebPortal')
             iframe = document.getElementById(iframeId);
             iframe.contentWindow.postMessage(message, "*");;
         }
+
+        $rootScope.$on('demoCount', function (event, data) {
+            $scope.reportFilter = "&$filter=DateFilter/FilterID eq \'" + data + "\'";
+            if ($scope.powerBiUrls.organization) {
+                embedReport($scope.powerBiUrls.organization.summary + $scope.reportFilter, 'summary');
+                embedReport($scope.powerBiUrls.organization.summarydetails + $scope.reportFilter, 'summarydetails');
+            }
+        });
 
     });

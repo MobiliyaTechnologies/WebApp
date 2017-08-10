@@ -1,5 +1,5 @@
-﻿<div>
-    <h4>FEEDBACK REPORT</h4>
+﻿<div class="feedback-page">
+    <h4 class="header-text">FEEDBACK REPORT</h4>
     <div class="jumbotron">
         <div class="container">
             <div class="row">
@@ -12,19 +12,25 @@
                         <div ng-show="configurationError&&!loadingpowerBi" class="iframe-class-report-page powerBiError" style="height:490px;">
 
                         </div>
-                        <div ng-show="!configurationError" class="panel-body" style="height:500px;">
+                        <div ng-show="!configurationError" class="panel-body" style="height:530px;">
                             <iframe id="feedback" src="" class="iframe-class-report-page" frameborder="1" seamless style="height:500px;"></iframe>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-3">
                     <div class="panel panel-default">
-                        <div class="panel-body" style="height:80vh;overflow:auto;">
+                        <div class="panel-header col-sm-12">
+                            <h4>ROOM DETAILS </h4>
+                        </div>
+
+                        <div class="panel-body" style="height:482px;overflow:auto;">
                             <div class="sensor-detail  col-sm-12">
-                                <label>Select Premise &nbsp;</label><select ng-options="premise.PremiseID as premise.PremiseName for premise in Premises" ng-change="getBuildingList()" ng-model="selectedPremise" style="z-index:1;width:70px;"></select>   </label>    </br>
-                                <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingName for building in Buildings" ng-change="getClassRoomList()" ng-model="selectedBuilding" style="z-index:1;width:70px;"></select>   </label>    </br>
-                                <label>Select Room &nbsp;</label><select ng-options="class.RoomId as class.RoomName for class in Classes" ng-change="getSensorList()" ng-model="selectedClass" style="z-index:1;width:70px;"></select>   </label>    </br>
-                                <h3>ROOM DETAILS </h3></br>
+                                <label>Select Premise &nbsp;</label></br>
+                                <select ng-options="premise.PremiseID as premise.PremiseName for premise in Premises" ng-change="getBuildingList()" ng-model="selectedPremise" ></select>   </label>    </br>
+                                <label>Select Building &nbsp;</label></br>
+                                <select ng-options="building.BuildingID as building.BuildingName for building in Buildings" ng-change="getClassRoomList()" ng-model="selectedBuilding" ></select>   </label>    </br>
+                                <label>Select Room &nbsp;</label></br>
+                                <select ng-options="class.RoomId as class.RoomName for class in Classes" ng-change="getSensorList()" ng-model="selectedClass" ></select>   </label>    </br>
                                 <div ng-repeat="sensor in sensors">
                                     <h4>{{sensor.Sensor_Name}}</h4>
                                     <Label>Humidity :&nbsp;&nbsp;</Label>{{sensor.Humidity.toFixed(2)}}</br>

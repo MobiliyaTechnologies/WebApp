@@ -15,7 +15,7 @@ var iframe;
 var colors = ['rgba(60,162,224, 0.7)', 'rgba(138, 212, 235, 0.7)', 'rgba(254, 150, 102, 0.7)', 'rgba(95, 107, 109, 0.7)','rgba(253, 98, 94, 0.7)']
 
 angular.module('WebPortal')
-    .controller('overviewCtrl', function ($scope, $http, $location, Token, config, $timeout, Restservice ) {
+    .controller('overviewCtrl', function ($scope, $http, $location, Token, config, $timeout, Restservice, $rootScope ) {
         $scope.userId = localStorage.getItem("userId");
         $scope.premiseList = [];
         $scope.meterList = [];
@@ -29,7 +29,26 @@ angular.module('WebPortal')
             'building': {},
             'feedback': {}
         }
-        
+        $scope.filter = '';
+        $scope.powerBiFilter = '';
+        $scope.selectedBuilding = '';
+        $scope.selectedPremise = '';
+        $scope.demoCount = 1;
+        $scope.demoMode = JSON.parse(localStorage.getItem("demoMode"));
+        $scope.premiseState = true;
+        if ($scope.demoMode) {
+            var data = localStorage.getItem('demoCount');
+            $scope.filter = '?DateFilter=' + data;
+            $scope.powerBiFilter = " and DateFilter/FilterID eq \'" + data + "\'";
+            $scope.powerBiFilterIntial="&$filter=DateFilter/FilterID eq \'" + data + "\'";
+            $scope.previousnextHide = true;
+            $scope.demoCount = 1;
+        }
+        else {
+            $scope.filter = ''
+            $scope.previousnextHide = false;
+        }
+        var map;
         /**
          * This function would trigger after map get loaded 
          */
@@ -50,7 +69,7 @@ angular.module('WebPortal')
         * Function to get all Building associated with premise
         */
         function getBuildingList(premiseId) {
-            Restservice.get('api/GetBuildingsByPremise/' + premiseId, function (err, response) {
+            Restservice.get('api/GetBuildingsByPremise/' + premiseId+$scope.filter, function (err, response) {
                 if (!err) {
                     console.log("[Info]  :: Get BuildingsBy Premise ", response);
                     createBasePushPin('building', response);
@@ -65,9 +84,11 @@ angular.module('WebPortal')
          * Function to get all premise associated with login user 
          */
         function getPremiseList() {
-            Restservice.get('api/GetAllPremise', function (err, response) {
+            
+            Restservice.get('api/GetAllPremise' + $scope.filter, function (err, response) {
                 if (!err) {
                     $scope.premiseList = response;
+                    map.entities.clear();
                     createBasePushPin('premise', $scope.premiseList);
                     createColorPushPin('premise', $scope.premiseList);
                     console.log("[Info]  :: Get All Premise ", response);
@@ -82,6 +103,7 @@ angular.module('WebPortal')
         $scope.loadPremise = function () {
             map.entities.clear();
             $scope.back_button = false;
+            $scope.premiseState = true;
             createBasePushPin('premise', $scope.premiseList);
             createColorPushPin('premise', $scope.premiseList);
         }
@@ -145,26 +167,12 @@ angular.module('WebPortal')
         }
         getConfig();
         function getPowerBiUrls() {
-            //$http.get('powerBI.json')
-               // .then(function (data, status, headers) {
-              //      $scope.powerBIUrls = data.data;
+        
                     if ($scope.powerBIUrls.premise) {
-                        embedReport($scope.powerBIUrls.premise.summary, 'summary');
-                        embedReport($scope.powerBIUrls.premise.summarydetails, 'summarydetails');
-                    }
-                       
-                        
-              //  })
-              //  .catch(function (data, status, headers) {
-               //     console.log("[Error]  :: Get Power Bi Urls ", data);
-              //  });
-
-
-
-
-
-
-
+                        embedReport($scope.powerBIUrls.premise.summary + $scope.powerBiFilterIntial, 'summary');
+                        embedReport($scope.powerBIUrls.premise.summarydetails + $scope.powerBiFilterIntial, 'summarydetails');
+                    }          
+            
 
         }
           
@@ -209,8 +217,10 @@ angular.module('WebPortal')
         function createColorPushPin(type,entityList) {
             for (var i = 0; i < entityList.length; i++) {
                 var location = new Microsoft.Maps.Location(entityList[i].Latitude, entityList[i].Longitude);
-                var radius = entityList[i].MonthlyConsumption * 0.001;
-                var fillColor = colors[Math.floor(Math.random() * 4) + 0];
+                var radius = entityList[i].MonthlyConsumption * 0.0001;
+                console.log("radius :",radius);
+
+                var fillColor = colors[i];
                 var offset = new Microsoft.Maps.Point(0, 5);
                 var svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="', ((radius + 5) * 2),
                     '" height="', ((radius + 5) * 2), '"><circle cx="', (radius + 5), '" cy="', (radius + 5), '" r="', radius, '" fill="', fillColor, '"/></svg>'];
@@ -249,12 +259,15 @@ angular.module('WebPortal')
             //});
             infobox.setOptions({ visible: false });
             if (args.target.Type == 'premise') {
+                $scope.premiseState = false;
+                $scope.selectedPremise = args.target.Name;
+                $scope.selectedPremiseID = args.target.ID;
                 map.entities.clear();
                 $scope.back_button = true;
                 getBuildingList(args.target.ID);
                 if ($scope.powerBIUrls.premise) {
-                    embedReport($scope.powerBIUrls.premise.summary + "&$filter=Premise/PremiseName eq \'" + args.target.Name + "\'", 'summary');
-                    embedReport($scope.powerBIUrls.premise.summarydetails + "&$filter=Premise/PremiseName eq \'" + args.target.Name + "\'", 'summarydetails');
+                    embedReport($scope.powerBIUrls.premise.summary + "&$filter=Premise/PremiseName eq \'" + args.target.Name + "\'" + $scope.powerBiFilter, 'summary');
+                    embedReport($scope.powerBIUrls.premise.summarydetails + "&$filter=Premise/PremiseName eq \'" + args.target.Name + "\'" + $scope.powerBiFilter, 'summarydetails');
                 }
                 $scope.$apply();
             }
@@ -263,14 +276,16 @@ angular.module('WebPortal')
                     var premise = $scope.premiseList.filter(function (obj) {
                         return obj.PremiseID === args.target.PremiseID;
                     })[0];
-                    embedReport($scope.powerBIUrls.building.summary + "&$filter=BridgePremiseBuilding/PremiseBuilding eq \'" + premise.PremiseName+ args.target.Name + "\'", 'summary');
-                    embedReport($scope.powerBIUrls.building.summarydetails + "&$filter=BridgePremiseBuilding/PremiseBuilding eq \'" + premise.PremiseName+ args.target.Name + "\'", 'summarydetails');
+                    $scope.selectedBuilding = premise.PremiseName + args.target.Name;
+                    embedReport($scope.powerBIUrls.building.summary + "&$filter=BridgePremiseBuilding/PremiseBuilding eq \'" + premise.PremiseName + args.target.Name + "\'" + $scope.powerBiFilter, 'summary');
+                    embedReport($scope.powerBIUrls.building.summarydetails + "&$filter=BridgePremiseBuilding/PremiseBuilding eq \'" + premise.PremiseName + args.target.Name + "\'" + $scope.powerBiFilter, 'summarydetails');
                 }
             }
         }
 
         function embedReport(reportURL, iframeId) {   
             var embedUrl = reportURL;
+            console.log("Power Bi Url ::", reportURL);
             if ("" === embedUrl) {
                 console.log("[Error]  :: No embed URL found ");
                 $scope.configurationError = true;
@@ -298,7 +313,7 @@ angular.module('WebPortal')
 
 
         function getInsight() {
-            Restservice.get('api/GetInsightData', function (err, response) {
+            Restservice.get('api/GetInsightData' + $scope.filter, function (err, response) {
                 if (!err) {
                     console.log("[Info] :: Get Insight Data ", response);
                     $scope.insight = response;
@@ -323,7 +338,7 @@ angular.module('WebPortal')
         function getRecommendation() {
            
 
-            Restservice.get('api/getrecommendations/', function (err, response) {
+            Restservice.get('api/getrecommendations' + $scope.filter, function (err, response) {
                 if (!err) {
                     $scope.recommendations = response;
                     console.log("[Info]  :: Get recommendation ", response);
@@ -380,6 +395,43 @@ angular.module('WebPortal')
         $scope.showSensorDetails = function (sensor) {
             $scope.selectedSensor = sensor;
         }
+        
+        $rootScope.$on('demoCount', function (event, data) {
+            console.log("Data", data);
+            
+            $scope.filter = '?DateFilter=' + data;
+            $scope.powerBiFilter = " and DateFilter/FilterID eq \'" + data + "\'";
+            $scope.powerBiFilterIntial = "&$filter=DateFilter/FilterID eq \'" + data + "\'";
+            if ($scope.premiseState) {
+                if ($scope.powerBIUrls.premise) {
+                    if ($scope.selectedPremise != '') {
+                        embedReport($scope.powerBIUrls.premise.summary + "&$filter=Premise/PremiseName eq \'" + $scope.selectedPremise + "\'" + $scope.powerBiFilter, 'summary');
+                        embedReport($scope.powerBIUrls.premise.summarydetails + "&$filter=Premise/PremiseName eq \'" + $scope.selectedPremise + "\'" + $scope.powerBiFilter, 'summarydetails');
+                    }
+                    else {
+                        embedReport($scope.powerBIUrls.premise.summary + $scope.powerBiFilterIntial, 'summary');
+                        embedReport($scope.powerBIUrls.premise.summarydetails + $scope.powerBiFilterIntial, 'summarydetails');
+                    }
+                }
+                
+            }
+            else {
+
+                if ($scope.powerBIUrls.building) {
+                    if ($scope.selectedBuilding != '') {
+                        embedReport($scope.powerBIUrls.building.summary + "&$filter=BridgePremiseBuilding/PremiseBuilding eq \'" + $scope.selectedBuilding + "\'" + $scope.powerBiFilter, 'summary');
+                        embedReport($scope.powerBIUrls.building.summarydetails + "&$filter=BridgePremiseBuilding/PremiseBuilding eq \'" + $scope.selectedBuilding+ "\'" + $scope.powerBiFilter, 'summarydetails');
+                    }
+                   
+                }
+                getBuildingList($scope.selectedPremiseID);
+
+            }
+            getPremiseList();
+            getInsight();
+            getRecommendation();
+        });
+     
 
     });
 

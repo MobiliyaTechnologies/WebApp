@@ -26,9 +26,10 @@
     "angularjs-dropdown-multiselect": "^1.11.8",
     "angular-file-saver": "^1.1.3",
     "angular-acl": "^0.1.9",
-    "ng-alertify": "^1.0.2"
+    "ng-alertify": "^1.0.2",
+    "paho-mqtt": "*"
   },
   "resolutions": {
-    "angular": "1.6.4"
+    "angular": "1.6.5"
   }
 }

@@ -1,8 +1,9 @@
-﻿<div class="panel-group" id="accordion">
-    <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseZero" style="cursor:pointer;background-color:{{checkPremise}}">
+﻿<div style="margin-top:8px;">   
+ <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseZero">
             <h4 class="panel-title">
-                <label>
+                <img src="./app/images/{{checkPremise}}.png" />
+                <label style="">
                     Premise Configuration
                 </label>
             </h4>
@@ -40,7 +41,7 @@
                                         </table>
                                     </div>
                                 </div>
-                                <button class="btn blue-button" ng-click="addPremise()">Add Premise</button>
+                                <button class="blue-button" ng-click="addPremise()">Add Premise</button>
                             </div>
                         </div>
                     </div>
@@ -50,9 +51,10 @@
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseThirteen" style="cursor: pointer; background-color: {{checkPremise}};">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseThirteen">
             <h4 class="panel-title">
-                <label>
+                <img src="./app/images/{{checkPremise}}.png" />
+                <label>                    
                     Premise-Building Mapping
                 </label>
             </h4>
@@ -61,14 +63,17 @@
             <div class="panel-body">
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-offset-4 col-lg-3 dash-unit">
-                            <label>Select Premise &nbsp;</label><select ng-options="premise.PremiseID as premise.PremiseName for premise in Premises" ng-model="selectedPremise" style="z-index:1;width:70px;margin-top:20px;"></select>   </label>    </br>
-                            <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingName for building in buildingList" ng-model="selectedBuilding" style="z-index:1;width:70px;margin-top:20px;"></select>   </label>    </br>
-                            <input class="form-control" style="margin-top:20px;" placeholder="Building latitude" type="text" ng-model="buildingLat" />
-                            <input class="form-control" style="margin-top:20px;" placeholder="Building longitude" type="text" ng-model="buildingLong" />
-                            <!--<input id="class_schedulefile" type="file" accept=".csv" />-->
-                            <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:35%;" ng-click="mapPremiseBuilding()">Map</button>
-                        </div>
+                            <div class="col-lg-6">
+                                <label>Select Premise &nbsp;</label><select ng-options="premise.PremiseID as premise.PremiseName for premise in Premises" ng-model="selectedPremise"></select></label>  
+                                <input class="form-control" style="margin-top:20px;" placeholder="Building latitude" type="text" ng-model="buildingLat" />
+                            </div>
+                             <div class="col-lg-6">
+                                 <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingName for building in buildingList" ng-model="selectedBuilding"></select>   </label>
+                                 <input class="form-control" style="margin-top:20px;" placeholder="Building longitude" type="text" ng-model="buildingLong" />
+                             </div>                        
+                                                      
+                           
+                            <button class="blue-button" ng-click="mapPremiseBuilding()">Map</button>
                     </div>
 
                 </div>
@@ -76,8 +81,9 @@
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne" style="cursor: pointer; background-color: {{checkPIserver}};">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne" >
             <h4 class="panel-title">
+                <img src="./app/images/{{checkPIserver}}.png" />
                 <label >
                     PI Server Configuration
                 </label>
@@ -126,8 +132,9 @@
         
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseTwo" style="cursor:pointer;background-color:{{checkPowerBiCredentials}}">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseTwo" >
             <h4 class="panel-title">
+                <img src="./app/images/{{checkPowerBiCredentials}}.png" />
                 <label>
                     Power BI Credentials
                 </label>
@@ -141,15 +148,16 @@
                     <input ng-disabled="edit" class="form-control" style="margin-top:20px;" placeholder="Username" type="text" ng-model="powerBicredentials.Username" />
                     <input ng-disabled="edit" class="form-control" style="margin-top:20px;" placeholder="Password" type="text" ng-model="powerBicredentials.Password" />
                     <a ng-if="edit" ng-click="editClick()">edit</a>
-                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addPowerBiCredntials()">Add</button>
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addPowerBiCredntials()">Add</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseThree" style="cursor:pointer;background-color:{{checkUniversityPowerBI}}">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseThree" >
             <h4 class="panel-title">
+                <img src="./app/images/{{checkUniversityPowerBI}}.png" />
                 <label >
                     Power BI Configuration(Organisation) 
                 </label>
@@ -160,14 +168,15 @@
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
                     <input class="form-control" style="margin-top:20px;" placeholder="Summary Report Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="universityPowerBiConfig.summary" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Summary Details Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="universityPowerBiConfig.summarydetails" />
-                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addUniPowerBiUrl()">Add</button>
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addUniPowerBiUrl()">Add</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFour" style="cursor:pointer;background-color:{{checkPremisePowerBI}}">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFour" >
             <h4 class="panel-title">
+                <img src="./app/images/{{checkPremisePowerBI}}.png" />
                 <label >
                     Power BI Configuration(Premise)
                 </label>
@@ -178,14 +187,15 @@
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
                     <input class="form-control" style="margin-top:20px;" placeholder="Summary Report Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="premisePowerBiConfig.summary" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Summary Details Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="premisePowerBiConfig.summarydetails" />
-                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addPremisePowerBiUrl()">Add</button>
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addPremisePowerBiUrl()">Add</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFive" style="cursor:pointer;background-color:{{checkBuildingPowerBI}}">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFive" >
             <h4 class="panel-title">
+                <img src="./app/images/{{checkBuildingPowerBI}}.png" />
                 <label >
                     Power BI Configuration(Builiding)
                 </label>
@@ -196,15 +206,16 @@
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
                     <input class="form-control" style="margin-top:20px;" placeholder="Summary Report Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="buildingPowerBiConfig.summary" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Summary Details Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="buildingPowerBiConfig.summarydetails" />
-                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addBuildingPowerBiUrl()">Add</button>
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addBuildingPowerBiUrl()">Add</button>
                 </div>
                 
             </div>
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseSix" style="cursor:pointer;background-color:{{checkFeedbackPowerBI}}">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseSix" >
             <h4 class="panel-title">
+                <img src="./app/images/{{checkFeedbackPowerBI}}.png" />
                 <label>
                     Power BI Configuration(Feedback)
                 </label>
@@ -214,15 +225,16 @@
             <div class="panel-body">
                 <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
                     <input class="form-control" style="margin-top:20px;" placeholder="Feedback report Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="feebackPowerBi.summary" />
-                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFeedbackPowerBiUrl()">Add</button>
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFeedbackPowerBiUrl()">Add</button>
                 </div>
 
             </div>
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseSeven" style="cursor:pointer;background-color:{{checkAzureMl}}">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseSeven" >
             <h4 class="panel-title">
+                <img src="./app/images/{{checkAzureMl}}.png" />
                 <label >
                     Azure ML Configuration
                 </label>
@@ -236,15 +248,16 @@
                     <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml AnomalyDetection Api Url" type="text" ng-model="azureml.AzureMlAnomalyDetectionApiUrl" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml DailyPrediction Api key" type="text" ng-model="azureml.AzureMlDailyPredictionApiKey" />
                     <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml DailyPrediction Api Url" type="text" ng-model="azureml.AzureMlDailyPredictionApiURL" />
-                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addAzureMlConfig()">Add</button>
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addAzureMlConfig()">Add</button>
                 </div>
             </div>
         </div>
     </div>
    
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseNine" style="cursor:pointer;background-color:{{checkFirebase}}">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseNine" >
             <h4 class="panel-title">
+                <img src="./app/images/{{checkFirebase}}.png" />
                 <label>
                     Firebase Configuration
                 </label>
@@ -261,14 +274,15 @@
                     <!--<input class="form-control" style="margin-top:20px;" placeholder="Authorisation Key" type="text" ng-model="firebase.NotificationAuthorizationKey" />-->
                     <input class="form-control" style="margin-top:20px;" placeholder="Messaging Sender Id" type="text" ng-model="firebase.NotificationSender" />
                    <input class="form-control" style="margin-top:20px;" placeholder="Messaging Receiver Id" type="text" value="/topics/Alerts" ng-model="firebase.NotificationReceiver" />
-                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFirebaseConfig()">Add</button>
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFirebaseConfig()">Add</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseEleven" style="cursor: pointer; background-color: {{checkUser}}">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseEleven" >
             <h4 class="panel-title">
+                <img src="./app/images/{{checkUser}}.png" />
                 <label>
                     User Configuration
                 </label>
@@ -318,8 +332,9 @@
 
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapsetwelve" style="cursor:pointer;background-color:{{checkOrganization}}">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapsetwelve" >
             <h4 class="panel-title">
+                <img src="./app/images/{{checkOrganization}}.png" />
                 <label>
                    Organization Configuration
                 </label>
@@ -335,14 +350,15 @@
                     <label>Logo for organization :</label>
                     <input id="organization_logo" type="file" accept="image/*" style="margin-top:20px;"/><br />
                     <label>Note : Please upload logo of size 160 * 40</label><br />
-                    <button class="btn blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addOrganizationConfig()">Add</button>
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addOrganizationConfig()">Add</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFourteen" style="cursor:pointer;background-color:{{checkAddClassroom}}">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFourteen" >
             <h4 class="panel-title">
+                <img src="./app/images/{{checkAddClassroom}}.png" />
                 <label>
                     Room Configuration
                 </label>
@@ -385,7 +401,7 @@
                             
                         </div>
                     </div>
-                    <button class="btn blue-button" ng-click="addRooms()">Add Classrooms</button>
+                    <button class="blue-button" ng-click="addRooms()">Add Classrooms</button>
                     
                 </div>
             </div>
@@ -393,8 +409,6 @@
     </div>
     
 </div>
-
-
 
 <script type="text/ng-template" id="editPremise.html">
     <div class="modal-header">
@@ -410,8 +424,8 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn blue-button" ng-click="ok()">Edit</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="blue-button" ng-click="ok()">Edit</button>
+        <button class="btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
 <script type="text/ng-template" id="addPremise.html">
@@ -433,8 +447,8 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn blue-button" ng-click="ok()">Add</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="blue-button" ng-click="ok()">Add</button>
+        <button class="btn-warning" ng-click="cancel()">Cancel</button>
        
     </div>
 </script>
@@ -452,8 +466,8 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn blue-button" ng-click="ok()">Add</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="blue-button" ng-click="ok()">Add</button>
+        <button class=" btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
 <script type="text/ng-template" id="changeRole.html">
@@ -468,7 +482,7 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn blue-button" ng-click="ok()">Change</button>
+        <button class="blue-button" ng-click="ok()">Change</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
@@ -488,7 +502,7 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn blue-button" ng-click="ok()">Add</button>
+        <button class="blue-button" ng-click="ok()">Add</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
@@ -517,7 +531,7 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn blue-button" ng-click="ok()">Add</button>
+        <button class="blue-button" ng-click="ok()">Add</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
@@ -533,7 +547,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn blue-button" ng-click="ok()">Update</button>
+        <button class="blue-button" ng-click="ok()">Update</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
@@ -550,7 +564,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn blue-button" ng-click="ok()">Add</button>
+        <button class="blue-button" ng-click="ok()">Add</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>

@@ -1,7 +1,7 @@
 ﻿<div ng-hide="{{$root.hideHeader}}" class="header-div">
-    <!--<a href="https://mseastus.blob.core.windows.net/general/PowerMap_Dec_27_2016.xlsx" class="header-download-link">DOWNLOAD POWER MAP REPORT</a>-->
-    <div ng-show="weather.hasState == 'has-success'" style="float:right;color:white;margin-top:5px;">
-        <ul style="padding:0;">
+    <img class="header-logo" src="{{organization.OrganizationLogoUri}}" />   
+    <div ng-show="weather.hasState == 'has-success'" class="weather-div">
+        <!--<ul style="padding:0;">
             <li ng-repeat="forecast in weather.forecast" style="display:inline-table;">
                 <div class="row" style="margin-right:10px;">
                     <div class="col-sm-3">
@@ -30,24 +30,26 @@
                     </div>
                 </div>
 
-        </ul>
+        </ul>-->
+        <div ng-repeat="forecast in weather.forecast">
+            <div class="col-lg-6 weather-innerdiv">
+
+                <weather-icon code="{{ forecast.code }}" class="weather-icon"></weather-icon>
+                <label class="weather-unit">{{weather.temp}}&deg;{{weather.unit}}&nbsp;&nbsp;</label>
+                <label class="weather-text">{{ forecast.text }}</label>
+            </div>
+        <div class="col-lg-6 weather-innerdiv" >
+            <img class="date-icon" src="./app/images/date.png" />
+            <label class="date-text">{{ forecast.date }} </label>
+        </div>
+        </div>
+
 
     </div>
-    <!--<div class="error" ng-show="weather.hasState == 'has-warning'">
-        <span ng-show="weather.message" class="alert"><span class="glyphicon glyphicon-arrow-left">&nbsp;</span>{{weather.message}}</span>
-    </div>-->
+  
     
-    <div class="header-logo">
-   
-        <div class="row">
-            <div >
-                <img class="col-lg-4" src="{{organization.OrganizationLogoUri}}" style="margin-top:6px;margin-left:25px;height:40px;" />
-            </div>
-            <label class="header-label" style="margin-left:-5px;">Energy Management</label>
-            
-        </div>
         
-    </div>
+        
 
    
     
