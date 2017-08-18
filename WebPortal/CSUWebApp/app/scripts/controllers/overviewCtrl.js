@@ -15,7 +15,7 @@ var iframe;
 var colors = ['rgba(60,162,224, 0.7)', 'rgba(138, 212, 235, 0.7)', 'rgba(254, 150, 102, 0.7)', 'rgba(95, 107, 109, 0.7)','rgba(253, 98, 94, 0.7)']
 
 angular.module('WebPortal')
-    .controller('overviewCtrl', function ($scope, $http, $location, Token, config, $timeout, Restservice, $rootScope, Alertify) {
+    .controller('overviewCtrl', function ($scope, $http, $location, Token, config, $timeout, Restservice, $rootScope, Alertify, $filter) {
         $scope.userId = localStorage.getItem("userId");
         $scope.premiseList = [];
         $scope.meterList = [];
@@ -392,7 +392,7 @@ angular.module('WebPortal')
                     $scope.sensors = response;
                     //$scope.selectedSensor = $scope.sensors[0];
                     if ($scope.sensors.length > 0) {
-                        subscribeMqtt($scope.sensors[0].Sensor_Id);
+                        //subscribeMqtt($scope.sensors[0].Sensor_Id);
                     }
                 }
                 else {
@@ -402,8 +402,29 @@ angular.module('WebPortal')
 
         }
         getSensorList();
+        $scope.selectedSensor = {
+            'Sensor_Name': '',
+            'Humidity': '',
+            'Brightness': '',
+            'Temperature': ''
+        }
+        $scope.fetchStr = true;
+        $scope.Sensor_Name = '';
         $scope.showSensorDetails = function (sensor) {
-            //$scope.selectedSensor = sensor;
+            console.log("Sensor", sensor);
+            
+            $scope.Sensor_Name = sensor.Sensor_Name;
+            if (sensor.Temperature == 0) {
+                $scope.fetchStr = true;
+                
+
+            }
+            else {
+                $scope.fetchStr = false;
+                $scope.selectedSensor = sensor;
+                console.log("$scope.selectedSensor", $scope.selectedSensor);
+            }
+            
             subscribeMqtt(sensor.Sensor_Id);
         }
         
@@ -478,18 +499,34 @@ angular.module('WebPortal')
         // called when a message arrives
         function onMessageArrived(message) {
             console.log("onMessageArrived:" + message.payloadString);
+            $scope.fetchStr = false;
             $scope.selectedSensor = JSON.parse(message.payloadString);
+            var object = $filter('filter')($scope.sensors, function (d) { return d.Sensor_Id == $scope.selectedSensor.Sensor_Id; })[0];
+            console.log("Sensors", $scope.sensors);
+            console.log("$scope.selectedSensor", $scope.selectedSensor);
+            console.log("Object", object);
+            var index = $scope.sensors.findIndex(e => e.Sensor_Id == $scope.selectedSensor.Sensor_Id);
+            //var index = object.$$originalIdx;
+            console.log("index", index);
+
+            $scope.sensors[index].Temperature = $scope.selectedSensor.Temperature;
+            $scope.sensors[index].Brightness = $scope.selectedSensor.Brightness;
             $scope.$apply();
         }
 
         function subscribeMqtt(sensorkey) {
             console.log("SensorKey ::", sensorkey);
+            if ($scope.topicSubscribe) {
+                client.unsubscribe($scope.topicSubscribe);
+                console.log("UnSubscribe to topic "+$scope.topicSubscribe);
+            }
             if (mqttstatus) {
                 client.subscribe("/emsensors/" + sensorkey);
-                console.log("Subscribr to topic " + "/emsensors/" + sensorkey)
+                $scope.topicSubscribe = "/emsensors/" + sensorkey;
+                console.log("Subscribe to topic " + "/emsensors/" + sensorkey)
             }
             else {
-                Alertify.error("Fail to Connect Notification Server");
+                //Alertify.error("Fail to Connect Notification Server");
             }
             
         }

@@ -60,10 +60,15 @@
                                         <div class="panel-body">
                                             <div class="sensor-detail  col-sm-12">
                                                 <h3>SENSOR DETAILS </h3></br>
-                                                <h4>{{selectedSensor.Sensor_Name}}</h4>
-                                                <Label>Humidity :&nbsp;&nbsp;</Label>{{selectedSensor.Humidity.toFixed(2)}}</br>
-                                                <Label>Brightness :&nbsp;&nbsp;</Label>{{selectedSensor.Brightness.toFixed(2)}}</br>
-                                                <Label>Temperature :&nbsp;&nbsp;</Label>{{selectedSensor.Temperature.toFixed(2)}}</br>
+                                                <h4>{{Sensor_Name}}</h4>
+                                                <div  ng-if="!fetchStr"><Label >Humidity :&nbsp;&nbsp;</Label>{{selectedSensor.Humidity.toFixed(2)}}</br></div>
+                                                <div ng-if="!fetchStr">
+                                                    <Label >Brightness :&nbsp;&nbsp;</Label>{{selectedSensor.Brightness.toFixed(2)}}</br>
+                                                </div>
+                                                <div ng-if="!fetchStr">
+                                                    <Label >Temperature :&nbsp;&nbsp;</Label>{{selectedSensor.Temperature.toFixed(2)}}</br>
+                                                </div>
+                                               <label ng-if="fetchStr">Fetching data...</label>
                                             </div>
                                         </div>
                                     </div>
