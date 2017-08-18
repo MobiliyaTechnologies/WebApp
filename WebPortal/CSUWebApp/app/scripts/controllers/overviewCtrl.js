@@ -325,9 +325,11 @@ angular.module('WebPortal')
                     $scope.insight.overused = response.ConsumptionValue - response.PredictedValue; 
                     if ($scope.insight.overused>0) {
                         $scope.usage = "OVERUSED";
+                        $scope.overusedimg = 'down-red';
                     }                          
                     else {
                         $scope.usage = "UNDERUSED";
+                        $scope.overusedimg = 'up-green';
                     }
                 }
                 else {
@@ -389,8 +391,9 @@ angular.module('WebPortal')
                     console.log("[Info] :: Get Sensor list response ", response);
                     $scope.sensors = response;
                     //$scope.selectedSensor = $scope.sensors[0];
-                    subscribeMqtt($scope.sensors[0].Sensor_Id);
-
+                    if ($scope.sensors.length > 0) {
+                        subscribeMqtt($scope.sensors[0].Sensor_Id);
+                    }
                 }
                 else {
                     console.log("[Error]:: Get Sensor list response ", err);
@@ -443,7 +446,7 @@ angular.module('WebPortal')
 
 
         /*****MQTT******/
-        var client = new Paho.MQTT.Client("emdemo.mobiliya.com", Number('1884'), "clientId" + new Date());
+        var client = new Paho.MQTT.Client("iot.eclipse.org", Number('443'), "clientId" + new Date().getTime());
         var mqttstatus = false;
         //var client = new Paho.MQTT.Client("iot.eclipse.org", Number('443'), "clientId" + new Date());
         // set callback handlers
@@ -466,6 +469,7 @@ angular.module('WebPortal')
         function onConnectionLost(responseObject) {
             if (responseObject.errorCode !== 0) {
                 console.log("onConnectionLost:" + responseObject.errorMessage);
+                client.connect({ onSuccess: onConnect, useSSL: true });
                 
             }
             mqttstatus = false;
@@ -474,12 +478,15 @@ angular.module('WebPortal')
         // called when a message arrives
         function onMessageArrived(message) {
             console.log("onMessageArrived:" + message.payloadString);
+            $scope.selectedSensor = JSON.parse(message.payloadString);
+            $scope.$apply();
         }
 
         function subscribeMqtt(sensorkey) {
             console.log("SensorKey ::", sensorkey);
             if (mqttstatus) {
-                client.subscribe("/topic/" + sensorkey);
+                client.subscribe("/emsensors/" + sensorkey);
+                console.log("Subscribr to topic " + "/emsensors/" + sensorkey)
             }
             else {
                 Alertify.error("Fail to Connect Notification Server");

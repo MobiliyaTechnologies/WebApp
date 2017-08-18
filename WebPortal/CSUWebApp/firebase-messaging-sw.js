@@ -11,7 +11,7 @@ var config = {
 };
 localforage.getItem("ApiKey").then(function (value) {
     config.apiKey = value;
-    localforage.getItem("ApiKey").then(function (value) {
+    localforage.getItem("NotificationSender").then(function (value) {
         config.messagingSenderId = value;
         intiateFirebase();
     });
