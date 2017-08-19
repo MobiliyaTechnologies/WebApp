@@ -15,7 +15,7 @@ var iframe;
 var colors = ['rgba(60,162,224, 0.7)', 'rgba(138, 212, 235, 0.7)', 'rgba(254, 150, 102, 0.7)', 'rgba(95, 107, 109, 0.7)','rgba(253, 98, 94, 0.7)']
 
 angular.module('WebPortal')
-    .controller('overviewCtrl', function ($scope, $http, $location, Token, config, $timeout, Restservice, $rootScope ) {
+    .controller('overviewCtrl', function ($scope, $http, $location, Token, config, $timeout, Restservice, $rootScope, Alertify, $filter) {
         $scope.userId = localStorage.getItem("userId");
         $scope.premiseList = [];
         $scope.meterList = [];
@@ -58,7 +58,7 @@ angular.module('WebPortal')
                 {
                     credentials: 'Ahmc1XzhRQwnhx-_HvtFWJH5y1TOqNaUEOZgzPPHQyyffV8z-UyK3tfrkaEMZpiv',
                     center: mapLocation,
-                    zoom: 10,
+                    zoom: 30,
                     mapTypeId: Microsoft.Maps.MapTypeId.road,
 
                 });
@@ -217,10 +217,13 @@ angular.module('WebPortal')
         function createColorPushPin(type,entityList) {
             for (var i = 0; i < entityList.length; i++) {
                 var location = new Microsoft.Maps.Location(entityList[i].Latitude, entityList[i].Longitude);
-                var radius = entityList[i].MonthlyConsumption * 0.0001;
-                console.log("radius :",radius);
-
+                var radius = entityList[i].MonthlyConsumption * 0.0002;                
+                radius = radius + 5;
+                console.log("radius :", radius);
                 var fillColor = colors[i];
+                if (radius > 150) {
+                    radius = 150;
+                }
                 var offset = new Microsoft.Maps.Point(0, 5);
                 var svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="', ((radius + 5) * 2),
                     '" height="', ((radius + 5) * 2), '"><circle cx="', (radius + 5), '" cy="', (radius + 5), '" r="', radius, '" fill="', fillColor, '"/></svg>'];
@@ -322,9 +325,11 @@ angular.module('WebPortal')
                     $scope.insight.overused = response.ConsumptionValue - response.PredictedValue; 
                     if ($scope.insight.overused>0) {
                         $scope.usage = "OVERUSED";
+                        $scope.overusedimg = 'down-red';
                     }                          
                     else {
                         $scope.usage = "UNDERUSED";
+                        $scope.overusedimg = 'up-green';
                     }
                 }
                 else {
@@ -341,6 +346,9 @@ angular.module('WebPortal')
             Restservice.get('api/getrecommendations' + $scope.filter, function (err, response) {
                 if (!err) {
                     $scope.recommendations = response;
+                    if ($scope.recommendations.length > 0) {
+                        Alertify.log($scope.recommendations[0].Alert_Desc);
+                    }
                     console.log("[Info]  :: Get recommendation ", response);
                 }
                 else {
@@ -382,8 +390,10 @@ angular.module('WebPortal')
                 if (!err) {
                     console.log("[Info] :: Get Sensor list response ", response);
                     $scope.sensors = response;
-                    $scope.selectedSensor = $scope.sensors[0];
-
+                    //$scope.selectedSensor = $scope.sensors[0];
+                    if ($scope.sensors.length > 0) {
+                        //subscribeMqtt($scope.sensors[0].Sensor_Id);
+                    }
                 }
                 else {
                     console.log("[Error]:: Get Sensor list response ", err);
@@ -392,8 +402,30 @@ angular.module('WebPortal')
 
         }
         getSensorList();
+        $scope.selectedSensor = {
+            'Sensor_Name': '',
+            'Humidity': '',
+            'Brightness': '',
+            'Temperature': ''
+        }
+        $scope.fetchStr = true;
+        $scope.Sensor_Name = '';
         $scope.showSensorDetails = function (sensor) {
-            $scope.selectedSensor = sensor;
+            console.log("Sensor", sensor);
+            
+            $scope.Sensor_Name = sensor.Sensor_Name;
+            if (sensor.Temperature == 0) {
+                $scope.fetchStr = true;
+                
+
+            }
+            else {
+                $scope.fetchStr = false;
+                $scope.selectedSensor = sensor;
+                console.log("$scope.selectedSensor", $scope.selectedSensor);
+            }
+            
+            subscribeMqtt(sensor.Sensor_Id);
         }
         
         $rootScope.$on('demoCount', function (event, data) {
@@ -413,6 +445,7 @@ angular.module('WebPortal')
                         embedReport($scope.powerBIUrls.premise.summarydetails + $scope.powerBiFilterIntial, 'summarydetails');
                     }
                 }
+                getPremiseList();
                 
             }
             else {
@@ -427,11 +460,76 @@ angular.module('WebPortal')
                 getBuildingList($scope.selectedPremiseID);
 
             }
-            getPremiseList();
+            
             getInsight();
             getRecommendation();
         });
-     
+
+
+        /*****MQTT******/
+        var client = new Paho.MQTT.Client("iot.eclipse.org", Number('443'), "clientId" + new Date().getTime());
+        var mqttstatus = false;
+        //var client = new Paho.MQTT.Client("iot.eclipse.org", Number('443'), "clientId" + new Date());
+        // set callback handlers
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+
+        // connect the client
+        client.connect({ onSuccess: onConnect, useSSL: true });
+
+
+        // called when the client connects
+        function onConnect() {
+            // Once a connection has been made, make a subscription and send a message.
+            console.log("onConnect");
+            mqttstatus = true;
+
+        }
+
+        // called when the client loses its connection
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:" + responseObject.errorMessage);
+                client.connect({ onSuccess: onConnect, useSSL: true });
+                
+            }
+            mqttstatus = false;
+        }
+
+        // called when a message arrives
+        function onMessageArrived(message) {
+            console.log("onMessageArrived:" + message.payloadString);
+            $scope.fetchStr = false;
+            $scope.selectedSensor = JSON.parse(message.payloadString);
+            var object = $filter('filter')($scope.sensors, function (d) { return d.Sensor_Id == $scope.selectedSensor.Sensor_Id; })[0];
+            console.log("Sensors", $scope.sensors);
+            console.log("$scope.selectedSensor", $scope.selectedSensor);
+            console.log("Object", object);
+            var index = $scope.sensors.findIndex(e => e.Sensor_Id == $scope.selectedSensor.Sensor_Id);
+            //var index = object.$$originalIdx;
+            console.log("index", index);
+
+            $scope.sensors[index].Temperature = $scope.selectedSensor.Temperature;
+            $scope.sensors[index].Brightness = $scope.selectedSensor.Brightness;
+            $scope.$apply();
+        }
+
+        function subscribeMqtt(sensorkey) {
+            console.log("SensorKey ::", sensorkey);
+            if ($scope.topicSubscribe) {
+                client.unsubscribe($scope.topicSubscribe);
+                console.log("UnSubscribe to topic "+$scope.topicSubscribe);
+            }
+            if (mqttstatus) {
+                client.subscribe("/emsensors/" + sensorkey);
+                $scope.topicSubscribe = "/emsensors/" + sensorkey;
+                console.log("Subscribe to topic " + "/emsensors/" + sensorkey)
+            }
+            else {
+                //Alertify.error("Fail to Connect Notification Server");
+            }
+            
+        }
 
     });
 

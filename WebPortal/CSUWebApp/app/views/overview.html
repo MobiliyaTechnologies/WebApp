@@ -42,7 +42,7 @@
                             <div class="row">
                                 <div class="col-sm-9">
                                     <!--<img class="flip-button" src="./app/images/class_icon.png" ng-click="flip()" style="position: absolute;z-index:4;margin-top:5px;cursor:pointer;    left: -45px;top: -5px;">-->
-                                    <div style="position: absolute;z-index:4;margin-top:5px;cursor:pointer; left: -45px;top: -5px;background-color:rgba(53, 172, 207, 1);height: 34px;width: 34px;background-color: rgba(53, 172, 207, 1);border-radius: 3px;" ng-click="flip()">
+                                    <div style="position: absolute;z-index:4;margin-top:5px;cursor:pointer; top: -5px;background-color:rgba(53, 172, 207, 1);height: 34px;width: 34px;background-color: rgba(53, 172, 207, 1);border-radius: 3px;" ng-click="flip()">
                                         <img class="flip-button" src="./app/images/building.svg" style="margin-top:5px;">
                                     </div>
                                     <img src="./app/images/map_04.png" alt="Mountain View" style="width:990px;height:60vh;">
@@ -60,10 +60,15 @@
                                         <div class="panel-body">
                                             <div class="sensor-detail  col-sm-12">
                                                 <h3>SENSOR DETAILS </h3></br>
-                                                <h4>{{selectedSensor.Sensor_Name}}</h4>
-                                                <Label>Humidity :&nbsp;&nbsp;</Label>{{selectedSensor.Humidity.toFixed(2)}}</br>
-                                                <Label>Brightness :&nbsp;&nbsp;</Label>{{selectedSensor.Brightness.toFixed(2)}}</br>
-                                                <Label>Temperature :&nbsp;&nbsp;</Label>{{selectedSensor.Temperature.toFixed(2)}}</br>
+                                                <h4>{{Sensor_Name}}</h4>
+                                                <div  ng-if="!fetchStr"><Label >Humidity :&nbsp;&nbsp;</Label>{{selectedSensor.Humidity.toFixed(2)}}</br></div>
+                                                <div ng-if="!fetchStr">
+                                                    <Label >Brightness :&nbsp;&nbsp;</Label>{{selectedSensor.Brightness.toFixed(2)}}</br>
+                                                </div>
+                                                <div ng-if="!fetchStr">
+                                                    <Label >Temperature :&nbsp;&nbsp;</Label>{{selectedSensor.Temperature.toFixed(2)}}</br>
+                                                </div>
+                                               <label ng-if="fetchStr">Fetching data...</label>
                                             </div>
                                         </div>
                                     </div>
@@ -94,12 +99,12 @@
                                         <label>CONSUMED IN LAST WEEK(KWH)</label>
                                     </div>
                                     <div class="col-sm-4">
-                                        <img class="arrow" src="./app/images/up-green.svg" />
+                                        <img class="arrow" src="./app/images/{{overusedimg}}.svg" />
                                         <h2 style="">{{insight.overused.toFixed(2)}}K</h2>
                                         <label>{{usage}}</label>
                                     </div>
                                     <div class="col-sm-4">
-                                        <img class="arrow" src="./app/images/down-red.svg" />
+                                        <img class="arrow" src="./app/images/up-green.svg" />
                                         <h2 style="">{{insight.PredictedValue.toFixed(2)}}K</h2>
                                         <label>EXPECTED</label>
                                     </div>

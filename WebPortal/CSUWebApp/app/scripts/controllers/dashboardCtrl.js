@@ -118,6 +118,7 @@ angular.module('WebPortal')
                         storageBucket: data.data.StorageBucket,
                         messagingSenderId: data.data.NotificationSender
                     };
+                    console.log("FireBase ::", config);
                     intiateFirebase(data.data.ApiKey,config, data.data.NotificationReceiver);
                 }
             })
@@ -138,7 +139,10 @@ angular.module('WebPortal')
                 })
                 .then(function (token) {
                     console.log("[Info] ::  Registration token ", token);
-                    subscribeTopic(apikey,token,topic);
+                    //subscribeTopic(apikey, token, topic);
+                    subscribeTopic(apikey, token, '/topics/AlertsDemo');
+                    
+
                 })
                 .catch(function (err) {
                     console.log("[Error] :: User not Granted Permission", err);
@@ -171,7 +175,7 @@ angular.module('WebPortal')
                 $rootScope.$broadcast('demoCount', $scope.demoCount);
                 $scope.stateValue = $scope.state[$scope.demoCount - 1];
                 var message = new Paho.MQTT.Message('{"State":' + $scope.demoCount+'}');
-                message.destinationName = "topic/AssetTracking";
+                message.destinationName = "EMState";
                 client.send(message);
             }
         }
@@ -182,7 +186,7 @@ angular.module('WebPortal')
                 localStorage.setItem('demoCount', $scope.demoCount);
                 $scope.stateValue = $scope.state[$scope.demoCount - 1];
                 var message = new Paho.MQTT.Message('{"State":' + $scope.demoCount + '}');
-                message.destinationName = "topic/AssetTracking";
+                message.destinationName = "EMState";
                 client.send(message);
             }
 
@@ -191,7 +195,7 @@ angular.module('WebPortal')
 
 
         /*****MQTT******/
-        var client = new Paho.MQTT.Client("emdemo.mobiliya.com", Number('1884'), "clientId" + new Date());
+        var client = new Paho.MQTT.Client("iot.eclipse.org", Number('443'), "clientId" + new Date().getTime());
         //var client = new Paho.MQTT.Client("iot.eclipse.org", Number('443'), "clientId" + new Date());
         // set callback handlers
         client.onConnectionLost = onConnectionLost;
@@ -213,6 +217,7 @@ angular.module('WebPortal')
         function onConnectionLost(responseObject) {
             if (responseObject.errorCode !== 0) {
                 console.log("onConnectionLost:" + responseObject.errorMessage);
+                client.connect({ onSuccess: onConnect, useSSL: true });
             }
         }
 

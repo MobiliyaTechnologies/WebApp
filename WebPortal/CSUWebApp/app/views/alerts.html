@@ -17,10 +17,10 @@
                             <th>View Details</th>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="alert in alerts | orderBy:'Time'">
+                                <tr ng-repeat="alert in alerts | orderBy:'-Timestamp'">
                                     <td>{{alert.Alert_Type}}</td>
                                     <td>{{alert.Class_Name}}</td>
-                                    <td>{{alert.Timestamp | date}}</td>
+                                    <td>{{alert.Timestamp}}</td>
                                     <td>{{alert.Alert_Desc}}</td>
                                     <td><a ng-click="openPopup(alert)" title="View Details"><i class="fa fa-eye"></i></a></td>
                                 </tr>
