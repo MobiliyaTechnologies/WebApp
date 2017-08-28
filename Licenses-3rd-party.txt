@@ -1,0 +1,92 @@
+This document contains the list of Third Party Software included with
+EM WebApp, along with the license information.
+
+Third Party Software may impose additional restrictions and it is the
+user's responsibility to ensure that they have met the licensing
+requirements of WebApp and the relevant license of the Third Party
+Software they are using.
+
+AngularJS 1.4	
+url - https://angularjs.org/
+License - MIT
+Reference - https://github.com/angular/angular.js/blob/master/LICENSE
+
+Bootstrap 3.3.6
+url - http://bootstrapdocs.com/v3.3.6/docs/getting-started/
+License - MIT
+Reference - https://github.com/twbs/bootstrap/blob/master/LICENSE
+
+Datatables 1.10.4
+url - https://datatables.net/forums/discussion/24478/datatables-1-10-4-release
+License - MIT
+Reference - https://datatables.net/license/mit
+
+font-awesome 4.2
+url - http://fontawesome.io/
+License - SIL Open font License 1.1
+Reference - http://scripts.sil.org/OFL
+
+bootstrap social 4.8
+url - https://github.com/lipis/bootstrap-social
+License - MIT
+Reference - https://github.com/lipis/bootstrap-social/blob/gh-pages/LICENSE
+
+flot tooltip 0.8.3
+url - https://libraries.io/bower/flot.tooltip/0.8.3
+License - MIT
+Reference - https://libraries.io/licenses/MIT
+
+ui-router 0.2.13
+url - https://github.com/angular-ui/ui-router
+License - MIT
+Reference - https://github.com/angular-ui/ui-router/blob/master/LICENSE
+
+components-font-awesome  4.7
+url - https://github.com/components/font-awesome
+License - SIL Open font License 1.1
+Reference - http://scripts.sil.org/OFL
+
+angular-bootstrap 2.3.2
+url - http://angular-ui.github.io/bootstrap/versioned-docs/1.1.2/
+License - MIT
+Reference - https://github.com/angular-ui/bootstrap/blob/master/LICENSE
+
+angular-dragdrop 1.0.13
+url - https://gemnasium.com/bower/angular-dragdrop
+License - MIT
+Reference - https://github.com/codef0rmer/angular-dragdrop/blob/master/LICENSE
+
+angular-ui-router 0.4.2
+url - https://github.com/angular-ui/ui-router
+License - MIT
+Reference - https://github.com/angular-ui/ui-router/blob/master/LICENSE
+
+angularjs-dropdown-multiselect 1.11.8
+url - https://github.com/dotansimha/angularjs-dropdown-multiselect
+License - MIT
+Reference - https://github.com/dotansimha/angularjs-dropdown-multiselect/blob/master/LICENSE
+
+angular-file-saver 1.1.3
+url - https://github.com/alferov/angular-file-saver
+License - MIT
+Reference - https://github.com/alferov/angular-file-saver/blob/master/license.md
+
+anguler-acl 0.1.9
+url - https://github.com/mikemclin/angular-acl
+License - MIT
+Reference - https://github.com/mikemclin/angular-acl/blob/master/README.md
+
+ng-alertify 1.0.2
+url - https://github.com/kensho-technologies/ng-alertify
+License - MIT
+Reference - https://github.com/kensho-technologies/ng-alertify
+
+jquery
+url - 
+License - MIT
+Reference - 
+
+hello.js
+url - https://adodson.com/hello.js/#helloinit
+License - MIT
+Reference - https://github.com/MrSwitch/hello.js/blob/master/LICENSE
