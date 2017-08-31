@@ -20,7 +20,8 @@ angular
         'ngDragDrop',
         'angularjs-dropdown-multiselect',
         'mm.acl',
-        'Alertify'
+        'Alertify',
+        'ApplicationInsightsModule'
 
     ])
     .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -209,6 +210,11 @@ angular
 
 
     })
+    .config(function (applicationInsightsServiceProvider) {
+        var options = { applicationName: 'EnergyManagementWebApp', autoExceptionTracking: true, };
+    applicationInsightsServiceProvider.configure('7a693f55-1c9d-4a4a-b4e9-365743754aad', options);
+    });
+
    
 
 

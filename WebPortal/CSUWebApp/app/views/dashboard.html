@@ -47,13 +47,13 @@
                     </div>
                 <span ng-if="demoMode" ng-click="previousData()" class="glyphicon glyphicon-arrow-left  header-download-link"></span>
 
-                <label style="position: absolute;margin: 30px;">{{stateValue}}</label>
+                <label ng-if="demoMode" style="position: absolute;margin: 30px;">{{stateValue}}</label>
                 <span ng-if="demoMode" ng-click="nextData()" class="glyphicon glyphicon-arrow-right pull-right header-download-link"style="float:right;margin-right:20px;"></span>
              </div>
                 
                 <!--<a href="https://mseastus.blob.core.windows.net/general/PowerMap_Dec_27_2016.xlsx" class="header-download-link">DOWNLOAD POWER MAP REPORT</a>-->
 
-            <div id="scrolldiv" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" ui-view>
+            <div  class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" ui-view>
             </div>
 
                

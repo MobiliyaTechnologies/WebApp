@@ -31,6 +31,7 @@ angular.module('WebPortal')
         }
         $scope.filter = '';
         $scope.powerBiFilter = '';
+        $scope.powerBiFilterIntial = '';
         $scope.selectedBuilding = '';
         $scope.selectedPremise = '';
         $scope.demoCount = 1;
@@ -286,7 +287,7 @@ angular.module('WebPortal')
             }
         }
 
-        function embedReport(reportURL, iframeId) {   
+        function embedReport(reportURL, iframeId) { 
             var embedUrl = reportURL;
             console.log("Power Bi Url ::", reportURL);
             if ("" === embedUrl) {
@@ -325,11 +326,11 @@ angular.module('WebPortal')
                     $scope.insight.overused = response.ConsumptionValue - response.PredictedValue; 
                     if ($scope.insight.overused>0) {
                         $scope.usage = "OVERUSED";
-                        $scope.overusedimg = 'down-red';
+                        $scope.overusedimg = 'up-red';
                     }                          
                     else {
                         $scope.usage = "UNDERUSED";
-                        $scope.overusedimg = 'up-green';
+                        $scope.overusedimg = 'down-green';
                     }
                 }
                 else {
@@ -346,8 +347,12 @@ angular.module('WebPortal')
             Restservice.get('api/getrecommendations' + $scope.filter, function (err, response) {
                 if (!err) {
                     $scope.recommendations = response;
-                    if ($scope.recommendations.length > 0) {
-                        Alertify.log($scope.recommendations[0].Alert_Desc);
+                    if ($scope.recommendations.length >= 2) {
+                        $rootScope.$broadcast('logMessage', $scope.recommendations[0].Alert_Desc);
+                        $rootScope.$broadcast('logMessage', $scope.recommendations[1].Alert_Desc);
+                    }
+                    else if ($scope.recommendations.length >= 1) {                       
+                        $rootScope.$broadcast('logMessage', $scope.recommendations[0].Alert_Desc);
                     }
                     console.log("[Info]  :: Get recommendation ", response);
                 }
@@ -393,6 +398,11 @@ angular.module('WebPortal')
                     //$scope.selectedSensor = $scope.sensors[0];
                     if ($scope.sensors.length > 0) {
                         //subscribeMqtt($scope.sensors[0].Sensor_Id);
+                        $scope.Sensor_Name = $scope.sensors[0].Sensor_Name;
+                        $scope.selectedSensor = $scope.sensors[0];
+                    }
+                    for (var i = 0; i < $scope.sensors.length; i++) {
+                        subscribeMqtt($scope.sensors[i].Sensor_Id);
                     }
                 }
                 else {
@@ -424,8 +434,6 @@ angular.module('WebPortal')
                 $scope.selectedSensor = sensor;
                 console.log("$scope.selectedSensor", $scope.selectedSensor);
             }
-            
-            subscribeMqtt(sensor.Sensor_Id);
         }
         
         $rootScope.$on('demoCount', function (event, data) {
@@ -434,6 +442,8 @@ angular.module('WebPortal')
             $scope.filter = '?DateFilter=' + data;
             $scope.powerBiFilter = " and DateFilter/FilterID eq \'" + data + "\'";
             $scope.powerBiFilterIntial = "&$filter=DateFilter/FilterID eq \'" + data + "\'";
+            getInsight();
+            getRecommendation();
             if ($scope.premiseState) {
                 if ($scope.powerBIUrls.premise) {
                     if ($scope.selectedPremise != '') {
@@ -461,13 +471,12 @@ angular.module('WebPortal')
 
             }
             
-            getInsight();
-            getRecommendation();
+          
         });
 
 
         /*****MQTT******/
-        var client = new Paho.MQTT.Client("iot.eclipse.org", Number('443'), "clientId" + new Date().getTime());
+        var client = new Paho.MQTT.Client("emdemo.mobiliya.com", Number('1884'), "clientId" + new Date().getTime());
         var mqttstatus = false;
         //var client = new Paho.MQTT.Client("iot.eclipse.org", Number('443'), "clientId" + new Date());
         // set callback handlers
@@ -483,7 +492,11 @@ angular.module('WebPortal')
             // Once a connection has been made, make a subscription and send a message.
             console.log("onConnect");
             mqttstatus = true;
-
+            if ($scope.sensors) {
+                for (var i = 0; i < $scope.sensors.length; i++) {
+                    subscribeMqtt($scope.sensors[i].Sensor_Id);
+                }
+            }
         }
 
         // called when the client loses its connection
@@ -500,36 +513,40 @@ angular.module('WebPortal')
         function onMessageArrived(message) {
             console.log("onMessageArrived:" + message.payloadString);
             $scope.fetchStr = false;
-            $scope.selectedSensor = JSON.parse(message.payloadString);
-            var object = $filter('filter')($scope.sensors, function (d) { return d.Sensor_Id == $scope.selectedSensor.Sensor_Id; })[0];
+            $scope.SensorData = JSON.parse(message.payloadString);
+
+            var object = $filter('filter')($scope.sensors, function (d) { return d.Sensor_Id == $scope.SensorData.Sensor_Id; })[0];
             console.log("Sensors", $scope.sensors);
-            console.log("$scope.selectedSensor", $scope.selectedSensor);
+            console.log("$scope.selectedSensor", $scope.SensorData);
             console.log("Object", object);
-            var index = $scope.sensors.findIndex(e => e.Sensor_Id == $scope.selectedSensor.Sensor_Id);
+            var index = $scope.sensors.findIndex(e => e.Sensor_Id == $scope.SensorData.Sensor_Id);
             //var index = object.$$originalIdx;
             console.log("index", index);
-
-            $scope.sensors[index].Temperature = $scope.selectedSensor.Temperature;
-            $scope.sensors[index].Brightness = $scope.selectedSensor.Brightness;
+            $scope.sensors[index].Humidity = $scope.SensorData.Humidity;
+            $scope.sensors[index].Temperature = $scope.SensorData.Temperature;
+            $scope.sensors[index].Brightness = $scope.SensorData.Brightness;
+            if ($scope.selectedSensor.Sensor_Id == $scope.sensors[index].Sensor_Id) {
+                $scope.selectedSensor = $scope.sensors[index];
+            }
             $scope.$apply();
         }
 
         function subscribeMqtt(sensorkey) {
             console.log("SensorKey ::", sensorkey);
-            if ($scope.topicSubscribe) {
-                client.unsubscribe($scope.topicSubscribe);
-                console.log("UnSubscribe to topic "+$scope.topicSubscribe);
-            }
             if (mqttstatus) {
                 client.subscribe("/emsensors/" + sensorkey);
                 $scope.topicSubscribe = "/emsensors/" + sensorkey;
                 console.log("Subscribe to topic " + "/emsensors/" + sensorkey)
             }
-            else {
-                //Alertify.error("Fail to Connect Notification Server");
-            }
+            
             
         }
+        $scope.$on('$destroy', function (event) {
+            for (var i = 0; i < $scope.sensors.length; i++) {
+                client.subscribe("/emsensors/" + $scope.sensors[i].Sensor_Id);
+            }
+
+        });
 
     });
 

@@ -83,12 +83,12 @@
 </script>
 
 
-<script type="text/ng-template" id="deviceAlertModal.html">
+<script type="text/ng-template" id="deviceAlertModal.html" >
 
-    <div class="modal-body">
+    <div class="modal-body" >
         <div class="row">
             <div class="col-sm-8">
-                <img src="./app/images/map_04.png" alt="Mountain View" style="width:1100px;height:600px;">
+                <img src="./app/images/map_04.png" alt="Mountain View" style="width:990px;height:600px;">
 
                 <div ng-repeat="sensor in sensors">
                     <div title="Sensor ID :{{sensor}}" ng-if=!sensor.Class_Id id="sensor_layout_{{sensor.Sensor_Id}}" data-drag="true" class="sensor col-sm-3" style="display:none;">
@@ -107,9 +107,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" style="margin-right: 40px;">
 
-                    <table id="class-table" class="table table-bordered">
+                    <table id="class-table" class="table table-bordered" style="margin-right:10px;">
                         <thead>
                             <tr height="40px">
                                 <th>Room</th>
@@ -130,7 +130,7 @@
 
         </div>
         <div class="modal-footer">
-            <button class="btn blue-button" ng-click="associateSensor()">Associate</button>
+            <button class="blue-button" ng-click="associateSensor()">Associate</button>
             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
         </div>
 </script>

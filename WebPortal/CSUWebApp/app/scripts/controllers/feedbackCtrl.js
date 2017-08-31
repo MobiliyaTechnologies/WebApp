@@ -7,7 +7,7 @@
  * 
  */
 angular.module('WebPortal')
-    .controller('feedbackCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, Restservice, $rootScope) {
+    .controller('feedbackCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, Restservice, $rootScope, Alertify) {
         console.log("[Info] :: Feedback Controller loaded");
         $scope.loadingpowerBi = true;
         $scope.configurationError = true;
@@ -207,4 +207,40 @@ angular.module('WebPortal')
                 embedReport($scope.powerBiUrls.feedback.summary + "&$filter=BridgeRoomBuilding/PremiseBuildingRoom eq '" + $scope.selectedPremiseName + $scope.selectedBuildingName + $scope.selectedClassName + "'" + $scope.feedbackFilter, 'feedback');
             }
         });
+
+
+
+        /*****MQTT******/
+        var client = new Paho.MQTT.Client("emdemo.mobiliya.com", Number('1884'), "clientId" + new Date().getTime());
+        //var client = new Paho.MQTT.Client("iot.eclipse.org", Number('443'), "clientId" + new Date());
+        // set callback handlers
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+
+        // connect the client
+        client.connect({ onSuccess: onConnect, useSSL: true });
+
+
+        // called when the client connects
+        function onConnect() {
+            // Once a connection has been made, make a subscription and send a message.
+            console.log("onConnect Feedback Client");
+            client.subscribe("EMstate/feedback");
+
+        }
+
+        // called when the client loses its connection
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:" + responseObject.errorMessage);
+                client.connect({ onSuccess: onConnect, useSSL: true });
+            }
+        }
+
+        // called when a message arrives
+        function onMessageArrived(message) {
+            console.log("onMessageArrived:" + message.payloadString);
+            var obj = JSON.parse(message.payloadString);
+            Alertify.log(obj.feedbackMessage);
+        }
     });

@@ -7,7 +7,7 @@
     *  Service to handle signIn and sign Up of user uising B2C 
     */
 angular.module('WebPortal')
-    .factory('aadService', function ($http, config) {
+    .factory('aadService', function ($http, config, applicationInsightsService, $exceptionHandler) {
         var responseType = 'token id_token';
         var redirectURI = './redirect.html';
         var loginDisplayType = {
@@ -83,6 +83,7 @@ angular.module('WebPortal')
                         return;
                     }
                     bootbox.alert('Signin error: ' + e.error.message);
+                    $exceptionHandler(e.error);
                 });
             },
             policyLogout: function (network, policy) {
@@ -90,6 +91,7 @@ angular.module('WebPortal')
                     console.log("auth :", auth);
                 }, function (e) {
                     console.log("Erorr :", e);
+                    $exceptionHandler(e.error);
                 });
             },
             online: function (session) {
