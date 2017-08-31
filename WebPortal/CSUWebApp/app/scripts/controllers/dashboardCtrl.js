@@ -8,7 +8,7 @@
  */
 var roles = []
 angular.module('WebPortal')
-    .controller('dashboardCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, $rootScope, aadService, AclService, aadService, Alertify) {
+    .controller('dashboardCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, $rootScope, aadService, AclService, aadService, Alertify,applicationInsightsService ) {
         console.log("[Info] :: Login Controller loaded");  
         
         $scope.can = AclService.can;
@@ -93,6 +93,7 @@ angular.module('WebPortal')
             })
             .catch(function (error) {
                 console.log("[Error]:: Subscribe Firebase Topic", error);
+                applicationInsightsService.trackException(error);
             });
         }
 
@@ -124,7 +125,8 @@ angular.module('WebPortal')
             })
             .catch(function (data, status, headers) {
                 // log error
-                console.log("[Error] :: Firebase Error",data);
+                console.log("[Error] :: Firebase Error", data);
+                applicationInsightsService.trackException(data);
          });
         function intiateFirebase(apikey,config,topic) {
             firebase.initializeApp(config);
@@ -146,6 +148,8 @@ angular.module('WebPortal')
                 })
                 .catch(function (err) {
                     console.log("[Error] :: User not Granted Permission", err);
+                    
+                    applicationInsightsService.trackException(err);
                 })
 
             messaging.onMessage(function (payload) {
@@ -195,7 +199,7 @@ angular.module('WebPortal')
 
 
         /*****MQTT******/
-        var client = new Paho.MQTT.Client("iot.eclipse.org", Number('443'), "clientId" + new Date().getTime());
+        var client = new Paho.MQTT.Client("emdemo.mobiliya.com", Number('1884'), "clientId" + new Date().getTime());
         //var client = new Paho.MQTT.Client("iot.eclipse.org", Number('443'), "clientId" + new Date());
         // set callback handlers
         client.onConnectionLost = onConnectionLost;
@@ -209,7 +213,7 @@ angular.module('WebPortal')
         function onConnect() {
             // Once a connection has been made, make a subscription and send a message.
             console.log("onConnect");
-            client.subscribe("topic/AssetTracking");
+            client.subscribe("EMState");
           
         }
 
@@ -219,59 +223,17 @@ angular.module('WebPortal')
                 console.log("onConnectionLost:" + responseObject.errorMessage);
                 client.connect({ onSuccess: onConnect, useSSL: true });
             }
+            applicationInsightsService.trackException(responseObject);
         }
 
         // called when a message arrives
         function onMessageArrived(message) {
             console.log("onMessageArrived:" + message.payloadString);
         }
-
-        //var clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
-
-        //var host = 'wss://broker.mqttdashboard.com:8000';
-
-        //var options = {
-        //    keepalive: 10,
-        //    clientId: clientId,
-        //    protocolId: 'MQTT',
-        //    protocolVersion: 4,
-        //    clean: true,
-        //    reconnectPeriod: 1000,
-        //    connectTimeout: 30 * 1000,
-        //    will: {
-        //        topic: 'WillMsg',
-        //        payload: 'Connection Closed abnormally..!',
-        //        qos: 0,
-        //        retain: false
-        //    },
-        //    username: 'demo',
-        //    password: 'demo',
-        //    rejectUnauthorized: false
-        //}
-
-        //var client = mqtt.connect(host, options)
-
-        //client.on('error', function (err) {
-        //    console.log(err)
-        //    client.end()
-        //})
-
-        //client.on('connect', function () {
-        //    console.log('client connected:' + clientId)
-        //})
-
-        //client.subscribe('topic', { qos: 0 })
-
-        //client.publish('topic', 'wss secure connection demo...!', { qos: 0, retain: false })
-
-        //client.on('message', function (topic, message, packet) {
-        //    console.log('Received Message:= ' + message.toString() + '\nOn topic:= ' + topic)
-        //})
-
-        //client.on('close', function () {
-        //    console.log(clientId + ' disconnected')
-        //})
-         
+      
+        $rootScope.$on('logMessage', function (event, data) {
+            Alertify.log(data);
+        });
        
     });
  /**

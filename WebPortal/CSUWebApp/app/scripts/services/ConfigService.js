@@ -8,7 +8,7 @@ angular.module('WebPortal')
     *
     * Factory to store all the configuration
     */
-    .factory('config', function ($http, $rootScope, $timeout) {
+    .factory('config', function ($http, $rootScope, $timeout, applicationInsightsService, $exceptionHandler) {
         var restServer, b2cApplicationId, adB2CSignIn, adB2CSignInSignUp;
         return {
             restServer: restServer,
@@ -85,7 +85,7 @@ angular.module('WebPortal')
    *
    * Factory to store and get access token require for Power BI 
    */
-    .factory('Token', function ($http, $location) {
+    .factory('Token', function ($http, $location, applicationInsightsService ) {
         var data = {
             accesstoken: ''
         };
@@ -102,7 +102,10 @@ angular.module('WebPortal')
 
                 })
                     .catch(function (error) {
-                        console.log("Token Error :: " + error);
+                        console.log("Token Error :: ", error);
+                        error.name = error.statusText;
+                        error.message = error.data;
+                        applicationInsightsService.trackException(error);
                     });
             }
 

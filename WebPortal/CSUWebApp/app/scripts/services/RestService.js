@@ -7,7 +7,7 @@
     * A common service to make rest call 
     */
 angular.module('WebPortal')
-    .factory('Restservice', function ($http, AuthService, config, $state) {
+    .factory('Restservice', function ($http, AuthService, config, $state, applicationInsightsService) {
         return {
             get: function (urlpath, callback) {
                 var authResponse = hello('adB2CSignIn').getAuthResponse();
@@ -26,6 +26,9 @@ angular.module('WebPortal')
 
                     })
                         .catch(function (error) {
+                            error.name = error.statusText;
+                            error.message = error.data;
+                            applicationInsightsService.trackException(error);
                             callback(error, null);
                         });
                 }
@@ -50,6 +53,9 @@ angular.module('WebPortal')
 
                     })
                         .catch(function (error) {
+                            error.name = error.statusText;
+                            error.message = error.data;
+                            applicationInsightsService.trackException(error);
                             callback(error, null);
                         });
                 }
@@ -74,6 +80,9 @@ angular.module('WebPortal')
 
                     })
                         .catch(function (error) {
+                            error.name = error.statusText;
+                            error.message = error.data;
+                            applicationInsightsService.trackException(error);
                             callback(error, null);
                         });
                 }
@@ -96,6 +105,9 @@ angular.module('WebPortal')
 
                     })
                         .catch(function (error) {
+                            error.name = error.statusText;
+                            error.message = error.data;
+                            applicationInsightsService.trackException(error);
                             callback(error, null);
                         });
                 }

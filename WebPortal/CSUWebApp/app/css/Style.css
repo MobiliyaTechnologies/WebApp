@@ -1457,7 +1457,8 @@ input[type=checkbox] {
 }
 /**********************************Alerts******************************************/
 .app-modal-window .modal-dialog {
-    width: 1500px;
+    width: 100vw;
+   
 }
 
 .app-modal-anomaly .modal-dialog {

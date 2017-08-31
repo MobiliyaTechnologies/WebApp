@@ -39,7 +39,7 @@ angular.module('WebPortal')
                 if (!online(b2cSession) && state == 'click') {
                     aadService.policyLogin(helloNetwork.adB2CSignIn, loginDisplayType.Page);
                 }
-                else if (online(b2cSession) && state == 'intial') {
+                else if (online(b2cSession) && state == 'intial' || state == 'click') {
                     getUserDetails();
                 }
             });                                         

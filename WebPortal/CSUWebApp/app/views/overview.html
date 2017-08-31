@@ -48,8 +48,14 @@
                                     <img src="./app/images/map_04.png" alt="Mountain View" style="width:990px;height:60vh;">
 
                                     <div ng-repeat="sensor in sensors">
-                                        <div ng-if=sensor.Room_Id id="sensor_layout_{{sensor.Sensor_Id}}" data-drag="true" class="sensor col-sm-3" style="position:absolute;display:block;top:{{sensor.Room_X+($index*20)-100}}px;left:{{sensor.Room_Y+($index*20)-155}}px;cursor:pointer;cursor:pointer;" ng-click="showSensorDetails(sensor)">
-                                            <h5 class="blink_me" style="position:absolute;margin-left:11vh;margin-top:5px;cursor:pointer;color:white;">{{sensor.Temperature.toFixed(0)}}</h5>
+                                        <!--<div ng-if=sensor.Room_Id id="sensor_layout_{{sensor.Sensor_Id}}" data-drag="true" class="sensor col-sm-3" style="position:absolute;top:{{sensor.Room_X+($index*20)-100}}px;left:{{sensor.Room_Y+($index*20)-155}}px;cursor:pointer;cursor:pointer;" ng-click="showSensorDetails(sensor)">
+                                            <h5 class="blink_me" style="position:absolute;margin-left:85px;margin-top:5px;cursor:pointer;color:white;">{{sensor.Temperature.toFixed(0)}}</h5>
+                                            <img ng-if="sensor.Brightness!=0" src="./app/images/bullet_green.svg" alt="Mountain View" style="height:30px; width:30px;z-index:1;">
+                                            <img ng-if="sensor.Brightness==0" src="./app/images/bullet_red.svg" alt="Mountain View" style="height:27px; width:27px;z-index:1;">
+                                        </div>-->
+                                        <div ng-if=sensor.Room_Id id="sensor_layout_{{sensor.Sensor_Id}}" data-drag="true" title="{{sensor.Sensor_Name}}" class="sensor col-sm-3" style="position:absolute;top:{{sensor.Room_X}}%;left:{{sensor.Room_Y}}%;cursor:pointer;cursor:pointer;" ng-click="showSensorDetails(sensor)">
+
+                                            <h5 class="blink_me" style="position:absolute;left:46%;margin-top:5px;cursor:pointer;color:white;">{{sensor.Temperature.toFixed(0)}}</h5>
                                             <img ng-if="sensor.Brightness!=0" src="./app/images/bullet_green.svg" alt="Mountain View" style="height:30px; width:30px;z-index:1;">
                                             <img ng-if="sensor.Brightness==0" src="./app/images/bullet_red.svg" alt="Mountain View" style="height:27px; width:27px;z-index:1;">
                                         </div>
@@ -141,7 +147,7 @@
                 <div class="ui-widget">
                     <div id="example">
                         <div class="row">
-                            <div id="srollreports" class="dash-unit col-sm-12" style="height:100%;padding:0;">
+                            <div  class="dash-unit col-sm-12" style="height:100%;padding:0;">
                                 <!--<div class="configuration-error">
                                     <h2>{{configurationError}}</h2>
                                 </div>-->
@@ -173,7 +179,7 @@
                             <div ng-show="configurationError&&!loadingpowerBi" class="iframe-class-report-page powerBiError">
 
                             </div>
-                            <div id="srollreports" class="dash-unit col-sm-12" style="height:100%;padding:0;">
+                            <div  class="dash-unit col-sm-12" style="height:100%;padding:0;">
                                 <iframe ng-show="!configurationError" id="summarydetails" src="" class="iframe-class-report-page" frameborder="1" seamless></iframe>
                             </div>
 

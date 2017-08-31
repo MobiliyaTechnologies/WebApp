@@ -9,7 +9,7 @@
 angular.module('WebPortal')
     .controller('alertsCtrl', function ($scope, $http, $location, $state, Token, weatherServiceFactory, $modal, config, DTOptionsBuilder, Restservice, $rootScope) {
         console.log("[Info] :: Alerts Controller");
-        $scope.alertsFilter =""
+        $scope.alertsFilter = "";
         $scope.demoMode = JSON.parse(localStorage.getItem("demoMode"));
         if ($scope.demoMode) {
             $scope.alertsFilter = '?DateFilter=' + localStorage.getItem('demoCount');
@@ -219,7 +219,7 @@ angular.module('WebPortal').controller('deviceAlertModalCtrl', function ($scope,
         for (var i = 0; i < $scope.rooms.length; i++) {
             if (sensorPos.top > $scope.rooms[i].top - 5 && sensorPos.top < $scope.rooms[i].top + 45) {
                 console.log("Class Room Mapped ::", $scope.rooms[i]);
-                $("#sensor_layout_" + sid).css({ display: 'block', left: $scope.rooms[i].Y, top: $scope.rooms[i].X, position: 'absolute' });
+                $("#sensor_layout_" + sid).css({ display: 'block', left: $scope.rooms[i].Y-5+'%', top: $scope.rooms[i].X+'%', position: 'absolute' });
                 var found = mapping.filter(function (item) { return item.sen === sid; });
                 var index = mapping.findIndex(function (item, i) {
                     return item.Sensor_Id == sid;
