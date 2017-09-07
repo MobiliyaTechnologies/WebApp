@@ -2,28 +2,27 @@
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+   These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See    deployment for notes on how to deploy the project on a live system.
+
 ### Prerequisites
 
-1.Bower component need to be install which are specified in bower.json 
+* Install dependency components (like Bower).
 
-ex - bower install
+* ARM template should add following configuration in app.settings
 
-2. ARM template should add following configuration in app.settings
-
-   -restServer
+   * restServer
    
-   -b2cApplicationId
+   * b2cApplicationId
    
-   -tenantName
+   * tenantName
    
-   -signInPolicyName
+   * signInPolicyName
    
-   -signInSignUpPolicyName
+   * signInSignUpPolicyName
    
-   -editProfilePolicyName
+   * editProfilePolicyName
    
-   -redirect_uri    
+   * redirect_uri    
 
 
 
@@ -31,21 +30,21 @@ ex - bower install
 
 Once webApp is ready need to configure following to see Data as well reports :
 
-1.Need to create campus or else you cant assoicate PI server 
+* Need to create campus or else you cant assoicate PI server 
 
-2.Assoicate campus with pi server.
+* Assoicate campus with pi server.
 
-3.Add premise level power BI report urls to see reports in REPORTS section on dasboard.
+* Add premise level power BI report urls to see reports in REPORTS section on dasboard.
 
-4.Add campus level powerBI report urls to see reports on dashboard.
+* Add campus level powerBI report urls to see reports on dashboard.
 
-5.Add building  level powerBI report urls to see reports on dashboard drill down view.
+* Add building  level powerBI report urls to see reports on dashboard drill down view.
 
-6.Add feedback  powerBI report url to see reports on feedback page.
+* Add feedback  powerBI report url to see reports on feedback page.
 
-7.Add azureML subscribtion detials to see prediction reports.
+* Add azureML subscribtion detials to see prediction reports.
 
 
 ## Deployment
 
-Follow the ARMTemplate guidelines to deploy this project on Azure.
+ * Follow the ARMTemplate guidelines to deploy this project on Azure.
