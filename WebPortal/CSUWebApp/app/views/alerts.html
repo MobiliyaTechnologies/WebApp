@@ -1,0 +1,160 @@
+﻿<div>
+    <h4 class="header-text">ALERTS LIST</h4>
+    <div class="jumbotron" style="height:80vh;">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="k-content">
+                        <div ng-if="datatable.loader" class="loader"></div>
+                    </div>
+                    <div class="table-responsive" style="margin-left:30px;margin-right:30px;">
+                        <table id="entry-grid" datatable="ng" width="100%" dt-options="dtOptions">
+                            <thead>
+                            <th>Alert Type</th>
+                            <th>Class Name</th>
+                            <th>Time</th>
+                            <th>Alert Details</th>
+                            <th>View Details</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="alert in alerts | orderBy:'-Timestamp'">
+                                    <td>{{alert.Alert_Type}}</td>
+                                    <td>{{alert.Class_Name}}</td>
+                                    <td>{{alert.Timestamp}}</td>
+                                    <td>{{alert.Alert_Desc}}</td>
+                                    <td><a ng-click="openPopup(alert)" title="View Details"><i class="fa fa-eye"></i></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/ng-template" id="alertModal.html">
+    <div class="modal-header">
+        <div class="row">
+            <div class="col-lg-2 col-lg-offset-2">
+                <span style="font-size:3.5em;" class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+            </div>
+            <div class="col-lg-8">
+                <h3>Alert Details</h3>
+            </div>
+            <!--<p class="modal-title"></p>-->
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+
+            <div class="col-lg-4 col-lg-offset-2" style="height:30vh;">
+                <label>Battery_Remaining :</label></br>
+                <label>Class_Id :</label></br>
+                <label>Humidity :</label></br>
+                <label>Battery_Remaining :</label></br>
+                <label>Is_Light_ON :</label></br>
+                <label>Last_Updated :</label> </br>
+                <label>Light_Intensity :</label></br>
+                <label>Sensor_Id :</label></br>
+                <label>Temperature :</label> </br>
+                <label>Timestamp :</label>
+            </div>
+            <div class="col-lg-4" style="height:30vh;">
+                <label>{{selectAlert.Battery_Remaining}}</label></br>
+                <label>{{selectAlert.Class_Id}}</label></br>
+                <label>{{selectAlert.Humidity}}</label></br>
+                <label>{{selectAlert.Battery_Remaining}}</label></br>
+                <label>{{selectAlert.Is_Light_ON}}</label></br>
+                <label>{{selectAlert.Last_Updated}}</label></br>
+                <label>{{selectAlert.Light_Intensity}}</label></br>
+                <label>{{selectAlert.Sensor_Id}}</label></br>
+                <label>{{selectAlert.Temperature}}</label></br>
+                <label>{{selectAlert.Timestamp}}</label>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn blue-button" ng-click="ok()">Change</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="deviceAlertModal.html" >
+
+    <div class="modal-body" >
+        <div class="row">
+            <div class="col-sm-8">
+                <img src="./app/images/map_04.png" alt="Mountain View" style="width:990px;height:600px;">
+
+                <div ng-repeat="sensor in sensors">
+                    <div title="Sensor ID :{{sensor}}" ng-if=!sensor.Class_Id id="sensor_layout_{{sensor.Sensor_Id}}" data-drag="true" class="sensor col-sm-3" style="display:none;">
+                        <img src="./app/images/bullet.gif" alt="Mountain View" style="height:20px; width:20px;z-index:1;">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="row" style="height:50px;">
+                    <div>
+                        Unmapped Sensors :
+                        <div ng-if="sensor" ng-repeat="sensor in sensors">
+                            <div ng-if=!sensor.Class_Id title="{{sensor.Sensor_Id}}" id="sensor_{{sensor.Sensor_Id}}" data-drag="true" jqyoui-draggable="{onStop:'dropped({{sensor.Sensor_Id}})'}" class="sensor col-sm-3">
+                                <img class="col-sm-12" src="./app/images/sensor.png" alt="Mountain View" style="height:35px;z-index:1;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-right: 40px;">
+
+                    <table id="class-table" class="table table-bordered" style="margin-right:10px;">
+                        <thead>
+                            <tr height="40px">
+                                <th>Room</th>
+                                <th>Sensor Mapped</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="RoomTable-{{room.RoomId}}" height="40px" ng-repeat="room in rooms">
+                                <td>{{room.RoomName}}</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button class="blue-button" ng-click="associateSensor()">Associate</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+</script>
+<script type="text/ng-template" id="anomalyAlertModal.html">
+
+    <div class="modal-body" style="height:70vh;">
+        <h2>Anomaly Details :</h2>
+        <div class="table-responsive">
+            <table id="entry-grid1" datatable="ng" width="80%" dt-options="dtOptions">
+                <thead>
+                <th>Meter Name</th>
+                <th>Time Stamp</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="req in anomaly | orderBy:'Timestamp'">
+                        <td>{{req.Breaker_details}}</td>
+                        <td>{{req.Timestamp}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button class="btn blue-button" ng-click="associateSensor()">Associate</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </div>
+</script>

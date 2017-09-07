@@ -1,0 +1,56 @@
+﻿<div ng-hide="{{$root.hideHeader}}" class="header-div">
+    <img class="header-logo" src="{{organization.OrganizationLogoUri}}" />   
+    <div ng-show="weather.hasState == 'has-success'" class="weather-div">
+        <!--<ul style="padding:0;">
+            <li ng-repeat="forecast in weather.forecast" style="display:inline-table;">
+                <div class="row" style="margin-right:10px;">
+                    <div class="col-sm-3">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <weather-icon style="font-size:35px;" code="{{ forecast.code }}"></weather-icon>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div class="col-sm-3" style="padding-left:0px;">
+                                <label style="font-size:20px;">{{weather.temp}}&deg;{{weather.unit}}&nbsp;&nbsp;</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <label>{{ forecast.date }} </label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label>{{ forecast.text }}</label>
+                        </div>
+
+
+                    </div>
+                </div>
+
+        </ul>-->
+        <div ng-repeat="forecast in weather.forecast">
+            <div class="col-lg-6 weather-innerdiv">
+
+                <weather-icon code="{{ forecast.code }}" class="weather-icon"></weather-icon>
+                <label class="weather-unit">{{weather.temp}}&deg;{{weather.unit}}&nbsp;&nbsp;</label>
+                <label class="weather-text">{{ forecast.text }}</label>
+            </div>
+        <div class="col-lg-6 weather-innerdiv" >
+            <img class="date-icon" src="./app/images/date.png" />
+            <label class="date-text">{{ forecast.date }} </label>
+        </div>
+        </div>
+
+
+    </div>
+  
+    
+        
+        
+
+   
+    
+</div>

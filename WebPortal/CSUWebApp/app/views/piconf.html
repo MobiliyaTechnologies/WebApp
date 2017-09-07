@@ -1,0 +1,578 @@
+﻿<div style="margin-top:8px;">   
+ <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseZero">
+            <h4 class="panel-title">
+                <img src="./app/images/{{checkPremise}}.png" />
+                <label style="">
+                    Premise Configuration
+                </label>
+            </h4>
+        </div>
+        <div id="collapseZero" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="jumbotron">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="k-content">
+                                        <div ng-if="datatable.loader" class="loader"></div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table id="entry-grid1" datatable="ng" width="100%" dt-options="dtOptions1">
+                                            <thead>
+                                            <th>Premise ID</th>
+                                            <th>Premise Name</th>
+                                            <th>Premise Desc</th>
+                                            <th>Monthly Consumption</th>
+                                            <th>Edit</th>
+                                            <!--<th>Add Building</th>-->
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="premise in premiseList">
+                                                    <td>{{premise.PremiseID}}</td>
+                                                    <td>{{premise.PremiseName}}</td>
+                                                    <td>{{premise.PremiseDesc | date}}</td>
+                                                    <td>{{premise.MonthlyConsumption}}</td>
+                                                    <td><a ng-click="openPopup(premise)" title="View Details"><i class="fa fa-edit"></i></a></td>
+                                                    <!--<td><a ng-click="addBuilding(premise)" title="View Details"><i class="fa fa-plus"></i></a></td>-->
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <button class="blue-button" ng-click="addPremise()">Add Premise</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseThirteen">
+            <h4 class="panel-title">
+                <img src="./app/images/{{checkPremise}}.png" />
+                <label>                    
+                    Premise-Building Mapping
+                </label>
+            </h4>
+        </div>
+        <div id="collapseThirteen" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                            <div class="col-lg-6">
+                                <label>Select Premise &nbsp;</label><select ng-options="premise.PremiseID as premise.PremiseName for premise in Premises" ng-model="selectedPremise"></select></label>  
+                                <input class="form-control" style="margin-top:20px;" placeholder="Building latitude" type="text" ng-model="buildingLat" />
+                            </div>
+                             <div class="col-lg-6">
+                                 <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingName for building in buildingList" ng-model="selectedBuilding"></select>   </label>
+                                 <input class="form-control" style="margin-top:20px;" placeholder="Building longitude" type="text" ng-model="buildingLong" />
+                             </div>                        
+                                                      
+                           
+                            <button class="blue-button" ng-click="mapPremiseBuilding()">Map</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne" >
+            <h4 class="panel-title">
+                <img src="./app/images/{{checkPIserver}}.png" />
+                <label >
+                    PI Server Configuration
+                </label>
+            </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="jumbotron">
+                    <div class="container">
+                        <div class="row">
+                            <div class="k-content">
+                                <div ng-if="datatable.loader" class="loader"></div>
+                            </div>
+                            <div class="table-responsive">
+                                <table id="entry-grid" datatable="ng" width="100%" dt-options="dtOptions">
+                                    <thead>
+                                    <th>PIserver ID</th>
+                                    <th>PIserver Name</th>
+                                    <th>PIserver Desc</th>
+                                    <th>Add Schedule</th>
+                                    <!--<th>Add Building</th>-->
+                                    </thead>
+                                    <tbody>
+
+                                        <tr ng-repeat="Piserver in PIserverList">
+                                            <td>{{Piserver.PiServerID}}</td>
+                                            <td>{{Piserver.PiServerName}}</td>
+                                            <td>{{Piserver.PiServerDesc}}</td>
+                                            <td><a ng-click="openSchedulePopup(Piserver)" title="View Details"><i class="fa fa-edit"></i></a></td>
+                                            <!--<td><a ng-click="addBuilding(premise)" title="View Details"><i class="fa fa-plus"></i></a></td>-->
+                                        </tr>
+                                    </tbody>
+                                   
+                                </table>
+                                
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="https://emdeployment.blob.core.windows.net/releasemtr/ClassSchedule_PiServer1.csv" >SAMPLE SCHEDULE FILE</a>
+            </div>
+        </div>
+        
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseTwo" >
+            <h4 class="panel-title">
+                <img src="./app/images/{{checkPowerBiCredentials}}.png" />
+                <label>
+                    Power BI Credentials
+                </label>
+            </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:320px;">
+                    <input ng-disabled="edit" class="form-control" style="margin-top:20px;" placeholder="Client Id" type="text" ng-model="powerBicredentials.ClientId" />
+                    <input ng-disabled="edit" class="form-control" style="margin-top:20px;" placeholder="Client Secret" type="text" ng-model="powerBicredentials.ClientSecret" />
+                    <input ng-disabled="edit" class="form-control" style="margin-top:20px;" placeholder="Username" type="text" ng-model="powerBicredentials.Username" />
+                    <input ng-disabled="edit" class="form-control" style="margin-top:20px;" placeholder="Password" type="text" ng-model="powerBicredentials.Password" />
+                    <a ng-if="edit" ng-click="editClick()">edit</a>
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addPowerBiCredntials()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseThree" >
+            <h4 class="panel-title">
+                <img src="./app/images/{{checkUniversityPowerBI}}.png" />
+                <label >
+                    Power BI Configuration(Organisation) 
+                </label>
+            </h4>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Report Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="universityPowerBiConfig.summary" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Details Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="universityPowerBiConfig.summarydetails" />
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addUniPowerBiUrl()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFour" >
+            <h4 class="panel-title">
+                <img src="./app/images/{{checkPremisePowerBI}}.png" />
+                <label >
+                    Power BI Configuration(Premise)
+                </label>
+            </h4>
+        </div>
+        <div id="collapseFour" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Report Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="premisePowerBiConfig.summary" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Details Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="premisePowerBiConfig.summarydetails" />
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addPremisePowerBiUrl()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFive" >
+            <h4 class="panel-title">
+                <img src="./app/images/{{checkBuildingPowerBI}}.png" />
+                <label >
+                    Power BI Configuration(Builiding)
+                </label>
+            </h4>
+        </div>
+        <div id="collapseFive" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Report Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="buildingPowerBiConfig.summary" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Summary Details Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="buildingPowerBiConfig.summarydetails" />
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addBuildingPowerBiUrl()">Add</button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseSix" >
+            <h4 class="panel-title">
+                <img src="./app/images/{{checkFeedbackPowerBI}}.png" />
+                <label>
+                    Power BI Configuration(Feedback)
+                </label>
+            </h4>
+        </div>
+        <div id="collapseSix" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:180px;">
+                    <input class="form-control" style="margin-top:20px;" placeholder="Feedback report Id" type="text" value="https://app.powerbi.com/reportEmbed?reportId=" ng-model="feebackPowerBi.summary" />
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFeedbackPowerBiUrl()">Add</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseSeven" >
+            <h4 class="panel-title">
+                <img src="./app/images/{{checkAzureMl}}.png" />
+                <label >
+                    Azure ML Configuration
+                </label>
+            </h4>
+        </div>
+        <div id="collapseSeven" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:300px;">
+                    <h3>Azure ML Configuration</h3>
+                    <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml AnomalyDetection Api key" type="text" ng-model="azureml.AzureMlAnomalyDetectionApiKey" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml AnomalyDetection Api Url" type="text" ng-model="azureml.AzureMlAnomalyDetectionApiUrl" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml DailyPrediction Api key" type="text" ng-model="azureml.AzureMlDailyPredictionApiKey" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Azure Ml DailyPrediction Api Url" type="text" ng-model="azureml.AzureMlDailyPredictionApiURL" />
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addAzureMlConfig()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseNine" >
+            <h4 class="panel-title">
+                <img src="./app/images/{{checkFirebase}}.png" />
+                <label>
+                    Firebase Configuration
+                </label>
+            </h4>
+        </div>
+        <div id="collapseNine" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:420px;">
+                    <h3>Firebase Configuration</h3>
+                    <input class="form-control" style="margin-top:20px;" placeholder="Legacy Server key" type="text" ng-model="firebase.ApiKey" /> <!--This is legacy server key-->
+                    <input class="form-control" style="margin-top:20px;" placeholder="Auth Domain" type="text" ng-model="firebase.AuthDomain" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Database Url" type="text" ng-model="firebase.DatabaseURL" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Storage Bucket" type="text" ng-model="firebase.StorageBucket" />
+                    <!--<input class="form-control" style="margin-top:20px;" placeholder="Authorisation Key" type="text" ng-model="firebase.NotificationAuthorizationKey" />-->
+                    <input class="form-control" style="margin-top:20px;" placeholder="Messaging Sender Id" type="text" ng-model="firebase.NotificationSender" />
+                   <input class="form-control" style="margin-top:20px;" placeholder="Messaging Receiver Id" type="text" value="/topics/Alerts" ng-model="firebase.NotificationReceiver" />
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addFirebaseConfig()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseEleven" >
+            <h4 class="panel-title">
+                <img src="./app/images/{{checkUser}}.png" />
+                <label>
+                    User Configuration
+                </label>
+            </h4>
+        </div>
+        <div id="collapseEleven" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="jumbotron">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="k-content">
+                                        <div ng-if="datatable.loader" class="loader"></div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table id="entry-grid" datatable="ng" width="100%" dt-options="dtOptions">
+                                            <thead>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Email</th>
+                                            <th>Role </th>
+                                            <th>Change role</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="user in userList">
+                                                    <td>{{user.FirstName}}</td>
+                                                    <td>{{user.LastName}}</td>
+                                                    <td>{{user.Email}}</td>
+
+                                                    <td ng-if="user.RoleId==1">Super Admin</td>
+                                                    <td ng-if="user.RoleId==2">User</td>
+                                                    <td ng-if="user.RoleId!=1&&user.RoleId!=2">Campus Admin</td>
+                                                    <td><a ng-click="changeRolePopup(user)" title="View Details"><i class="fa fa-edit"></i></a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapsetwelve" >
+            <h4 class="panel-title">
+                <img src="./app/images/{{checkOrganization}}.png" />
+                <label>
+                   Organization Configuration
+                </label>
+            </h4>
+        </div>
+        <div id="collapsetwelve" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:375px;">
+                    <h3>Organization Configuration</h3>
+                    <input class="form-control" style="margin-top:20px;" placeholder="Organization" type="text" ng-model="organization.OrganizationName" />               
+                    <input class="form-control" style="margin-top:20px;" placeholder="Description" type="text" ng-model="organization.OrganizationDesc" />
+                    <input class="form-control" style="margin-top:20px;" placeholder="Address" type="text" ng-model="organization.OrganizationAddress" /></br>
+                    <label>Logo for organization :</label>
+                    <input id="organization_logo" type="file" accept="image/*" style="margin-top:20px;"/><br />
+                    <label>Note : Please upload logo of size 160 * 40</label><br />
+                    <button class="blue-button" style="margin-top:20px;text-align:center;margin-left:45%;" ng-click="addOrganizationConfig()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" href="javascript:;" data-toggle="collapse" data-parent="#accordion" data-target="#collapseFourteen" >
+            <h4 class="panel-title">
+                <img src="./app/images/{{checkAddClassroom}}.png" />
+                <label>
+                    Room Configuration
+                </label>
+            </h4>
+        </div>
+        <div id="collapseFourteen" class="panel-collapse collapse out">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="jumbotron">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="k-content">
+                                        <div ng-if="datatable.loader" class="loader"></div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table id="entry-grid" datatable="ng" width="100%" dt-options="dtOptions">
+                                            <thead>
+                                            <th>Room Name</th>
+                                            <th>Room X</th>
+                                            <th>Room Y</th>
+                                            <th>Sensor Map</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="room in roomList">
+                                                    <td>{{room.RoomName}}</td>
+                                                    <td>{{room.X}}</td>
+                                                    <td>{{room.Y}}</td>
+                                                    <td>{{room.SensorId}}</td>
+                                                    <td><a ng-click="editRoomPopup(room)" title="Edit Details"><i class="fa fa-edit"></i></a></td>
+                                                    <td><a ng-click="deleteRoom(room)" title="Delete Room"><i class="fa fa-trash"></i></a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <button class="blue-button" ng-click="addRooms()">Add Classrooms</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<script type="text/ng-template" id="editPremise.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Edit Details </h3>
+    </div>
+    <div>
+        <div class="col-lg-offset-1 col-lg-10 ">
+            <input class="form-control" style="margin-top:20px;" placeholder="Premise Name" type="text" ng-model="premise.PremiseName" />
+            <input class="form-control" style="margin-top:20px;" placeholder="Premise Description" type="text" ng-model="premise.PremiseDesc" />
+            <input class="form-control" style="margin-top:20px;" placeholder="latitude" type="text" ng-model="premise.Latitude" />
+            <input class="form-control" style="margin-top:20px;margin-bottom:20px;" placeholder="longitude" type="text" ng-model="premise.Longitude" />
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="blue-button" ng-click="ok()">Edit</button>
+        <button class="btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+<script type="text/ng-template" id="addPremise.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Premise </h3>
+    </div>
+    <div>
+        <div class="col-lg-offset-1 col-lg-10 ">
+            <br />
+            <label>Premise Name: *</label>
+            <input class="form-control" placeholder="Premise Name" type="text" ng-model="premise.PremiseName" /></br>
+            <label>Premise Description: *</label>
+            <input class="form-control"  placeholder="Premise Description" type="text" ng-model="premise.PremiseDesc" /></br>
+            <label>Premise Latitude: *</label>
+            <input class="form-control"  placeholder="latitude" type="text" ng-model="premise.Latitude" /></br>
+            <label>Premise Longitude: *</label>
+            <input class="form-control"  placeholder="longitude" type="text" ng-model="premise.Longitude" /></br>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="blue-button" ng-click="ok()">Add</button>
+        <button class="btn-warning" ng-click="cancel()">Cancel</button>
+       
+    </div>
+</script>
+<script type="text/ng-template" id="addBuilding.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Building </h3>
+    </div>
+    <div>
+        <div class="col-lg-offset-1 col-lg-10 ">
+            <input class="form-control" style="margin-top:20px;" placeholder="Building Name" type="text" ng-model="building.BuildingName	" />
+            <input class="form-control" style="margin-top:20px;" placeholder="Building Description" type="text" ng-model="building.BuildingDesc" />
+            <input class="form-control" style="margin-top:20px;" placeholder="latitude" type="text" ng-model="building.Latitude" />
+            <input class="form-control" style="margin-top:20px;margin-bottom:20px;" placeholder="longitude" type="text" ng-model="building.Longitude" />
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="blue-button" ng-click="ok()">Add</button>
+        <button class=" btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+<script type="text/ng-template" id="changeRole.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Change Role</h3>
+    </div>
+    <div>
+        <div class="col-lg-offset-1 col-lg-10 ">
+            User Name   :&nbsp;<label  style="margin-top:20px;">{{userName}}</label></br> 
+            Select Role :&nbsp;<select ng-model="selectedRole.selected" ng-change="roleChange()" ng-options="role.RoleName for role in roles"></select>&nbsp;&nbsp;<a  ng-click="addRole()">Add New Role</a>  
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="blue-button" ng-click="ok()">Change</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+<script type="text/ng-template" id="addRole.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Role</h3>
+
+    </div>
+    <div>
+        <div class="col-lg-offset-1 col-lg-10 ">
+            <input class="form-control" style="margin-top:20px;" placeholder="Role Name" type="text" ng-model="role.RoleName" />
+            <input class="form-control" style="margin-top:20px;" placeholder="Description" type="text" ng-model="role.Description" />
+            Select Premise :<div ng-dropdown-multiselect="" extra-settings="dropdownSetting"
+                 options="premise" selected-model="CategoriesSelected" checkboxes="true" style="margin-top:20px;"></div>
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="blue-button" ng-click="ok()">Add</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+<script type="text/ng-template" id="addSchedule.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Schedule</h3>
+    </div>
+    <div>
+        <div class="col-lg-offset-1 col-lg-10 ">
+          
+            <div class="col-lg-4 col-lg-offset-2" style="height:30vh;">
+                <label>Pi Server Id :</label></br>
+                <label>Pi Server Name:</label></br>
+                <label>Description :</label></br>
+                <label>Schedule File :</label></br>
+            </div>
+            <div class="col-lg-4" style="height:30vh;">
+                <label>{{Piserver.PiServerID}}</label></br>
+                <label>{{Piserver.PiServerName}}</label></br>
+                <label>{{Piserver.PiServerDesc}}</label></br>                
+                <input id="class_schedulefile" type="file" accept=".csv" />
+            </div>
+            
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="blue-button" ng-click="ok()">Add</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+<script type="text/ng-template" id="editRoom.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Edit Room Details</h3>
+    </div>
+    <div>
+        <div class="col-lg-offset-1 col-lg-10 ">
+            <input class="form-control" style="margin-top:20px;" placeholder="Class Room Name" type="text" ng-model="room.RoomName	" />
+            <input class="form-control" style="margin-top:20px;" placeholder="X Position on Layout" type="text" ng-model="room.X" />
+            <input class="form-control" style="margin-top:20px;" placeholder="Y Position on Layout" type="text" ng-model="room.Y" />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="blue-button" ng-click="ok()">Update</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+<script type="text/ng-template" id="addRoom.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Room</h3>
+    </div>
+    <div>
+        <div class="col-lg-offset-1 col-lg-10 dash-unit" style="height:190px;">
+            <label>Select Building &nbsp;</label><select ng-options="building.BuildingID as building.BuildingName for building in buildingList" ng-model="selectedBuilding" style="z-index:1;width:70px;margin-top:20px;"></select>     </br></br>
+            <input id="roomlist" type="file" accept=".csv" /></br></br>
+
+            <a href="https://emdeployment.blob.core.windows.net/releasemtr/Rooms.csv" >SAMPLE ROOM'S FILE</a>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="blue-button" ng-click="ok()">Add</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+<div id="loadingid" class="loading style-2 ng-scope" style="{{loading}}">
+    <div class="loading-wheel">
+    </div>
+</div>
+<div id="loadingidgq" class="loading style-2 ng-scope"  >
+    <div class="loading-wheel">
+    </div>
+</div>

@@ -1,0 +1,80 @@
+﻿<div header></div>
+<div class="dashboard-page">
+        <div class="row">
+            <div class="col-lg-2  col-md-3 sidebar" >
+                <br />
+                <div class="text-center" style="padding: 5px 5px 5px 5px;">
+                    <img src="./app/images/{{avatar}}" class="user-avatar" ng-click="openPopup()" />
+                    <h4 class="user-name">{{username}}&nbsp;{{lastname}}</h4>
+                    <button class="btn logout-btn" ng-click="logoutb2c()">Logout</button>
+                </div>
+                <div class="left-menu">
+
+                        
+                    <div class="menu-list">
+                        <!--<input type="radio" class="button" id="Male" name="gender" checked="checked"></input>
+                        <label for="Male">Male</label>
+                        <input type="radio" class="button" id="Female" name="gender"></input>
+                        <label for="Female">Female</label>-->
+
+
+                        <div ng-if="can('overview')"  ng-click="changeState('overview')">
+                            
+                            <input type="radio" name="accordion-1" id="section-1" checked="checked" />
+                            <label class="menu-item" for="section-1"><img class="menu-icon" src="./app/images/dashboard.svg" /><span>DASHBOARD</span></label>
+
+                        </div>
+                        <div ng-if="can('reports')"  ng-click="changeState('reports')">
+                            <input type="radio" name="accordion-1" id="section-2" value="toggle" />
+                            <label for="section-2" class="menu-item"><img class="menu-icon" src="./app/images/reports.svg" /> <span>REPORTS</span></label>
+                        </div>
+                        <div ng-if="can('configuration')"  ng-click="changeState('piconf')">
+                            <input type="radio" name="accordion-1" id="section-3" value="toggle" />
+                            <label class="menu-item"  for="section-3" class="menu-item"> <img class="menu-icon" src="./app/images/configuration.svg" /><span>CONFIGURATION</span></label>
+                        </div>
+                        <div ng-if="can('alerts')"  ng-click="changeState('alerts')">
+                            <input type="radio" name="accordion-1" id="section-5" value="toggle" />
+                            <label class="menu-item" for="section-5"><img class="menu-icon" src="./app/images/alerts.svg" /> <span>ALERTS</span></label>
+                        </div>
+                        <div ng-if="can('feedback')" class="menu-item" ng-click="changeState('feedback')">
+                            <input type="radio" name="accordion-1" id="section-6" value="toggle" />
+                            <label for="section-6">
+                                <img class="menu-icon" src="./app/images/feedback.svg" />
+                                <span>FEEDBACK</span>
+                            </label>
+                        </div>
+                    </div>
+                    </div>
+                <span ng-if="demoMode" ng-click="previousData()" class="glyphicon glyphicon-arrow-left  header-download-link"></span>
+
+                <label ng-if="demoMode" style="position: absolute;margin: 30px;">{{stateValue}}</label>
+                <span ng-if="demoMode" ng-click="nextData()" class="glyphicon glyphicon-arrow-right pull-right header-download-link"style="float:right;margin-right:20px;"></span>
+             </div>
+                
+                <!--<a href="https://mseastus.blob.core.windows.net/general/PowerMap_Dec_27_2016.xlsx" class="header-download-link">DOWNLOAD POWER MAP REPORT</a>-->
+
+            <div  class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" ui-view>
+            </div>
+
+               
+
+        </div>
+</div>
+<script type="text/ng-template" id="changeAvatarModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Choose Avatar </h3>
+    </div>
+    <div class="modal-body">
+        <div class="gallery cf">
+            <div ng-repeat="x in images">
+                <img ng-click="selectImage($index)" style="height:100px;width:100px;border:solid {{x.color}};" src="./app/images/{{x.src}}" />
+            </div>
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">Change</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

@@ -1,0 +1,96 @@
+﻿<div class="" style="margin-top:60px;">
+    <!--<div class="">
+        <div class="ui-widget">
+
+            <div class="row">
+                <div class="col-sm-12" style="padding:0;">
+                    <div class="recommendation-bar">
+                        <div class="recommendation-bar-content">
+                            <div class="col-sm-4">
+                                <span class="glyphicon glyphicon-arrow-up arrow" aria-hidden="true"></span>
+                                <h2 style="">{{insight.ConsumptionValue.toFixed(2)}}K</h2>
+                                <label>CONSUMED IN LAST MONTH</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <span class="glyphicon glyphicon-arrow-down arrow" aria-hidden="true"></span>
+                                <h2 style="">{{insight.overused.toFixed(2)}}K</h2>
+                                <label>OVERUSED</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <span class="glyphicon glyphicon-arrow-up arrow" aria-hidden="true"></span>
+                                <h2 style="">{{insight.PredictedValue.toFixed(2)}}K</h2>
+                                <label>EXPECTED</label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div ng-repeat="recommendation in recommendations" class="row">
+                <div class="col-sm-12 recommendation-content">
+                    <div class="col-sm-8">
+                        <div class="col-sm-12 recommendation-title">
+                            {{recommendation.Alert_Type}}
+                        </div>
+                        <div class=" col-sm-12 recommendation-text">
+                            {{recommendation.Alert_Desc}}
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label>{{recommendation.Timestamp | date}} </label>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>-->
+
+
+    <div class="">
+        <div class="">
+            <div class="ui-widget">
+
+                <div class="row">
+                    <div class="col-sm-12" style="padding:0;margin-left:30px;margin-right:30px;">
+                        <div class="recommendation-bar">
+                            <div class="recommendation-bar-content">
+                                <div class="col-sm-4">
+                                    <img class="arrow" src="./app/images/up-blue.svg" />
+                                    <h2 style="">{{insight.ConsumptionValue.toFixed(2)}}K</h2>
+                                    <label>CONSUMED IN LAST WEEK(KWH)</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <img class="arrow" src="./app/images/up-green.svg" />
+                                    <h2 style="">{{insight.overused.toFixed(2)}}K</h2>
+                                    <label>{{usage}}</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <img class="arrow" src="./app/images/down-red.svg" />
+                                    <h2 style="">{{insight.PredictedValue.toFixed(2)}}K</h2>
+                                    <label>EXPECTED</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div ng-repeat="recommendation in recommendations" class="row">
+                    <div class="col-sm-12 recommendation-content">
+                        <div class="col-sm-8">
+
+                            <div class=" col-sm-12 recommendation-text">
+                                {{recommendation.Alert_Desc}}
+                            </div>
+                        </div>
+                        <div class="col-sm-4 recommendation-date">
+                            <label>{{recommendation.Timestamp | date}} </label>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+
+        </div>
+    </div>
+</div>
