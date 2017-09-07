@@ -10,13 +10,13 @@ These instructions will get you a copy of the project up and running on your loc
 
 
 2. ARM template should add following configuration in app.settings
-   - restServer
-   - b2cApplicationId
-   - tenantName
-   - signInPolicyName
-   - signInSignUpPolicyName
-   - editProfilePolicyName
-   - redirect_uri    
+   - restServer(Rest server Url)
+   - b2cApplicationId(B2c application Id)
+   - tenantName(B2C tenant Name)
+   - signInPolicyName (B2C Sign In Policy Name)
+   - signInSignUpPolicyName (B2C Sign Up Policy Name)
+   - editProfilePolicyName (B2C Edit Profile Policy Name)
+   - redirect_uri    (Redirect Uri for b2c)
 
     Example : Web.config should have following values
 
@@ -37,15 +37,19 @@ These instructions will get you a copy of the project up and running on your loc
 ### Installing
 
 Once webApp is ready need to configure following to see Data as well reports :
-
-1. Need to create campus or else you cant assoicate PI server
-2. Assoicate campus with pi server.
-3. Add university level power BI report urls to see reports in REPORTS section on dasboard.
-4. Add campus level powerBI report urls to see reports on dashboard.
-5. Add building  level powerBI report urls to see reports on dashboard drill down view.
-6. Add feedback  powerBI report url to see reports on feedback page.
-7. Add azureML subscribtion detials to see prediction reports.
-
+1. Clone or download source code.
+2. Open code in microsoft visual studio and rebuild it.
+3. Run EnergyManagement Web project
+4. Intial Configuration :
+	1. Need to create campus or else you cant assoicate PI server
+	2. Assoicate campus with pi server.
+	3. Add university level power BI report urls to see reports in REPORTS section on dasboard.
+	4. Add campus level powerBI report urls to see reports on dashboard.
+	5. Add building  level powerBI report urls to see reports on dashboard drill down view.
+	6. Add feedback  powerBI report url to see reports on feedback page.
+	7. Add azureML subscribtion detials to see prediction reports.
+	8. Add firebase details to enable firebase notification
+ 
 
 
 
