@@ -1,0 +1,9 @@
+{
+  "ApiKey": "AIzaSyA2VXehPio1mztp6WqGIog9_mRNsgIlPzU",
+  "AuthDomain": "emtest-186ce.firebaseapp.com",
+  "DatabaseURL": "https://emtest-186ce.firebaseio.com",
+  "StorageBucket": "emtest-186ce.appspot.com",
+  "NotificationAuthorizationKey": "AAAAGQBSH1c:APA91bEcYFZQMez7DyNTgphhxk1Sw4uKgss0xW7qBqiMX9QBHPNeIItIrw8VhvCJVWi8WUGUMPdRrx64P82lUtzmPUdvKFKYdr_UJHQl6lnWrXeK0J6-QHZaqkhsAKw1J3TwUievGRA2",
+  "NotificationSender": "976024703467",
+  "NotificationReceiver": "/topics/Alerts"
+}
